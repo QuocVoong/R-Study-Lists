@@ -1,0 +1,6 @@
+git add -A
+git commit -m ""
+git push https://github.com/robinlan/R-Study-Lists.git
+
+if pull things to local :
+   git pull https://github.com/robinlan/R-Study-Lists.git
