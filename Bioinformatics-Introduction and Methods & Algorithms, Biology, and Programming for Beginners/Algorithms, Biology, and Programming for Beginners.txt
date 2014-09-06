@@ -1,0 +1,21 @@
+The course will be based around the following biological questions, with the algorithmic ideas that we will use to solve them in parentheses:
+
+ Where Does DNA Replication Begin? (Algorithmic Warm-up)
+
+ How Do We Sequence Antibiotics? (Brute Force Algorithms)
+
+ Which DNA Patterns Act As Cellular Clocks? (Greedy and Randomized Algorithms)
+
+ How Do We Assemble Genomes? (Graph Algorithms)
+
+ How Do We Compare Biological Sequences? (Dynamic Programming Algorithms)
+
+ Are There Fragile Regions in the Human Genome? (Combinatorial Algorithms)
+
+ Which Animal Gave Us SARS? (Evolutionary Trees)
+
+ How Do We Locate Disease-Causing Mutations? (Combinatorial Pattern Matching)
+
+ How Did Yeast Become Such a Good Wine Brewer? (Clustering Algorithms)
+
+Some of these topics will require you to complete coding challenges in order to implement bioinformatics algorithms, followed by a comprehension quiz at the end of the topic.  Other topics will carry lighter workloads and consist primarily of lecture videos and short quizzes.

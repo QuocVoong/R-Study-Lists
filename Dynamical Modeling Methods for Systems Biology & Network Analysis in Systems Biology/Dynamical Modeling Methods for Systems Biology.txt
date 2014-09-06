@@ -1,0 +1,19 @@
+Topics covered include:
+
+ Modeling in Systems Biology
+
+ Computing with MATLAB
+
+ Dynamical systems tools to analyze behavior of mathematical models
+
+ Modeling emergent Properties: bistability in biochemical signaling 
+
+ Modeling the cell cycle
+
+ Modeling electrical signaling in neurons
+
+ Mathematical models of electrical signals that propagate in space and time
+
+ Modeling the spatial dependence of intracellular signaling
+
+ Mathematical models of processes in which randomness is important

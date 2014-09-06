@@ -1,0 +1,25 @@
+This course is 12 weeks long.  It will cover a total of 12 topics with one topics per week. 
+
+Week   1:      Introduction and history
+
+Week   2:      Sequence alignment
+
+Week   3:      Sequence database search
+
+Week   4:      Markov Model and Hidden Markov Model
+
+Week   5:      Next generation sequencing(NGS): reads mapping & variants calling
+
+Week   6:      Functional prediction of genetic variants
+
+Week   7:      NGS RNA-Seq and transcriptome analysis
+
+Week   8:      Prediction and analysis of noncoding RNAs
+
+Week   9:      Ontology and pathway identification
+
+Week   10:    Bioinformatic database and software resources
+
+Week   11:    Case study I--Origination and evolution of new genes
+
+Week   12:    Case study II--Evolution function analysis of DNA methyltransferase
