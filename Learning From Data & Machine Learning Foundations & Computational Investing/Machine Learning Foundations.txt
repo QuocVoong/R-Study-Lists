@@ -1,0 +1,27 @@
+Each of the following items correspond to approximately one hour of video lecture. [以下的每個小項目對應到約一小時的線上課程]
+
+When Can Machines Learn? [何時可以使用機器學習]
+-- The Learning Problem [機器學習問題]
+-- Learning to Answer Yes/No [二元分類]
+-- Types of Learning [各式機器學習問題]
+-- Feasibility of Learning [機器學習的可行性]
+
+Why Can Machines Learn? [為什麼機器可以學習]
+-- Training versus Testing [訓練與測試]
+-- Theory of Generalization [舉一反三的一般化理論]
+-- The VC Dimension [VC 維度]
+-- Noise and Error [雜訊一錯誤]
+
+How Can Machines Learn? [機器可以怎麼樣學習]
+-- Linear Regression [線性迴歸]
+-- Linear `Soft' Classification [軟性的線性分類]
+-- Linear Classification beyond Yes/No [二元分類以外的分類問題]
+-- Nonlinear Transformation [非線性轉換]
+
+How Can Machines Learn Better? [機器可以怎麼樣學得更好]
+-- Hazard of Overfitting [過度訓練的危險]
+-- Preventing Overfitting I: Regularization [避免過度訓練一：控制調適]
+-- Preventing Overfitting II: Validation [避免過度訓練二：自我檢測]
+-- Three Learning Principles [三個機器學習的重要原則]
+
+Readings : <<Python for Data Analysis>> , <<Machine Learning in Action>>

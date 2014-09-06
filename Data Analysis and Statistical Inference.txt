@@ -1,0 +1,43 @@
+Week 1: Unit 1 - Introduction to data
+Part 1 ¡V Designing studies
+Part 2 ¡V Exploratory data analysis
+Part 3 ¡V Introduction to inference via simulation
+Week 2: Unit 2 - Probability and distributions
+Part 1 ¡V Defining probability
+Part 2 ¡V Conditional probability
+Part 3 ¡V Normal distribution
+Part 4 ¡V Binomial distribution
+Week 3: Unit 3 - Foundations for inference
+Part 1 ¡V Variability in estimates and the Central Limit Theorem
+Part 2 ¡V Confidence intervals
+Part 3 ¡V Hypothesis tests
+Week 4: Finish up Unit 3 + Midterm
+Part 4 ¡V Inference for other estimators
+Part 5 - Decision errors, significance, and confidence
+Week 5: Unit 4 - Inference for numerical variables
+Part 1 ¡V Comparing two means
+Part 2 ¡V Bootstrapping
+Part 3 ¡V Inference with the t-distribution
+Part 4 ¡V Comparing three or more means (ANOVA)
+Week 6: Unit 5 - Inference for categorical variables
+Part 1 ¡V Single proportion
+Part 2 ¡V Comparing two proportions
+Part 3 ¡V Inference for proportions via simulation
+Part 4 ¡V Comparing three or more proportions (Chi-square)
+Week 7: Unit 6 - Introduction to linear regression
+Part 1 ¡V Relationship between two numerical variables
+Part 2 ¡V Linear regression with a single predictor
+Part 3 ¡V Outliers in linear regression
+Part 4 ¡V Inference for linear regression
+Week 8: Unit 7 - Multiple linear regression
+Part 1 ¡V Regression with multiple predictors
+Part 2 ¡V Inference for multiple linear regression
+Part 3 ¡V Model selection
+Part 4 ¡V Model diagnostics
+Week 9: Review / catch-up week
+Bayesian vs. frequentist inference
+Week 10: Final exam
+
+
+Reading : <<R in Action>>
+Videos : Khan Academic's <<Statistics>>
