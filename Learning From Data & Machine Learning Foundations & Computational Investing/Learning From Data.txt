@@ -18,3 +18,5 @@ Lecture 15: Kernel Methods
 Lecture 16: Radial Basis Functions
 Lecture 17: Three Learning Principles
 Lecture 18: Epilogue
+
+Readings : <<Python for Data Analysis>> , <<Machine Learning in Action>>

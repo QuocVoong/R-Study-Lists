@@ -139,3 +139,5 @@ Instance based models
 Module 3: Arbitrage
 Homework 6: Event Study with Bollinger Bands
 Homework 7: Bollinger Band-based trading
+
+Readings : <<Numpy Cookbook>> , <<Data Science for Bussiness>>
