@@ -1,16 +1,4 @@
-git add -A
-
-git commit -m ""
-<<<<<<< HEAD
-
-git push https://github.com/robinlan/R-Study-Lists.git
-
-
-
-if pull things to local :
-   
-  git pull https://github.com/robinlan/R-Study-Lists.git
-=======
 git pull https://github.com/robinlan/R-Study-Lists.git
+git add -A
+git commit -m ""
 git push https://github.com/robinlan/R-Study-Lists.git
->>>>>>> 1e237dc3650d5c38d5b0124558e522dffa9cee70
