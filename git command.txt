@@ -1,8 +1,6 @@
 git add -A
 
 git commit -m ""
-<<<<<<< HEAD
-
 git push https://github.com/robinlan/R-Study-Lists.git
 
 
