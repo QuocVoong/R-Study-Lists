@@ -14,5 +14,5 @@ hypothesis testing: paired and two-sample t-tests, the chi-square test, Fisher's
 
 power and sample size  (optional)
 
-Reading : <<R in Action>>
+Reading : <<R in Action>> , <<OpenIntro Statistics>>
 Videos : Khan Academic's <<Statistics>>

@@ -39,5 +39,5 @@ Bayesian vs. frequentist inference
 Week 10: Final exam
 
 
-Reading : <<R in Action>>
+Reading : <<R in Action>> , <<OpenIntro Statistics>>
 Videos : Khan Academic's <<Statistics>>
