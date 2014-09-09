@@ -23,3 +23,5 @@ How Can Machines Learn Better? [機器可以怎麼樣學得更好]
 -- Preventing Overfitting I: Regularization [避免過度訓練一：控制調適]
 -- Preventing Overfitting II: Validation [避免過度訓練二：自我檢測]
 -- Three Learning Principles [三個機器學習的重要原則]
+
+Readings : <<Python for Data Analysis>> , <<Machine Learning in Action>>

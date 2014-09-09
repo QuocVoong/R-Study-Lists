@@ -1,0 +1,49 @@
+Suggested Exercises (OpenIntro Statistics)
+
+Suggested Exercises Help
+
+The following are suggested end of chapter exercises from OpenIntro Statistics. Short answers to these exercises can be found in the back of the book. These exercises are completely optional and will not count towards your grade. However, completing some or all of these exercises will be a great way to use what you learn in this course (in a non-multiple choice format). I encourage you to discuss your solutions and ask any questions about them on the Discussion Forum. 
+
+Unit 1: Introduction to data 
+Part 1 ¡V Designing studies: 1.1, 1.3, 1.7, 1.15, 1.17, 1.21
+Part 2 ¡V Exploratory data analysis: 1.27, 1.39, 1.41, 1.45, 1.49
+Part 3 ¡V Introduction to inference via simulation: 1.51, 1.53  
+
+Unit 2: Probability and distributions
+Part 1 ¡V Defining probability: 2.3, 2.7, 2.9, 2.11
+Part 2 ¡V Conditional probability: 2.17, 2.21, 2.25
+Part 3 ¡V Normal distribution: 3.3, 3.5, 3.9, 3.11, 3.19
+Part 4 ¡V Binomial distribution: 3.27, 3.29, 3.31, 3.39
+
+Unit 3: Foundations for inference
+Part 1 ¡V Variability in estimates and the Central Limit Theorem: 4.1, 4.33, 4. 35, 4.37
+Part 2 ¡V Confidence intervals: 4.9, 4.11
+Part 3 ¡V Hypothesis tests: 4,15, 4.19, 4.23, 4.25
+Part 4 ¡V Inference for other estimators: 4,43, 4.45
+Part 5 - Decision errors, significance, and confidence: 4.27, 4. 29, 4.47, 4.49 
+
+Unit 4: Inference for numerical variables
+Part 1 ¡V Comparing two means: 5.1, 5.5, 5.7, 5.9, 5.11
+Part 2 ¡V Bootstrapping
+Part 3 ¡V Inference with the t-distribution: 5.15, 5.19, 5.21, 5.29, 5.31, 5.33, 5.35
+Part 4 ¡V Comparing three or more means (ANOVA): 5.39, 5.41, 5.43, 5.45
+
+Unit 5: Inference for categorical variables
+Part 1 ¡V Single proportion: 6.1, 6.3, 6.5, 6.9, 6.11, 6.15, 6.21
+Part 2 ¡V Comparing two proportions: 6.23, 6.25, 6.27, 6.29, 6.31, 6.33, 6.35
+Part 3 ¡V Inference for proportions via simulation: 6.47, 6.49, 6.51
+Part 4 ¡V Comparing three or more proportions (Chi-square): 6.37, 6.39, 6.41, 6.43, 6.45
+
+Unit 6: Introduction to linear regression
+Part 1 ¡V Relationship between two numerical variables: 7.7, 7.9, 7.11, 7.13, 7.15, 7.25, 7.27
+Part 2 ¡V Linear regression with a single predictor: 7.17, 7.19, 7.23, 
+Part 3 ¡V Inference for linear regression: 7.29, 7.31, 7.33
+
+Unit 7: Multiple linear regression
+Part 1 ¡V Regression with multiple predictors: 8.1, 8.3, 8.5
+Part 2 ¡V Model selection: 8.7, 8.9, 8.11
+
+
+Notes:  
+The numbering follows the format [chapter#.end of chapter exercise#].
+If you catch a typo, first check to see if it's been submitted (at http://www.openintro.org/stat/textbook.php, follow the "Review or submit typos" link), and if not submit the typo. The OpenIntro team will review your submission, and add it to the list (with a thank you to you) if it is indeed a typo.

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 git add -A
 
 git commit -m ""
@@ -12,3 +13,9 @@ if pull things to local :
 git pull https://github.com/robinlan/R-Study-Lists.git
 git push https://github.com/robinlan/R-Study-Lists.git
 >>>>>>> 1e237dc3650d5c38d5b0124558e522dffa9cee70
+=======
+git pull https://github.com/robinlan/R-Study-Lists.git
+git add -A
+git commit -m ""
+git push https://github.com/robinlan/R-Study-Lists.git
+>>>>>>> a9e7729e2ea35c9e53df7fde73ad61943eb49dcf
