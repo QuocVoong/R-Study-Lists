@@ -140,4 +140,5 @@ Module 3: Arbitrage
 Homework 6: Event Study with Bollinger Bands
 Homework 7: Bollinger Band-based trading
 
-Readings : <<Numpy Cookbook>> , <<Data Science for Bussiness>>
+Readings : <<Numpy Cookbook>> , <<An Introduction to Hedge Funds>> , <<Active Portfolio Management>> , <<Data Science for Bussiness>>
+Vedios(Hedge Funds) : Khan Academy -> Economics and finance -> Finance and Capital Markets -> Investment vehicles insurance and retirement -> Hedge Funds
