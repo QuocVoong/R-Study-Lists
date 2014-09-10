@@ -5,6 +5,7 @@ Video 11*: Learning objectives of for the course [*need to reshoot to emphasize 
 Who is this course for?
 Logistics
 Instructor background
+
 Module 2: So you want to be a fund manager?
 Video 21: Module learning objectives
 Viewpoint of course
@@ -19,6 +20,7 @@ Sharpe Ratio
 Video 24: Demo
 Download historical data
 Manipulate historical data in Excel
+
 Module 3: Market Mechanics
 Video 31: Module objectives
 Major order types
@@ -36,6 +38,7 @@ Video 34: The computing inside a hedge fund
 Trading algos
 Optimizers
 Forecasters
+
 Module 4: Interview with Paul Jiganti
 Video 310: How your order gets to the market Part 1
 Video 320: How your order gets to the market Part 2
@@ -48,14 +51,17 @@ Module 1: What is a Company Worth?
 Video 41: Intrinsic value: Value of future dividends
 Video 42: How and why news affects prices (Event Study)
 Video 43: Fundamental analysis of company value
+
 Module 2: Capital Assets Pricing Model
 Video 71: Capital Assets Pricing Model
 Video 72: CAPM: What is Beta
 Video 73: How Hedge Funds use CAPM
+
 Module 3: QSTK Software Overview
 Video 61*: QSTK software overview
 Video 63: Installing QSTK on a Mac
 Video 81: Installing QSTK on Windows and testing QSTK on Windows
+
 Module 4: Working with Historical Data* [need to add this module. Daily returns, cumulative returns, etc.]
 Homework 0: Install QSTK
 
@@ -65,13 +71,16 @@ Module 1: Manipulating Data in Python with Numpy
 Video 51: Numpy Part 1
 Video 52: Numpy Part 2
 Video 53: Numpy Part 3
+
 Module 2: Manipulating Data in QSTK
 Video 171: QSTK Part 1
 Video 172: QSTK Part 2
 Video 173*: QSTK Part 3 [*show how to do major steps for HW1, discuss cached data]
+
 Module 3: Homework 1: Analyze and Optimize a Portfolio
 Video 181: Homework 1 Overview
 Video 182: Homework 1 Excel example
+
 Module 4: Interview with Tom Sosnoff
 Video 340: Sosnoff Part 1
 Video 350: Sosnoff Part 2
@@ -85,6 +94,7 @@ Video 91: Where does information come from? Arbitrage: Difference between real v
 Video 92: 3 Versions of Efficient Markets Hypothesis. Is EMH True?
 Video 93: Event Studies
 Video 94*: Event Studies Code Demo. Homework 2 Defined. (uses old code)
+
 Module 2: Portfolio Optimization and the Efficient Frontier
 Video 111: Module Objectives and Overview
 Video 112: The Inputs and Outputs of a Portfolio Optimizer
@@ -99,6 +109,7 @@ Module 1: Digging Into Data
 Video 121: Module Objectives and Overview (Review of the "Correct Answers" to the $5 Event Studies, Survivor Bias)
 Video 122: Actual vs Adjusted Prices (Dividends & Splits)
 Video 123: Data Scrubbing (Checking for Sanity)
+
 Module 2: Overview of Homework 3
 Video 131: How Next Two Homeworks Fit Together
 Video 132: Specification for Homework 3
@@ -110,10 +121,12 @@ Week 6
 Module 1: Overview of Homework 4
 Video 161: Review of How to Assess Event Study
 Video 162: Overview of Homework 4
+
 Module 2: The Fundamental Law
 Video 151: Coin Flipping
 Video 152: Fundamental Law Part 1
 Video 153: Fundamental Law Part 2
+
 Module 3: CAPM for Portfolios: Managing Market Risk
 Video 141: CAPM recap, overview for portfolios
 Video 142: Example use of CAPM for long/short bet removing market risk
@@ -133,9 +146,11 @@ Week 8
 Module 1: Making a Better Market Simulator
 Commissions
 Market Impact (Slippage)
+
 Module 2: Brief Introduction to Machine Learning
 Parameterized models
 Instance based models
+
 Module 3: Arbitrage
 Homework 6: Event Study with Bollinger Bands
 Homework 7: Bollinger Band-based trading
