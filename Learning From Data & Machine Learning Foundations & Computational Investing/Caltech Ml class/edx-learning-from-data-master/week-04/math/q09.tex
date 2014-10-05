@@ -1,0 +1,59 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{numprint}
+
+\author{Daniel Fernandes Martins (danielfmt)}
+\title{Question \#9 Solution}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Disclaimer.} This is the reasoning I used to solve the problem; it
+may be wrong though. This is intended just as food for thought.
+
+\section{Finding The Lower Bound}
+
+Let's start with two hypothesis sets with break point $k=2$ and $N=2$. This
+means that these hypothesis sets cannot shatter any combination of 2 points,
+which implies that $d_{vc}=1$ for both of them.
+
+These are the dichotomies realized by $\mathcal{H}_1$ on these 2 points:
+
+\begin{equation*}
+\begin{split}
+\{a=-1, b=+1\} \\
+\{a=+1, b=-1\}
+\end{split}
+\end{equation*}
+
+For $\mathcal{H}_2$:
+
+\begin{equation*}
+\begin{split}
+\{a=-1, b=-1\} \\
+\{a=+1, b=+1\}
+\end{split}
+\end{equation*}
+
+Notice that the dichotomies realized by $\mathcal{H}_1$ are different than the
+ones realized by $\mathcal{H}_2$, which means the intersection
+$\mathcal{H}_1\bigcap\mathcal{H}_2$ is an empty set, so $d_{vc}=0$.
+
+\section{Finding The Upper Bound}
+
+Let's say you have two hypothesis sets $\mathcal{H}_1$ and $\mathcal{H}_2$. The
+biggest set you can get from any intersection of these two sets is by having
+two sets such that $\mathcal{H}_2\subseteq\mathcal{H}_1$. Therefore, the upper
+bound can be at most as big as the smallest $\mathcal{H}_k$.
+
+\section{Solution}
+
+\begin{equation*}
+0 \leq \\
+  d_{vc}(\bigcap_{k=1}^K\mathcal{H}_k) \leq \\
+  \min\{d_{vc}(\mathcal{H}_k)\}_{k=1}^K
+\end{equation*}
+
+\end{document}

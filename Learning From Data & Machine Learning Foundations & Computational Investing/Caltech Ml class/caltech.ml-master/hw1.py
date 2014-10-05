@@ -10,10 +10,12 @@ to -1. Choose the inputs xn of the data set as random points (uniformly in X ), 
 evaluate the target function on each xn to get the corresponding output yn.'''
 
 '''Part 1
-Take N = 10. Run the Perceptron Learning Algorithm to nd g and measure
+Take N = 10. Run the Perceptron Learning Algorithm to 
+nd g and measure
 the difference between f and g as Pr(f(x) =6 g(x)) (you can either calculate
 this exactly, or approximate it by generating a sufciently large separate set of
-points to evaluate it). Repeat the experiment for 1000 runs (as specied above)
+points to evaluate it). Repeat the experiment for 1000 runs (as speci
+ed above)
 and take the average. Start the PLA with the weight vector w being all zeros,
 and at each iteration have the algorithm choose a point randomly from the set
 of misclassifed points.
@@ -119,7 +121,7 @@ def run_PLA(N_samples,N_points):
         l = randomline()
         f = target_function(l)
         t_set = build_training_set(d,f)
-        w = [0,0,0]
+        w = [0,0,0]#Start the PLA with the weight vector w being all zeros
 
         w,iteration = PLA(N_points,w,f,t_set)
 

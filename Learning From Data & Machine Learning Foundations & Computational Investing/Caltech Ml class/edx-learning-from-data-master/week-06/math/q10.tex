@@ -1,0 +1,35 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{numprint}
+
+\author{Daniel Fernandes Martins (danielfmt)}
+\title{Question \#10 Solution}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Disclaimer.} This is the reasoning I used to solve the problem; it
+may be wrong though. This is intended just as food for thought.
+
+\section{Parameters Of Neural Network}
+
+Given a neural network with 10 input units (including the constant $x_0^{(0)}$
+unit), one output unit, and 36 hidden units (including the necessary number of
+constant units for a fully-connected network), this question asks what is the
+maximum possible number of weights that such a network can have.
+
+\subsection{Solution By Trial And Error}
+
+I found the solution by trying different configurations until I got a number of
+weights equal to the highest number given in the alternatives.
+
+The configuration I found has $L=3$; $d^{(0)}=10$, $d^{(1)}=22$, $d^{(2)}=14$,
+$d^{(3)}=1$. The number of weights in this network is given by:
+
+\begin{equation*}
+(21 \cdot 10) + (13 \cdot 22) + (14) = 510
+\end{equation*}
+
+\end{document}

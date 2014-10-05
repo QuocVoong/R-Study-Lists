@@ -1,0 +1,45 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{numprint}
+
+\author{Daniel Fernandes Martins (danielfmt)}
+\title{Question \#8 Solution}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Disclaimer.} This is the reasoning I used to solve the problem; it
+may be wrong though. This is intended just as food for thought.
+
+\section{Backpropagation Computation}
+
+This question gives a hypothetical neural network and asks about how many
+of the given operations are performed in a single iteration of backpropagation
+(using Stochastic Gradient Descent in one data point).
+
+The network has $L=2$, $d^{(0)}=5$, $d^{(1)}=3$, $d^{(2)}=1$, and only products
+of the form $w_{ij}^{(l)}x_i^{(l-1)}$, $w_{ij}^{(l)}\delta_j^{(l)}$, and
+$x_i^{(l-1)}\delta_j^{(l)}$ count as operations.
+
+My answer was 47 operations.
+
+\subsection{Feedforward Step}
+
+From the input layer to the first hidden layer there are 18 operations, and from
+the first hidden layer to the output layer there are 4 operations, resulting in
+a total of 22 operations.
+
+\subsection{Backpropagation Step}
+
+The computation of delta for the output layer $\delta_j^{(L)}$ do not count as
+an operation, since no such products are required. However, the computation of
+each delta in the hidden layer does count, resulting in a total of 3 operations.
+
+\subsection{Weight Update Step}
+
+Finally, we have to update all weights after computing the deltas, resulting
+in a total of 22 operations.
+
+\end{document}

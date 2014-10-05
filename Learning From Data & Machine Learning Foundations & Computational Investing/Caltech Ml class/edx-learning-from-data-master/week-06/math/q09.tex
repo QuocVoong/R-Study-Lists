@@ -1,0 +1,37 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{numprint}
+
+\author{Daniel Fernandes Martins (danielfmt)}
+\title{Question \#9 Solution}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Disclaimer.} This is the reasoning I used to solve the problem; it
+may be wrong though. This is intended just as food for thought.
+
+\section{Parameters Of Neural Network}
+
+Given a neural network with 10 input units (including the constant $x_0^{(0)}$
+unit), one output unit, and 36 hidden units (including the necessary number of
+constant units for a fully-connected network), this question asks what is the
+minimum possible number of weights that such a network can have.
+
+\subsection{Finding The Minimum}
+
+The network must be fully connected, and each hidden layer must include a
+constant (bias) unit. Since the constant units don't get any input from the
+previous layer, one way to minimize the number of required weights is by
+maximizing the number of constant units in the network.
+
+This can be done by creating a network with 18 hidden layers, with 2 units each.
+The number of weights in this network is given by:
+
+\begin{equation*}
+(1 \cdot 10) + (1 \cdot 2 \cdot 17) + (2) = 46
+\end{equation*}
+
+\end{document}

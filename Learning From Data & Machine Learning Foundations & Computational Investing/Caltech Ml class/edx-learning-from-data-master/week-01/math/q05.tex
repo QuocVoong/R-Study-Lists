@@ -1,0 +1,38 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{numprint}
+
+\author{Daniel Fernandes Martins (danielfmt)}
+\title{Question \#4 Solution}
+
+\begin{document}
+
+\maketitle
+
+First, we know that the probability of picking a red marble is
+$P(R) = 0.55$, and that its complement is given by
+$P(\neg R) = 1 - P(R) = 0.45$.
+
+So the probability of a sample of size $N$ with no red marbles is
+
+\begin{equation*}
+P(A) = P(\neg R)^N = 0.45^{10}
+\end{equation*}
+
+The probability that a single sample has at least one red marble is the
+complement of the probability that a single sample has no red marbles:
+
+\begin{equation*}
+P(\neg A) = 1 - P(A) = 1 - 0.45^{10}
+\end{equation*}
+
+Finally, the probability of at least one of the samples have no red marbles is
+the complement of the probability that at least one of the samples has at least
+one red marble:
+
+\begin{equation*}
+1 - P(\neg A)^{1000} = 1 - (1 - 0.45^{10})^{1000} \approx 0.289
+\end{equation*}
+
+\end{document}

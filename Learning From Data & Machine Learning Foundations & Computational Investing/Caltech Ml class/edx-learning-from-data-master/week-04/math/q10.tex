@@ -1,0 +1,106 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{numprint}
+
+\author{Daniel Fernandes Martins (danielfmt)}
+\title{Question \#10 Solution}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Disclaimer.} This is the reasoning I used to solve the problem; it
+may be wrong though. This is intended just as food for thought.
+
+\section{Finding The Lower Bound}
+
+Let's say we have the hypothesis sets $\mathcal{H}_1$ and $\mathcal{H}_2$,
+with VC dimensions $d_{vc}(\mathcal{H}_1)=2$ and $d_{vc}(\mathcal{H}_2)=3$.
+This means that $\mathcal{H}_1$ shatters at most $2$ points, and
+$\mathcal{H}_2$ shatters at most $3$ points.
+
+If we join these two hypothesis sets in a single $\mathcal{H}$, we are
+guaranteed to shatter at least $3$ points. So, the lower bound is the
+maximum number of points that can be shattered by any $\mathcal{H}_k$.
+
+\section{Finding The Upper Bound}
+
+We are given two upper bound candidates, $\sum_{k=1}^Kd_{vc}(\mathcal{H}_k)$
+or $K-1+\sum_{k=1}^Kd_{vc}(\mathcal{H}_k)$.
+
+\subsection {Intuition on $\sum_{k=1}^Kd_{vc}(\mathcal{H}_k)$}
+
+Let's start with two hypothesis sets with break point $k=2$ and $N=2$. This
+means that these hypothesis sets cannot shatter any combination of 2 points,
+which implies that $d_{vc}=1$ for both of them.
+
+These are the dichotomies realized by $\mathcal{H}_1$ on these 2 points:
+
+\begin{equation*}
+\begin{split}
+\{a=-1, b=+1\} \\
+\{a=+1, b=-1\}
+\end{split}
+\end{equation*}
+
+For $\mathcal{H}_2$:
+
+\begin{equation*}
+\begin{split}
+\{a=-1, b=-1\} \\
+\{a=+1, b=+1\}
+\end{split}
+\end{equation*}
+
+The union hypothesis set $\mathcal{H}_1\bigcup\mathcal{H}_2$ have $d_{vc}=2$,
+so the option where the upper bound is the sum of $d_{vc}$ over all
+$\mathcal{H}_k$ seems a reasonable choice, at least for these two hypothesis
+sets.
+
+\subsection{Intuition on $K-1+\sum_{k=1}^Kd_{vc}(\mathcal{H}_k)$}
+
+Now let's take $N=3$ points and two new hypothesis sets,
+$\mathcal{H}_3$ and $\mathcal{H}_4$. What if we could divide all eight
+dichotomies carefully between these two hypothesis sets so that both
+hypothesis sets have $d_{vc}=1$?
+
+After moving the dichotomies around, this is $\mathcal{H}_3$:
+
+\begin{equation*}
+\begin{split}
+\{a=-1, b=-1, c=-1\} \\
+\{a=-1, b=-1, c=+1\} \\
+\{a=-1, b=+1, c=-1\} \\
+\{a=+1, b=-1, c=-1\}
+\end{split}
+\end{equation*}
+
+This is $\mathcal{H}_4$:
+
+\begin{equation*}
+\begin{split}
+\{a=-1, b=+1, c=+1\} \\
+\{a=+1, b=-1, c=+1\} \\
+\{a=+1, b=+1, c=-1\} \\
+\{a=+1, b=+1, c=+1\}
+\end{split}
+\end{equation*}
+
+Noticed something? Well, both hypothesis sets $\mathcal{H}_3$ and
+$\mathcal{H}_4$ have $d_{vc}=1$, but the union hypothesis set
+$\mathcal{H}_3\bigcup\mathcal{H}_4$ have $d_{vc}=3$. Also, since in this
+example $K=2$, the bound seems to hold.
+
+\subsubsection{Relation With $B(N,k)$}
+
+The analysis definitely has to do with $B(N, k)$, although I don't know how
+to prove it yet.
+
+\section{Solution}
+
+$$
+\max\{d_{vc}(\mathcal{H}_k)\}_{k=1}^K \leq d_{vc}(\bigcup _{k=1}^K)\mathcal{H}_k \leq K-1+\sum_{k=1}^Kd_{vc}(\mathcal{H}_k)
+$$
+
+\end{document}

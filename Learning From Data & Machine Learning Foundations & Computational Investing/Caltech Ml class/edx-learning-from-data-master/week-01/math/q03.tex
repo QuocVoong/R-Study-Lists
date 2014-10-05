@@ -1,0 +1,33 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{numprint}
+
+\author{Daniel Fernandes Martins (danielfmt)}
+\title{Question \#3 Solution}
+
+\begin{document}
+
+\maketitle
+
+\section{Conditional Probability}
+
+\subsection{Calculating $P(B)$}
+
+First we need to calculate the probability of picking a black ball on the
+first try:
+
+\begin{equation*}
+P(B) = \frac{1}{2} \cdot 1 + \left( \frac{1}{2} \right)^2 = \frac{3}{4}
+\end{equation*}
+
+\subsection{Calculating $P(A|B)$}
+
+For the second ball to be also black, then we must have picked the first bag
+(bag $A$):
+
+\begin{equation*}
+P(A|B) = P(A \cap B) \div P(B) = \left( \frac{1}{2} \cdot 1 \right) \div \frac{3}{4} = \frac{2}{3}
+\end{equation*}
+
+\end{document}

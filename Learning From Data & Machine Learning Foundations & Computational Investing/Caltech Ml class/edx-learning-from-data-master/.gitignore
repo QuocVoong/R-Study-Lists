@@ -1,0 +1,8 @@
+# Octave
+octave-core
+
+# LaTeX
+*.log
+*.aux
+*.pdf
+.~

@@ -1,0 +1,29 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{numprint}
+
+\author{Daniel Fernandes Martins (danielfmt)}
+\title{Question \#1 Solution}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Disclaimer.} This is the reasoning I used to solve the problem; it
+may be wrong though. This is intended just as food for thought.
+
+\section{Deterministic Noise Behavior}
+
+Assuming $\mathcal{H}' \subset \mathcal{H}$ and that $f$ is fixed, in general,
+deterministic noise tends to \textbf{increase} because $\mathcal{H}'$ is not
+powerful enough to approximate $f$, or at least not as powerful as its
+superset $\mathcal{H}$.
+
+Let's remember that \textbf{stochastic noise} is fixed for a given dataset
+$\mathcal{D}$ regarless of your choice of $\mathcal{H}$, which means it doesn't
+vary from one $\mathcal{H}$ to another. The \textbf{deterministic noise}, on the
+other hand, do vary due to the fact that the portion that cannot be captured by
+a particular $\mathcal{H}'$ is considered noise.
+
+\end{document}

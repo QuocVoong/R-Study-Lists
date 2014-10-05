@@ -1,0 +1,57 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{numprint}
+
+\author{Daniel Fernandes Martins (danielfmt)}
+\title{Question \#1 Solution}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Disclaimer.} This is the reasoning I used to solve the problem; it
+may be wrong though. This is intended just as food for thought.
+
+\section{Simplifying The Original VC Bound}
+
+The original VC bound looks like this:
+
+\begin{equation*}
+\epsilon \leq \sqrt{\frac{8}{N}\ln{\frac{4m_{\mathcal{H}}(2N)}{\delta}}}
+\end{equation*}
+
+Putting it in terms of $N$:
+
+\begin{equation*}
+N \geq \frac{8}{\epsilon^2}\ln{\frac{4m_{\mathcal{H}}(2N)}{\delta}}
+\end{equation*}
+
+Now, defining the growth function $m_{\mathcal{H}}(N)$ in terms of the upper
+bound in $d_{vc}$:
+
+\begin{equation*}
+N \geq \frac{8}{\epsilon^2}\ln{\frac{4(2N)^{d_{vc}}}{\delta}}
+\end{equation*}
+
+\section{Solving Through Successive Approximations}
+
+Starting from $N=10^5$, let's try to find the $N$ that safisfies that
+inequality. If we plug in this first $N$ along with $d_{vc}=10$,
+$\epsilon=0.05$ and $\delta=0.05$ in the formula, we have:
+
+\begin{equation*}
+N \geq \frac{8}{0.05^2}\ln{\frac{4(2\cdot10^5)^{10}}{0.05}} \approx 404,617
+\end{equation*}
+
+We've missed by a long shot! If we feed $N=\numprint{404617}$ into the same
+equation:
+
+\begin{equation*}
+N \geq \frac{8}{0.05^2}\ln{\frac{4(2\cdot404617)^{10}}{0.05}} \approx 449,345
+\end{equation*}
+
+Keep doing this long enough so that $N$ converges to approximately
+\numprint{452956}.
+
+\end{document}

@@ -1,0 +1,45 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{numprint}
+
+\author{Daniel Fernandes Martins (danielfmt)}
+\title{Question \#7 Solution}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Disclaimer.} This is the reasoning I used to solve the problem; it
+may be wrong though. This is intended just as food for thought.
+
+\section{Regularization With Polynomials}
+
+This question asks about a hypothesis set based on the Legendre polynomial
+$L_{10}(x)$:
+
+\begin{equation*}
+L_{10}(x) = \frac{1}{256}(46189x^{10} - 109395x^8 + 90090x^6 - 30030x^4 + 3465x^2 - 63)
+\end{equation*}
+
+The regularization parameter $C$ can be either 0 or 1; when $C=0$, all terms
+in the polynomial with degree $d \geq Q_o$ are cancelled.
+
+\subsection{The Answer}
+
+The correct answer to this question can be found just by proving the first
+option wrong.
+
+The first option, $\mathcal{H}(10,0,3) \cup \mathcal{H}(10,0,4) = \mathcal{H}_4$,
+is incorrect because the regularization on both $\mathcal{H}(10,0,3)$ and
+$\mathcal{H}(10,0,4)$ ommits the same terms on the polynomial, resulting in
+
+\begin{equation*}
+L_{10}'(x) = \frac{1}{256}(3465x^2 - 63),
+\end{equation*}
+
+so the union $\mathcal{H}(10,0,3) \cup \mathcal{H}(10,0,4)$ cannot possibly be
+$\mathcal{H}_4$. However, it's plausible that the intersection
+$\mathcal{H}(10,0,3) \cap \mathcal{H}(10,0,4)$ might be $\mathcal{H}_2$.
+
+\end{document}

@@ -1,0 +1,124 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{numprint}
+
+\author{Daniel Fernandes Martins (danielfmt)}
+\title{Question \#7 Solution}
+
+\begin{document}
+
+\maketitle
+
+\section{Cross-Validation}
+
+This question gives us 3 data points: $(-1,0)$, $(\rho,1)$, $(1,0)$, and a choice
+of two models: constant $[h_0(x)=b]$ and linear $[h_1(x)=ax+b]$, and asks at
+which $\rho \geq 0$ the two models give the same cross-validation error assuming
+we use leave-one-out cross-validation and the squared error measure.
+
+The cross-validation error for a model $m$ on these 3 points is
+
+\begin{equation*}
+E_{cv}^{(m)}=\frac{1}{3}(e_1^{(m)} + e_2^{(m)} + e_3^{(m)}),
+\end{equation*}
+
+where $e_n^{(m)}$ is the squared error measure for point $n$ and model $m$:
+
+\begin{equation*}
+e_n^{(m)}=(h_m(x_n)-y_n)^2
+\end{equation*}
+
+Now we need to compute the cross-validation error for all three permutations on
+both models.
+
+\subsection{The Constant Model}
+
+In the constant model $h_0$, the best fit is found by averaging the values of
+$y$ coordinate of all points.
+
+Taking the points $(-1,0)$ and $(1,0)$ for training, and $(\rho,1)$ for validation,
+the validation error is
+
+\begin{equation*}
+e_1^{(0)} = \left(\frac{0+0}{2} - 1\right)^2 = 1.
+\end{equation*}
+
+We get the same value for the last two permutations:
+
+\begin{equation*}
+e_2^{(0)} = e_3^{(0)} = \left(\frac{0+1}{2} - 0\right)^2 = \frac{1}{4}
+\end{equation*}
+
+Thus the cross-validation error $E_{cv}^{(0)}$ for the constant model $h_0$ is
+
+\begin{equation*}
+E_{cv}^{(0)} = \frac{1}{3} \left( 1 + \frac{1}{4} + \frac{1}{4} \right).
+\end{equation*}
+
+\subsection{The Linear Model}
+
+We know that, given two points, the best fit for the linear model $h_1$ is a
+line that passes through both of them.
+
+The first permutation (training: $(-1,0)$ $(1,0)$, validation: $(\rho,1)$), is
+easy to compute because this line has slope $m=0$:
+
+\begin{equation*}
+e_1^{(1)} = (1 - 0)^2 = 1
+\end{equation*}
+
+For the remaining two permutations, we need to find the equation for the line
+order to compute the squared error for the validation point.
+
+The slope of the line passing through the points $(-1,0)$ and $(\rho,1)$ is
+given by
+
+\begin{equation*}
+m = \frac{1-0}{\rho-(-1)} = \frac{1}{\rho+1},
+\end{equation*}
+
+and in order to find the equation for that line, just pick any point $(x_1,y_1)$
+and plug it on the formula $y-y_1 = m(x-x_1)$. For instance, if we pick
+$(x_1,y_1)=(-1,0)$, we get
+
+\begin{equation*}
+y = \frac{x+1}{\rho+1}.
+\end{equation*}
+
+Finally, to compute the squared error for this permutation, plug the $x$
+coordinate of the validation point $(1,0)$ in the line equation, subtract the
+result by $y$ and square it, resulting in
+
+\begin{equation*}
+e_2^{(1)} = \left( \frac{2}{\rho+1} \right)^2.
+\end{equation*}
+
+If you do same thing in order to compute the validation error for the last
+permutation, you will get
+
+\begin{equation*}
+e_3^{(1)} = \left( \frac{-2}{\rho-1} \right)^2.
+\end{equation*}
+
+So the cross-validation error $E_{cv}^{(1)}$ for the linear model $h_1$ is given
+by
+
+\begin{equation*}
+E_{cv}^{(1)} = \frac{1}{3} \left( 1 + \left(\frac{2}{\rho+1}\right)^2 +
+ \left(\frac{-2}{\rho-1}\right)^2 \right).
+\end{equation*}
+
+\subsection{Solving For $\rho$}
+
+Now that we found $E_{cv}^{(m)}$ for both models, we can form a single equation
+
+\begin{equation*}
+\frac{1}{3} \left( 1 + \left(\frac{2}{\rho+1}\right)^2 + \left(\frac{-2}{\rho-1}\right)^2 \right) =
+\frac{1}{3} \left( 1 + \frac{1}{4} + \frac{1}{4} \right),
+\end{equation*}
+
+and solve it for $\rho \geq 0$ in order to get the correct answer
+$\rho=\sqrt{9+4\sqrt{6}}$.
+
+\end{document}
