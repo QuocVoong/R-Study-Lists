@@ -1,0 +1,38 @@
+Lecture Topics 
+Lecture 1: Experimental research  
+Lecture 2: Correlational research  
+Lecture 3: Variables and distributions  
+Lecture 4: Summary statistics  
+Lecture 5: Correlation  
+Lecture 6: Measurement  
+Lecture 7: Introduction to regression  
+Lecture 8: Null Hypothesis Significance Tests (NHST)  
+Lecture 9: Central limit theorem 
+Lecture 10: Confidence intervals
+Lecture 11: Multiple regression  
+Lecture 12: Multiple regression continued          
+Lecture 13: Moderation  
+Lecture 14: Mediation  
+Lecture 15: Group comparisons (t-tests)  
+Lecture 16: Group comparisons (ANOVA)  
+Lecture 17: Factorial ANOVA  
+Lecture 18: Repeated measures ANOVA  
+Lecture 19: Chi-square  
+Lecture 20 Binary logistic regression  
+Lecture 21: Assumptions revisited (correlation and regression)  
+Lecture 22: Generalized Linear Model  
+Lecture 23: Assumptions revisited (t-tests and ANOVA)  
+Lecture 24: Non-parametrics (Mann-Whitney U, Kruskal-Wallis)  
+Lab Topics: 
+Lab 1: Download and install R  
+Lab 2: Histograms and summary statistics           
+Lab 3: Scatterplots and correlations          
+Lab 4: Regression  
+Lab 5: Confidence intervals  
+Lab 6: Multiple regression  
+Lab 7: Moderation and mediation  
+Lab 8: Group comparisons (t-tests, ANOVA, post-hoc tests)  
+Lab 9: Factorial ANOVA  
+Lab 10: Chi-square  
+Lab 11: Non-linear regression (Binary logistic and Poisson)  
+Lab 12: Non-parametrics (Mann-Whitney U and Kruskal-Wallis)  

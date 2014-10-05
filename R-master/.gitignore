@@ -1,0 +1,11 @@
+# Example code in package build process
+
+*-Ex.R
+.Rhistory
+.RData
+.Rproj.user
+*.csv
+*.xls
+*.xlsm
+*.xml
+*.Rmd
