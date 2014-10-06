@@ -22,7 +22,7 @@
 # If necessary, install packages
 # install.packages("psych")
 # install.packages("car")
-setwd("c:/Users/Dima/Documents/R/coursera")
+setwd("D:/R-Study-Lists/R-master/Coursera Statistics Princeton")
 # Load packages
 library(psych)
 library(car)
