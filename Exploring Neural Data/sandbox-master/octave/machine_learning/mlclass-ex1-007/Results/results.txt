@@ -1,0 +1,2 @@
+Compute cost for theta [0;0]: 32.073
+Theta found by gradient descent: -3.630291 1.166362
