@@ -1,0 +1,151 @@
+Unit 1: Neuroanatomy
+
+Some of My Favorite Places in the Brain
+no associated readings
+Functional Microanatomy of Neurons
+Chapter 1, pages 4-7
+Non-Neural Cells of the Central Nervous System (CNS)
+Chapter 1, pages 7-10
+Basic Orientation in the Human CNS
+Appendix, pages 717-720
+Lateral Surface of the Cerebral Hemispheres
+Appendix, pages 728-729
+Medial Surface of the Cerebral Hemispheres
+Appendix, pages 730-731
+Finding the Central Sulcus
+no associated readings
+Ventral Surface of the Cerebral Hemisphere
+Appendix, pages 729-730
+Fingers to Gyri
+no associated readings
+Blood Supply to the Brain
+Appendix, pages 735-742
+Surface Anatomy of the Brainstem
+Appendix, pages 718-720; 722-728
+Cranial & Spinal Nerves (3 parts)
+Appendix, pages 718-720; 722-728
+Cranial Nerve Function (2 parts)
+Appendix, pages 718-720; 722-728
+Internal Anatomy of the Brainstem
+Appendix, pages 722-728
+Cranial Nerve Nuclei (4 parts)
+Appendix, pages 718-720; 722-728
+Internal Anatomy of the Spinal Cord (3 parts)
+Appendix, pages 721-722
+Ventricles
+Appendix, pages 742-744
+Internal Capsule and Deep Gray Matter
+Appendix, pages 731-735
+
+Unit 2: Neural Signaling
+
+Overview of Neural Signaling
+Chapter 2, pages 25-29
+Ionic Basis of the Resting Membrane Potential (2 parts)
+Chapter 2, pages 29-37
+Ionic Basis of the Action Potential (3 parts)
+Chapter 2, pages 37-40; Chapter 3, pages 41-51
+Molecular Mechanisms of Action Potential Generation (2 parts)
+Chapter 4, pages 57-61; 66-75
+Propagation of Action Potentials
+Chapter 3, pages 51-55
+Synaptic Transmission (2 parts)
+Chapter 5, pages 77-97
+Neurotransmitters (2 parts)
+Chapter 6, pages 109-139
+Neurotransmitters Receptors (3 parts)
+Chapter 5, pages 96-97; Chapter 7, pages 145-157
+Synaptic Integration
+Chapter 5, pages 97-106
+Synaptic Plasticity: LTP & LTD (3 parts)
+Chapter 8, pages 169-181
+Synaptic Plasticity: STDP
+Chapter 8, pages 181-184
+Synaptic Plasticity: Hebb's Postulate
+Chapter 8, pages 171; Chapter 24, pages 537-538
+
+Unit 3: Sensory Systems
+
+The Thalamus
+Appendix, Box A
+Overview of Cortex and Cortical Circuits (2 parts)
+Chapter 26, pages 588-589; Box 26A
+General Principles of Sensory Systems (2 parts)
+Chapter 1, pages 15-21
+Mechanosensation (3 parts)
+Chapter 9
+Mechanosensory Pathways (3 parts)
+Chapter 9, pages 198-201
+Pain Systems (3 parts)
+Chapter 10
+Pain Pathways (2 parts)
+Chapter 10, pages 213-219
+Visual Systems: The Eye (5 parts)
+Chapter 11
+Visual Systems: Central Visual Processing (3 parts)
+Chapter 12
+Visual Systems: Visual Pathways (2 parts)
+Chapter 12, pages 257-261
+Visual Systems: Visual Field Deficits
+Chapter 12, pages 261-263
+Visual System: Pupillary Light Reflex
+Chapter 12, pages 258-259
+Auditory System: Peripheral Mechanisms
+Chapter 13, pages 277-293
+Auditory System: Central Processing
+Chapter 13, pages 293-301
+Vestibular System: Peripheral Mechanisms
+Chapter 14, pages 303-312
+Vestibular System: Central Processing
+Chapter 14, pages 312-319
+Chemical Senses
+Chapter 15
+
+Unit 4: Motor Systems
+
+Lower Motor Neuronal Control of Movement (8 parts)
+Chapter 16
+Upper Motor Neuronal Control of Movement (7 parts)
+Chapter 17
+Upper Motor Neuronal Control of Facial Expression
+Chapter 17, Box 17A
+Modulation of Movement by the Basal Ganglia
+Chapter 18
+Modulation of Movement by the Cerebellum
+Chapter 19
+Eye Movements
+Chapter 20
+Visceral Motor System
+Chapter 21
+
+Unit 5: Brain Development
+
+Embryological Subdivisions of the Human CNS
+Chapter 22, pp. 481-482; Appendix, 742-744
+Early Brain Development (6 parts)
+Chapter 22
+Construction of Neural Circuits (5 parts)
+Chapter 23
+Modification of Neural Circuits in Early Neonatal Life (6 parts)
+Chapter 24, pg 537-552
+The Changing Brain Across the Lifespan: Development, Repair and Regeneration
+Chapter 9, pp. 206-207; Chapter 24, pp. 554-557; Chapter 25
+
+Unit 6: Cognition
+
+Overview of the Associational Cortex (2 parts)
+Chapter 26, pp. 587-591
+Associational Cortex of the Parietal Lobe (2 parts)
+Chapter 26, pp. 591-596
+Associational Cortex of the Temporal Lobe (5 parts)
+Chapter 26, pp. 599-599; Chapter 27, pp. 607-615, 622-623; Chapter 31, pp. 695-698, 703-715
+Associational Cortex of the Frontal Lobe (2 parts)
+Chapter 26, pp. 599-605
+Sleep and Wakefulness (6 parts)
+Chapter 28
+Overview of the Limbic Brain
+no associated readings
+Neurobiology of Emotion (4 parts)
+Chapter 29, pp. 647-663
+Neurobiology of Addiction (2 parts)
+Chapter 29, pp. 663-666
