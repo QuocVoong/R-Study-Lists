@@ -61,8 +61,9 @@ def add_info(df):
     #          You can use np.sum (or +), np.sqrt, and np.round here
 
     # df['targ_ecc'] = *** YOUR CODE_HERE ***
-
-
+    
+    df['rts'] = df['response'] - df['stimon']
+    df['targ_ecc'] = np.sqrt(df['targ_x']**2+df['targ_y']**2)   
 
     # Leave this here - it adds information used for Exercise 5
     add_acq_time(df)
@@ -83,6 +84,7 @@ def rts_by_targ_ecc(df):
     ####
 
     # results = df.pivot_table( *** YOUR CODE HERE *** )
+    results = df.pivot_table(values=df["rts"], rows=df['targ_ecc'])
 
     return results
 
@@ -99,12 +101,19 @@ def plot_rts(df):
     ####
 
     # df['side_name'] = ### YOUR CODE HERE
+    df['side_name'] = np.choose(df['side'],['left','right'])
 
     # Now create a pivot table (specifying values, index, and columns)
+    results = df.pivot_table(values=df['rts'], rows=df['targ_ecc'],cols=df['side_name'])
 
     # And now plot that pivot table
+    results.plot(kind='bar')
 
     # And add plot details (title, legend, xlabel, and ylabel)
+    plt.title('Reaction Times by Eccentricity and Side')
+    plt.xlabel('Target Eccentricity(degrees visual angual)')
+    plt.ylabel('Reaction Time(msec)')
+    plt.legend(loc=2)
 
 ##
 ## This function should be edited as part of Exercise 4
@@ -127,8 +136,13 @@ def get_ems(df, trial):
     ####    df['stimon'][14]
 
     # t = *** YOUR CODE HERE ***
+    t = df['em_time'][trial]
+    
     # h = *** YOUR CODE HERE ***
+    h = df['em_horiz'][trial]
+    
     # v = *** YOUR CODE HERE ***
+    v = df['em_vert'][trial]
 
     return t, h, v
 
@@ -151,6 +165,18 @@ def plot_ems_and_target(df, trial):
     plt.figure()
 
     # *** YOUR CODE HERE ***
+    s = df['stimon'][trial]
+    r = df['response'][trial]
+    
+    plt.plot(t, h, 'r',t, v,'g')
+    plt.title('Eye Movement for Trial '+str(trial))
+    plt.xlabel('Time(ms)')
+    plt.ylabel('Position(degrees visual angle)')
+    plt.legend(('Horizontal','Vertical'),1)
+    plt.xlim(s-20,r+20)
+    plt.ylim(-10,10)
+    plt.plot([s+1,r-1], [df['targ_x'][trial],df['targ_x'][trial]], 'r-')
+    plt.plot([s+1,r-1], [df['targ_y'][trial],df['targ_y'][trial]], 'g-')
 
     plt.show()
     
@@ -174,6 +200,11 @@ def get_rate(spk_times, start, stop):
     # but start and stop are in msec (.001 sec)
 
     # rate = 
+    l = len(spk_times[np.logical_and(spk_times>=start,spk_times<stop)])
+    if l != 0:
+        rate = float(1000) / float(l)
+    else:
+        rate = 0
 
     return rate
 
@@ -259,4 +290,6 @@ def add_acq_time(df):
 
 # Code to run for testing if this module is run directly
 if __name__ == "__main__":
-    df = load_data()
+    df = load_data('problem_set3_data.npy')
+    #add_info(df)
+    
