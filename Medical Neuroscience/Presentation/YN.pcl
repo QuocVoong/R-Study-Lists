@@ -1,0 +1,52 @@
+   array<int> int_data2[151];
+   array<string> column_names[1]; 
+ 
+input_file in = new input_file;
+in.open( "lettersYN_1_block1.txt" );
+column_names[1] = in.get_string(); 
+int count = 0;
+loop until
+   in.end_of_file() || count == 151 || !in.last_succeeded()
+begin
+   count = count + 1;
+   int_data2[count] = in.get_int();
+   end;  
+
+if !in.last_succeeded() then
+   term.print( "Error while reading!\n" )
+elseif !in.end_of_file() then
+   term.print( "Exceeded capacity!\n" )
+end;   
+
+
+
+loop
+   int i = 1
+until
+   i > 150
+begin
+   graphics[int_data2[i]].load();
+   display_device.set_palette();   
+   
+   output_port port = output_port_manager.get_port( 1 );
+   port.set_pulse_width( 100 );
+   
+   if(int_data2[i]>=1&&int_data2[i]<=50)  then
+   event1.set_event_code( "1" );   #¹ï¦r
+   event1.set_port_code( 1 );
+   end;
+   
+   if(int_data2[i]>=51&&int_data2[i]<=100)  then
+   event1.set_event_code( "2" );   #¿ù¦r
+   event1.set_port_code( 2 );
+   end;
+   
+   
+   pic1.set_part( 1, graphics[int_data2[i]] );
+   instruction_trial.present();
+   trial1.present();   
+   resting_trial.present();
+   graphics[int_data2[i]].unload(); 
+   
+   i = i + 1
+ end

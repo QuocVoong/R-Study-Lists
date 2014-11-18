@@ -1,0 +1,164 @@
+#--------------------------------------------------------------
+# write data using output_file type
+     
+# some fake data to read and write
+
+#array<int> int_data[5] = { 1, 2, 3, 4, 5 };
+#array<double> float_data[5] = { 1.1, 2.2, 3.3, 4.4, 5.5 };
+#array<bool> bool_data[5] = { true, false, true, false, true };
+#array<string> string_data[5] = { "text 1", "text 2", "text 3", 
+#                                 "text 4", "text 5" };
+                                 
+#output_file out = new output_file;
+#out.open( "io_example.txt" ); 
+#out.print( "strings\tints\tdoubles\tbools\n" );  
+#loop
+#   int i = 1
+#until
+#   i > 5
+#begin
+#   out.print( string_data[i] );
+#   out.print( "\t" );
+#   out.print( int_data[i] );
+#   out.print( "\t" );
+#   out.print( float_data[i] );
+#   out.print( "\t" );
+#   out.print( bool_data[i] ); 
+#   if i != 5 then
+#      out.print( "\n" );  
+#   end;     
+#   i = i + 1
+#end;
+#out.close();
+                                                       
+#--------------------------------------------------------------
+# read data using input_file type  
+
+# places to put the data
+# doesn't assume table size - 100 line maximum         
+array<int> int_data2[449];
+#array<int> int_data21[100];
+#array<bool> bool_data2[100];
+#array<string> string_data2[100]; 
+array<string> column_names[1]; 
+ 
+input_file in = new input_file;
+in.open( "pic_word_1_block1.txt" );
+#in.set_delimiter( '\t' ); # for get_line()
+column_names[1] = in.get_string();
+#column_names[2] = in.get_string();
+#column_names[3] = in.get_string();
+#column_names[4] = in.get_string();  
+int count = 0;
+loop until
+   in.end_of_file() || count == 449 || !in.last_succeeded()
+begin
+   count = count + 1;
+   #string_data2[count] = in.get_line();
+   int_data2[count] = in.get_int();
+   #int_data21[count] = in.get_int();
+   #bool_data2[count] = in.get_string() == "true";
+end;  
+
+if !in.last_succeeded() then
+   term.print( "Error while reading!\n" )
+elseif !in.end_of_file() then
+   term.print( "Exceeded capacity!\n" )
+end;   
+   
+#--------------------------------------------------------------
+# print to terminal to see if we got it right
+#term.print( column_names[1] + "\t" + column_names[2] + "\n" );
+#loop
+#   int i = 1
+#until
+#   i > count
+#begin
+#   term.print( string_data2[i] );
+#   term.print( "\t" );
+#   term.print( int_data2[i] );
+#   term.print( "\t" );
+#   term.print( int_data21[i] );
+#   term.print( "\n" );
+#   term.print( bool_data2[i] );
+#   term.print( "\n" );
+#   i = i + 1
+#end
+#instruction_trial.present();
+instruction_trial.present();
+loop
+   int i = 1
+until
+   i > 448
+begin
+   graphics[int_data2[i]].load();          
+   # if display mode is palettized (8-bit color), and the graphic contains
+   # a color not previously used, we must call set_palette to change the 
+   # palette to include the new color
+   display_device.set_palette();   
+   
+   pic1.set_part( 1, graphics[int_data2[i]] );
+   if(i%2==1&&i!=1)  then
+      instruction_trial.present();
+   end;   
+   trial1.present();
+   if(i%2==0)  then
+      resting_trial.present();
+   end;
+   output_port port = output_port_manager.get_port( 1 );
+   
+   port.set_pulse_width( 100 );
+   #port.send_code( 255 );
+   if(int_data2[i]>=1&&int_data2[i]<=200)  then
+      if(int_data2[i-1]==int_data2[i]+100||int_data2[i-1]==int_data2[i]+200)  then
+         if(int_data2[i]>=1&&int_data2[i]<=100) then
+            if(int_data2[i]>=1&&int_data2[i]<=50)  then
+               #port.send_string("8");
+               event1.set_event_code( "8" );  #111
+               event1.set_port_code( 8 );
+            else
+               #port.send_string("4");
+               event1.set_event_code( "4" );  #011
+               event1.set_port_code( 4 );
+            end;
+          else
+            if(int_data2[i]>=101&&int_data2[i]<=150)  then
+               #port.send_string("6");
+               event1.set_event_code( "6" ); #101
+               event1.set_port_code( 6 );
+            else
+               #port.send_string("2");
+               event1.set_event_code( "2" );  #001
+               event1.set_port_code( 2 );
+            end;
+          end;
+       else
+         if(int_data2[i]>=1&&int_data2[i]<=100) then
+            if(int_data2[i]>=1&&int_data2[i]<=50)  then
+               #port.send_string("7");
+               event1.set_event_code( "7" ); #110
+               event1.set_port_code( 7 );
+            else
+               #port.send_string("3");
+               event1.set_event_code( "3" );#010
+               event1.set_port_code( 3 );
+            end;
+          else
+            if(int_data2[i]>=101&&int_data2[i]<=150)  then
+               #port.send_string("5");
+               event1.set_event_code( "5" ); #100
+               event1.set_port_code( 5 );
+            else
+               #port.send_string("1");
+               event1.set_event_code( "1" );  #000
+               event1.set_port_code( 1 );
+            end;
+          end;
+       end;
+   end;        
+   #resting_trial.present();   
+   
+   graphics[int_data2[i]].unload(); 
+   
+   i = i + 1
+end
