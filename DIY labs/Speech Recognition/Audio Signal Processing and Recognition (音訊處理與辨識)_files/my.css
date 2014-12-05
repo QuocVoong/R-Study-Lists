@@ -1,0 +1,50 @@
+/* GLOBAL */
+BODY {margin:1em 15px 1em 20px; background:#F0F0F0; color:black}
+BODY {font:normal 12pt Tahoma,Arial; line-height:140%}
+TD   {font:normal 10pt Tahoma,Arial; line-height:140%}
+TH   {font:normal 12pt Tahoma,Arial; line-height:140%}
+/* 下3列放大字體至24，上課要用 */
+
+HR.r1 {width:90%; text-align:left; size:1px; color:#C0C0C0}
+A {color:#0080FF; text-decoration:none}
+A:hover {color:blue; text-decoration:underline}
+A.email {color:#0080FF; text-decoration:underline; font:italic 9pt "Lucida Sans"}
+A.email:hover {color:blue; text-decoration:underline}
+
+/* CONTENT pane */
+.code {background-color:#D8D8D8; font:normal 10pt 細明體; line-height:120%}
+.hint {background-color:#FFFFFF; font:normal 10pt 細明體; line-height:120%}
+/* 下2列放大字體至20，上課要用 */
+.example {background-color:#ffffff}
+.bgW {background-color:#F0F0F0; width:100%; font:normal 9pt 細明體}
+.boldw {font-weight:bold; color:white; background-color: gray}
+.syntax {font:normal 12pt "Times New Roman",Tahoma,Arial}
+.txt {font:normal 9pt Verdana,Arial; text-align:justify; line-height:150%}
+.txti30 {text-indent:30px}
+.txtH1 {font:bold 16pt Tahoma;background-color:#c00000;color:white;border:2px solid;border-color:#FF8080 #800000 #800000 #FF8080;padding:1px}
+.txtH2 {font:bold 14pt Tahoma}
+.txtH3 {font:bold 13pt Tahoma;background-color:#666;color:white;padding:2px}
+.txtCo {font-family: "Comic Sans MS"}
+.txtLu {font-family: "Lucida Sans"}
+
+/* MENU pane */
+A.menuCHAP {color:darkblue; text-decoration:none}
+A.menuCHAP:hover {text-decoration:underline}
+A.menuEX {color:BLACK; text-decoration:none}
+A.menuEX:hover {color:blue; text-decoration:underline}
+A.menuCS {color:#808080; text-decoration:none}
+A.menuCS:hover {color:#808080; text-decoration:underline}
+A.menuIDLE {color:white; text-decoration:none}
+A.menuIDLE:hover {color:white; text-decoration:none}
+.menuNODE {width:16; height:18; border:yellow solid 0px}
+.menuDOC, .icon {width:20; height:18; border:yellow solid 0px}
+
+/* CONTROL pane */
+.none {width:1; height:2}
+.ctlIMG {width:20; height:20; border-width: 0px}
+.BeIMG {width:32; height:32; border-width: 0px}
+.BeBTNmout {width:36px;height:36px;text-align:center;cursor:default;overflow:hidden;padding:2px}
+.BeBTNmover {border:1px solid;border-color:#FFFFFF #808080 #808080 #FFFFFF;width:36px;height:36px;text-align:center;cursor:hand;padding:0px}
+.BeBTNmdown {border:1px solid;border-color:#808080 #FFFFFF #FFFFFF #808080;width:36px;height:36px;text-align:center;cursor:hand;padding:1px}
+.BeBTNcancel {width:36px;height:36px;text-align:center;cursor:default;padding:2px}
+
