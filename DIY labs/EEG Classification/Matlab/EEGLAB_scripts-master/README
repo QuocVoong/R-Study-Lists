@@ -1,0 +1,395 @@
+This is a collection of scripts to perform essential preprocessing steps,
+averaging and plotting of EEG (ERP) data using MATLAB and the EEGLAB toolbox.
+The scripts are under current development with no guarantee of proper
+functioning. The scripts are published in the hopes of helping people getting
+started using EEGLAB and MATLAB to process EEG data (and for the sake of free
+code). Currently works Brainvision Recorder and BioSemi raw Data. 
+
+EEG data is processed per subject. Data of several subjects can be processed
+in parallel using the parallel computing toolbox of MATLAB depending on your
+resources. You will have to configure your parallel computing profiles (see:
+http://www.mathworks.de/de/help/distcomp/clusters-and-cluster-profiles.html)
+and include the profile name in the config.m file.
+
+I would like to thank my supervisor Prof. Dr. Alexandra Bendixen for providing
+permission to publish the scripts. Many of the routines are based on her
+ideas.
+
+Copyright (c) 2013 Martin Reiche, Carl-von-Ossietzky-University Oldenburg
+Author: Martin Reiche, martin.reiche@uni-oldnburg.de
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+DEPENDENCIES: The following scripts and programs are needed for proper running
+              of the scripts
+
+Matlab       - with parallel computing toolbox for batch preprocessing
+EEGLAB 13    - A Delorme & S Makeig (2004) EEGLAB: an open source toolbox 
+               for analysis of single-trial EEG dynamics. 
+               Journal of Neuroscience Methods 134:9-21 
+bv-io        - can be installed via EEGLAB extension manager 
+eeg_emcp     - Andreas Widmann (http://github.com/widmann)
+firfilt 1.6  - Andreas Widmann (http://github.com/widmann)
+eeg_rejdelta - Andreas Widmann (http://github.com/widmann)
+RMAOV1       - Trujillo-Ortiz, A., R. Hernandez-Walls and
+               R.A. Trujillo-Perez. (2004). RMAOV1:One-way repeated measures ANOVA. A
+               MATLAB file. URL: http://www.mathworks.com/matlabcentral/
+               fileexchange/loadFile.do?objectId=5576
+
+USAGE: 
+
+The analyses can be run in serial (normal) or in parallel mode. To run several
+analysis subsequently in parallel mode locally on several cores or remotely on a 
+cluster, you have to install the parallel computing toolbox of matlab and specify
+the desired parallel profile (as in parallel > Select Configuration) in your config.m
+
+in serial mode:     eeg_analysis(task_type,[numbers of subjects])
+in parallel mode:   eeg_analysis(taskType,[numbers of subjects],'parallelMethod')
+
+task_type:          1 - simply passive EEG paradigm: no subject responses 
+                        triggers included
+
+                    2 - active task: including response triggers and evaluating
+	                hit vs. miss events
+
+subject_numbers:    vector of subject numbers to include in the analysis
+
+'parallelMethod':   'submitJob' - submit prprocessing job to cluster
+                    'getJob' - retrieve preprocessed job data from cluster
+                    'plot' - omit preprocessing and plot processed data
+
+CONFIGURATION:
+- config (central configuration file)
+- triggerlabels.m (configuratiuon of trigger labels)
+- channelInterp.m (configuration of to-be-interpolated channels for given subjects)
+
+ALREADY IMPLEMENTED:
+- the whole preprocessing procedure for brainvision recorder and BioSemi data
+- plotting of ERP data in 'electrode array' and 'statistics' mode
+- running t-test or running one-way RMANOVA with FDR correction over given  
+  range of data-points
+- Cluster mode (run analysis on a remote HPC cluster)
+
+NOT YET IMPLEMENTED:
+- plotting of voltage maps and SCD maps
+- statistical testing
+  - RMANOVA for predefined statistical factors
+- several plot callback functions
+
+#############################################################################
+SHORT DESCRIPTION OF THE SCRIPTS:
+#############################################################################
+The analysis sequence is carried out roughly in the same order:
+
+eeg_analysis.m:
+
+Meta script which controls the whole analysis process. 
+-----------------------------------------------------------------------------
+config.m
+
+Main configuration file. Nearly all analysis parameters, filter settings, path
+configurations and plotting options are adjusted here.
+-----------------------------------------------------------------------------
+triggerlabels.m
+
+Configuration file for the trigger settings. Here the triggers are
+co-registered with the condition labels. Several other options are available
+like color indices for plotting per trigger or line style options. The
+triggers are also assigned to pools determining which triggers the number of
+epochs for averaging if analysis.equalErp=1. The trigger with the least
+available epochs per subject determines the number of epochs which get
+averaged for the other triggers in the same pool. Also controls retriggering
+of original trigger codes in the retrigger section of the file: Each trigger
+specified in the left column of the cell will be replaced with the trigger in
+the right column of the corresponding line of the retrigger cell.
+-----------------------------------------------------------------------------
+channelInterp.m
+
+Determine interpolation parameters for given channels in given subjects
+for passive and active task.
+-----------------------------------------------------------------------------
+func/preprocess.m
+
+Determines the whole preprocessing sequence per subject and returns
+preprocessed subject data.
+-----------------------------------------------------------------------------
+func/prepSubDir.m
+
+Prepares result folder for subject and returns its path.
+-----------------------------------------------------------------------------
+func/checkRawData.m
+
+Check if all requested raw Data is available and prepare path
+specification for the current subject.
+-----------------------------------------------------------------------------
+func/loadRawData.m
+
+Load raw EEG data file using EEGLAB. Currently loads BIOSIG and Brainvision
+Recorder raw files. Needs to be adjusted for other raw data types.
+-----------------------------------------------------------------------------
+func/part_file.m
+
+Part a given EEG structure for files specified in paths.partFile at sampling
+point specified in paths.partFile. Example: this routine can be used if two
+blocks of the experiment are accidentally saved in the same file. In this case
+the raw file gets loaded as many times as blocks are contained within it which
+then get split at the given sampling points in paths.partFile.
+-----------------------------------------------------------------------------
+func/checkFile.m
+
+Check the currently loaded raw data file for sampling rate, triggercodes and
+trigger latencies. If BioSig raw data is used, all triggers are converted to
+strings for further preprocessing steps.
+-----------------------------------------------------------------------------
+func/change_trig.m
+
+Changes triggers at start of block to exclude them from the analysis,
+change target triggers to hit vs. miss targets and exclude events in
+predefined ranges around triggers and response trials. 
+-----------------------------------------------------------------------------
+func/bipolarize.m
+
+Bipolarize upper and lower eye channel to vertical EOG and lateral eye
+channels to vertical EOG. Specify eye channels in config.m in the following
+order {'LO1', 'LO2', 'SO1', 'IO1'}
+-----------------------------------------------------------------------------
+func/chanLoc.m
+
+Set cannel locations to desired coordinates. Specify the coordinate file
+in config.m under paths.elecSetup
+-----------------------------------------------------------------------------
+func/interpChan.m
+
+Interpolate channels specified in channelInterp.m as follows: the 1st column
+indicates the subject number. The second column indicates the electrode which
+is to be interpolated. If the electrode is given as a string the interpolation
+will be carried out before epoching over the whole block file [specified in
+the 3rd column] (for example if you want to interpolate a channel because it
+was broken and you already noticed while recording). If the channel is given
+as numerical number, the interpolation is carried out after epoching on the
+files which hold the same trigger [specified in the 3rd column] (for example
+if you see that lots of epoches were rejected because of bad data on the given
+channel)
+
+EXAMPLE:
+
+3,   62, [501 503]; subject 3, channel number 62 on trigger types: 501 & 503
+6, 'P4',        16; subject 6, channel P4 in block file number 16
+-----------------------------------------------------------------------------
+func/fir_filter.m
+
+Perform filtering as specified in config.m. Depending on the rejection method
+there are several different filtering routines: if eye correction is enabled,
+the data gets filtered twice. The first time the block file gets filtered with
+a bandpass (usually 0.1 - 100 Hz [crucial part is the 0.1 high-pass]) and a
+second filter is applied after all data (per subject) was merged into one
+file and the eye correction was performed. The filter application should lead
+to the final desired filter band (eg. if the desired filter band is 0.1 - 30
+Hz the first filter would be a 0.1 - 100 Hz band pass filter and the second
+filter would be a 30 Hz low pass filter)
+-----------------------------------------------------------------------------
+func/segmentation.m
+
+Segmenting the epochs as specified by the triggers in triggerlabels.m. If
+eye-correction is enabled the segmentation is applied on the whole
+concatenated data of the current subject. For all other rejection methods they
+segmentation is applied on the block files separately.
+-----------------------------------------------------------------------------
+func/merge_data.m
+
+For all rejection methods except eye-correction: merge all saved eeg files
+containing data of the same trigger type.
+-----------------------------------------------------------------------------
+func/merge_all.m
+
+If eye-correction is enabled: concatenate all block files (regardless of
+trigger types); run eye correction and apply second filter on the whole data.
+[segmentation is in this case carried out afterwards in the scope of
+eeg_analysis.m] 
+-----------------------------------------------------------------------------
+func/eeg_rejection
+
+Performs artifact rejection, forms average and returns ERPs for given subject.
+The script returns the end product of the preprocessing step for each
+subject. This contains the ERP structure, the ERP structure with averages
+formed by an equal amount epochs per pool as indicated in triggerlabels.m
+number of corrected and rejected trials etc.
+-----------------------------------------------------------------------------
+func/rejIndex.m
+
+Get indices for rejected trials per subject and trigger from former
+rejection procedure.
+-----------------------------------------------------------------------------
+func/save_erp.m
+
+Combines all the subject related data from the preprocessing (which gets stored
+in sliced variable because of the parallel preprocessing per subject) in one
+big ERP structure and calculate usable data. 
+
+If the current ERP file already exists, the user will be asked whether to use
+the existing result file or to create a new one. If the existing result file
+is used, the ERP data of the existing subjects will be replaced by the newly
+processed data and the meta data of the current analysis will be saved
+additionally resulting in a structure array were each structure of the array
+represents the meta data of the separate analyses.
+
+the output ERP structure contains:
+
+- subTrialInd: trial indices for equal amount of trials per trigger group (for
+     each subject and each trigger) 
+- corrTrials: number of correct trials per subject and trigger
+- eventCount: number of overall trials per subject and trigger
+- trialNum: number of trials per trigger group for each subject
+- meta: meta data for each analysis, containing:
+  - number of subjects
+  - analysis duration
+  - date of analysis
+  - EEGLAB version
+  - and machine on which on which analysis was run
+  - cluster configuration
+- analysis: analysis parameters of each analysis 
+- paths: paths configuration of each analysis
+- trig: trigger setup of each analysis
+- filtPar: filter parameters of each analysis
+- erpAll: ERP Data of all the subjects (combined from several analysis)
+- erpAllEqual: ERP Data of all the subjects (combined from several analysis)
+     with equal amount of epochs per subject and per trigger pool as indicated
+     in triggerlabels.m
+- rejEpochs: cell array for indices of rejected epochs 
+- chanlocs: channel locations (taken from EEG structure of last analysis)
+-----------------------------------------------------------------------------
+func/calc_diff.m
+
+Asks the user wich of the processed files to read. Reads in the Data and
+calculates the difference waves as specified in triggerlabels.m and performs
+the baseline correction if enabled.
+-----------------------------------------------------------------------------
+func/reReference.m
+
+Perform rereferencing before
+calculation of difference waves and plotting procedure. Can be
+enabled and disabled in config by variable analysis.reref. New
+reference channel is specified in variale analysis.rerefChan. If
+several channels are specified as reference channel, the
+rereferencing will be carried out against the average of the
+specied rereference channels.
+-----------------------------------------------------------------------------
+func/baseline_corr.m
+
+Takes erpAll data and performs baseline correction if analysis.rmBase is
+enabled in config.m
+-----------------------------------------------------------------------------
+func/plot_erp.m
+
+Handles all plotting routines. There are two different plotting modes:
+'electrode array' and 'statistics'. In 'electrode array' several channels are
+plotted in an array (dimensions determined by lib/getDisp.m according to
+number of channels to plot). In 'statistics' mode curves on one given channel
+are plotted together with an amplitude bar plot for each figure which shows
+the average amplitude within the specified component windows. 
+
+Figures can be configured either in config.m in the cell arrays
+plotPar.plotConds and plotPar.plotCondsStat for 'electrode array' and
+'statistics' mode respectively or interactively using the GUI plotting
+functions embedded in already processed figures. 
+
+Example: Plotting two plots in one figure next to each other and another
+figure with only one plot with several different curves per plot in
+'statistics' mode. The curve names are equivalent to the trigger labels as
+specified in triggerlabels.m
+
+plotCondsStat{plotNumber,figureNumber} = {'Curve-1','Curve-2','Curve-3',[task
+type]};
+
+plotPar.plotCondsStat{1,1} = {'standard-1','standard-2','standard-3',[1 2]};
+plotPar.plotCondsStat{2,1} = {'deviant-1','standard-2',[1 2]};
+plotPar.plotCondsStat{1,2} = {'difference-1','difference-2',[1 2]};
+
+plotPar.plotCondsStatCol = [2 2];			       
+
+plotPar.plotCondsStatCol determines which color indices to use for plotting as
+indicated in the 4th and 5th column of the trigger matrix in triggerlabels.m
+1 = same color per type [within condition comparison]
+2 = same color per condition [across condition comparison]
+
+In the 'statistics' mode the averaged data of each component window in each
+plot can be saved using the 'save data' button.
+-----------------------------------------------------------------------------
+lib/getDisp.m
+
+Calculate plotting parameters (numbers of columns or rows depending on
+different input parameters) for example number of subjects or number of
+conditions.
+-----------------------------------------------------------------------------
+func/getMax.m
+
+Get the maximal y Scale values for one figure
+-----------------------------------------------------------------------------
+lib/distinct_color.m
+
+Returns given number of distinguishable colors by variing the "Hue" value
+in the HSV color space and keeping constant the "Stauration" and "Value"
+parameters. HSV values are then converted to RGB space and returned.
+-----------------------------------------------------------------------------
+lib/subplotERP.m
+
+Takes a Matrix of ERP Data (line represent sampling points, columns
+represent curves). Depending on the columns, plots the curves in one plot
+with predefined colours, adds labels and adjusts the graphics.
+-----------------------------------------------------------------------------
+func/singleERP.m
+
+Function called by SubplotCallback. Plots single channel ERP with
+statistics when clicked on a subplot.
+-----------------------------------------------------------------------------
+lib/runningStat.m
+
+Perform running one-way ANOVA over each time point at given Channel and return
+significance index over a predefined time range (default: whole time range of
+epoch, see config.m to adjust time range [plotPar.runningStatWin]). Output
+vector [sigInt] contains indices of datapoints which reach significance
+according to fdr with diven q value (plotPar.alpha) in config.m
+-----------------------------------------------------------------------------
+lib/OneWayrmAoV.m
+
+Perform one way repeated measures analysis of variance RMANOVA. Takes
+Data in matrix form where lines represent the subjects with the data of
+severeal factors represented by columns.
+-----------------------------------------------------------------------------
+lib/trendtest.m
+
+Perform within-subjects linear contrast analysis (linear trend test). Takes
+Data in matrix form where lines represent the subjects with the data of
+severeal factors represented by columns. Returns P-value for given data.
+-----------------------------------------------------------------------------
+/lib/fdr.m
+
+Takes vector of P-values and a given q-value and returns significance
+threshold based on false discovery rate. The q value is equal to the alpha
+value. Can be adjusted in config.m (see plotPar.alpha)
+-----------------------------------------------------------------------------
+/lib/drawSig.m
+
+Handles drawing of significant intervals in ERP plot. Can be called several
+times to draw different intervals with different given color consecutively.
+-----------------------------------------------------------------------------
+/lib/ssplot.m
+
+This function takes subjects X trigger X sample data and plots
+one separate line for each subject in one plot per trigger type to
+plot single subject ERPs per trigger
+-----------------------------------------------------------------------------
+
+

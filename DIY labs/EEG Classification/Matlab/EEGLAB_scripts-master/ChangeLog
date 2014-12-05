@@ -1,0 +1,452 @@
+2014-09-29  Martin Reiche  <reiche.stud@googlemail.com>
+
+	* triggerlabels.m: Added some more parameters (soa, number of
+	expected triggers etc.) for parameter checking by
+	ckeckFileBasic.m. 
+
+	* lib/subplotERP.m: Several changes related to GFP plotting.
+
+	* lib/drawSig.m: Implemented t-Test.
+
+	* lib/runningStat.m: Implemented t-Test for samplepointwise
+	statistics. 
+
+	* lib/getDisp.m: Minor fixes.
+
+	* func/usabledata.m: Now shows sorted histogram of proportion of
+	usable data across all subjects if no threshold is given.
+
+	* func/singleERP.m: Several changes related to GFP plotting.
+
+	* func/segmentation.m: Implemented sorted averaging.
+
+	* func/save_erp.m: Minor changes of the way usable data
+	information gets logged.
+
+	* func/preprocess.m: Implemented sorted averaging.
+
+	* func/prepSubDir.m: Several changes related to block number
+	specification.
+
+	* func/plot_erp.m: Several changes related to GFP plotting.
+
+	* func/loadRawData.m (loadRawData): Implemented block number
+	specification. 
+
+	* func/interpChan.m: Fixed some bugs related to different
+	dimension structures between different raw data formats
+	(dimensions of chanlocs structure is swapped between brainvision
+	and BioSemi raw data)
+
+	* func/getMax.m: Added GFP option.
+
+	* func/calc_gfp.m: Added routine for calculation and display of
+	global field power instead of event-related potentials.
+
+	* lib/eeg_rejsortavg.m: Added routine for sorted averaging.
+
+	* func/fir_filter.m: Changed display behavior.
+
+	* func/eeg_rejection.m: Implemented sorted averaging.
+
+	* func/checkRawData.m: Minor changes.
+
+	* func/checkFileBasic.m (checkFileBasic): Added. This routine is
+	comparable to checkFile.m but much more basic (less detailed check
+	procedure). It only tests if basic stimulation parameters are
+	correct (sampling rate, soa, right triggers). Can be used if the
+	precise stimulation parameters are not available.
+
+	* func/chanLoc.m: Minor bug fix.
+
+	* func/calc_diff.m: Changes related to the implementation of
+	sorted averaging.
+
+	* func/bipolarize.m (bipolarize): Minor bug fix.
+
+	* func/baseline_corr.m: Changes related to the implementation of
+	sorted averaging.
+
+	* config.m: Added some options. It is now possible to specify
+	block numbers of the blocks that should be analysed.
+
+2014-08-14  Martin Reiche  <reiche.stud@googlemail.com>
+
+	* config.m (config): Removed parameter analysis.singleDispMode
+	because it is no longer needed. 
+
+	* func/singleERP.m: Bugfix. Function tried to plot significant
+	intervals on y axis of ERP plots even though the feature was
+	turned off.
+
+	* func/plot_erp.m: Changed the opening behavior of clickable
+	subplots. Subplots now open in a single new figure when clicked
+	with the left mouse button. When another subplot is selected with
+	the left mouse, the figure will be overwritten by that
+	subplot. When clicked with the right mouse button, a new figure
+	will open for every clicked subplot.
+
+2014-08-12  Martin Reiche  <reiche.stud@googlemail.com>
+
+	* func/plot_erp.m: Auto scaling for bar diagrams in statistics
+	mode was not carried out for figures with indices higher than
+	one. This is now fixed.
+
+2014-04-15  Martin Reiche  <reiche.stud@googlemail.com>
+
+	* lib/runningStat.m: Does the statistics only if enough (more than
+	2) factor levels are available.
+
+	* func/ssplot.m (ssplot): Fixed a bug for overlapping legend and
+	erp plot.
+
+	* func/singleERP.m (singleERP): Implemented changes for customizable
+	y-Axis scaling.
+
+	* func/plot_erp.m (SubplotCallback): Implemented changes for customizable
+	y-Axis scaling.
+
+	* func/getMax.m (getMax): Implemented changes for customizable
+	y-Axis scaling.
+
+	* config.m: Added Options to predefine limits of y-Axis for ERP
+	and Bar plots. Leaving them empty will fall back to the automatic
+	scaling function.
+
+2014-04-08  Martin Reiche  <reiche.stud@googlemail.com>
+
+	* lib/trendtest.m: Implemented additional output argument holding
+	the correlation coefficient for the relationship of the mean data
+	and the model coefficients. Is later used to color-code the
+	significance bars.
+
+	* lib/subplotERP.m: Implemented changes for single subject ERP
+	plotting.
+
+	* lib/runningStat.m: Implemented changes for directional
+	color-coding of significance bars of point-wise statistics.
+
+	* lib/drawSig.m: Implemented changes for directional
+	color-coding of significance bars of point-wise statistics. If a
+	linear trend test is performed the color bars indicating a
+	significant trend are now color coded. Red if a positive
+	correlation of the mean data and the linear model is at hand and
+	blue if the correlation is negative.
+
+	* func/ssplot.m: Added. New function which allows to plot the
+	single subject ERPs of one stimulus type within one plot. Can be
+	called with a button labelled 'Single Subjects' in the single
+	(clicked) ERP plots.
+
+	* lib/getDisp.m: Replaced functions in order to work without
+	vec2mat which is only available in the Communication System
+	Toolbox.
+
+	* lib/distinct_color.m: Changed order of output colors in a more
+	plausible way.
+
+	* func/singleERP.m: Implemented changes for single subject ERP
+	plotting.
+
+	* func/plot_erp.m: Implemented changes for single subject ERP
+	plotting.
+
+	* README: Added description of new plot single subject ERP
+	function.
+
+2014-04-07  Martin Reiche  <reiche.stud@googlemail.com>
+
+	* README: Added description of new functions and options.
+
+	* func/getMax.m: Standardized channel location access for data
+	with different raw file type.
+
+	* func/chanLoc.m: Standardized channel location access for data
+	with different raw file type.
+
+	* lib/subplotERP.m: Changed running statistics routines.
+
+	* func/plot_erp.m (plot_erp): Changed running statistics routines.
+
+	* config.m: Added linear trend test as option for running
+	point-wise statistics of ERPs.
+
+	* lib/runningStat.m: Implemented linear trend test.
+
+	* lib/drawSig.m: Marking of significant intervals is now handled
+	in this file. Significant intervals are now marked in
+	light red for p-values which are not corrected for multiple
+	comparisons and in dark red for tests which have been corrected
+	for multiple comparisons.
+
+	* lib/trendtest.m: Newly implemented within-subjects contrast
+	test. Added as option for running point-wise statistics to
+	operform a linear trend test of the submitted data.
+
+2014-03-03  Martin Reiche  <reiche.stud@googlemail.com>
+
+	* eeg_analysis.m (eeg_analysis): Loading chanlocs from local
+	results folder.
+
+	* func/preprocess.m: paths are submitted to func/checkFile.m to
+	check whether which cluster mode is active.
+
+	* func/checkFile.m (checkFile): In remote cluster mode, script is
+	not paused if trigger timing exceedes expected value.
+
+2014-02-11  Martin Reiche  <reiche.stud@googlemail.com>
+
+	* func/preprocess.m: Job subfolder of results path gets deleted
+	after the last subject was preprocessed.
+
+	* func/eeg_rejection.m: Implemented new channel location path.
+
+	* func/save_erp.m: Implemented now channel location path.
+
+	* eeg_analysis.m: In parallel mode an additional subfolder
+	indicating the Job ID is now appended to the results path where
+	temopral data files are stored throughout the preprocessing.
+
+	* config.m: An additional path for the channel location file is
+	now included separately from the results path because this now
+	gets modified with an additional job subfolder in parallel mode.
+
+2014-02-10  Martin Reiche  <reiche.stud@googlemail.com>
+
+	* triggerlabels.m (triggerlabels): Added additional argument
+	indicating condition number for retriggering routine.
+
+	* func/eeg_rejection.m: Fixed a bug in the epoching routine for
+	selecting multiple events in one block.
+
+	* func/change_trig.m: There was a bug in the retrigger
+	routine. Fixed. Function needs one more argument now indicating
+	the number of the condition of the current block in order to work.
+
+2014-02-07  Martin Reiche  <reiche.stud@googlemail.com>
+
+	* lib/subplotERP.m (subplotERP): Plotting of component markers,
+	significant intervals and baseline markers for the single-clicked
+	ERP plots were in wrong layer order. Fixed.
+
+2014-02-06  Martin Reiche  <reiche.stud@googlemail.com>
+
+	* eeg_analysis.m (eeg_analysis): New method for displaying usable
+	data per subject implemented. When calling
+	eeg_analysis(task,subjects,'usabledata',threshold) the user now
+	gets prompted to select an ERP file and the amount of usable data
+	per subject as well as the amount of usable data overall for the
+	current ERP file is displayed. A rejection threshold for an
+	acceptable amount of usable data must be given. Subjects below
+	this threshold are marked for rejection. A vector of subject
+	numbers still within the acceptable threshold is
+	returned. Depending on the method specified when calling
+	eeg_analysis the output arguments variably change. 'submitJob' and
+	'getJob' return the scheduler and job handle, 'plot' returns
+	nothing and 'usabledata' returns vector of subject numbers above
+	the given threshold of acceptable usable data.
+	
+	* config.m: Trigger configuration parameters were not called
+	correctly. Fixed.
+
+	* func/usabledata.m: Added. Function displaying the amount of
+	usable data for a given ERP file. Gets called by eeg_analysis.m
+	with 'method' usable data and given rejection threshold in
+	percent. All subjects' usable data is displayed, subjects below
+	the threshold are marked for rejection. Vector of subject numbers
+	still within the acceptable threshold is returned.
+
+	* triggerlabels.m (triggerlabels): Added option trig.changeLat
+	where a duration in milliseconds can be specified by which all
+	triggers get shifted. If the duration is negative all triggers get
+	shifted back in time by the given duration and if it is positive
+	the triggers get delayed by the specified duration.
+
+	* func/change_trig.m (change_trig): Implemented trigger latency
+	correction procedure. Allows the user to shift the latency of all
+	triggers by given duration in milliseconds if a constant stimulus -
+	trigger latency was present during recording. The duration of the
+	latency shift can be specified in the variable
+	trig.changeLat in the file triggerlabels.m.
+
+2014-02-05  Martin Reiche  <reiche.stud@googlemail.com>
+
+	* eeg_analysis.m: Controls the whole preprocessing and plotting
+	routines. Handles parallel job submission and job data
+	retrieval. In serial mode it submits single subjects to
+	preprocessing routine and combines resulting data of several
+	subjects. In parallel mode, creates scheduler, gathers file and
+	path dependencies, submits jobs to schedulers and retrieves job
+	data from scheduler if the jobs are finished. It returns scheduler
+	and job handles in parallel mode and determines resources for
+	remote cluster job submission.
+
+	* config.m: Several minor changes: deviant triggers for later
+	exclusion of events around those triggers are now specified here
+	as compared to earlier versions. retrigConf.m was deleted.
+
+	* func/preprocess.m: Now the whole preprocessing routine is
+	handled by this function. Nothing really changes except, that each
+	subject is now processed separately and the preprocessed data is
+	returned by preprocess.m which gets combined later by save_erp.m.o
+
+	* channelInterp.m: Configurations for channel interpolations for
+	given subjects is now handled in this file.
+
+	* triggerlabels.m: Retriggering is now also specified here. In
+	earlier versions this was configured in /func/retrigConfo.m which
+	was now dropped. Unwanted events can now also be specified here
+	which then get removed shortly after raw data was loaded.
+
+	* func/loadRawData.m (loadRawData): Reference channel is now
+	removed after loading of raw data because that caused trouble when
+	rejecting flat epochs (Reference channel consisted of zeros only)
+
+	* lib/subplotERP.m: Plotting of significant intervals in single
+	clicked ERP plot implemented.
+
+	* lib/runningStat.m: Now check plausibility of stats window. If
+	stats window is exceeding the epoch range, the stats window is
+	adapted to the epoch length.
+
+	* func/singleERP.m: Only plots ERP plot in full screen (without
+	bar diagram) if no statistics window for running stats is
+	available. If it is available, now the significant intervals are
+	also displayed in the single clicked ERP plots.
+
+	* func/save_erp.m: Major changes: writing of usable data log files
+	is now performed here instead of eeg_rejection.m, a summary usable
+	data file is now created as well reporting the overall usable data
+	usable data of each subject. Several pieces of meta information
+	are now also written out to usable data log files.
+
+	* func/reReference.m: re-referencing was accidentally not
+	performed against re-reference channel or average of re-reference
+	channels but against average of all scalp channels. Fixed.
+
+	* func/prepSubDir.m: fixed minor bug with indexing of subject
+	number.
+
+	* func/plot_erp.m: Component windows are now checked for
+	plausibility and windows with ranges exceeding the epoch are
+	ignored.
+
+	* func/getMax.m: Eye channels are now ignored for determination of
+	maximal values.
+
+	* func/eeg_rejection.m: Now returns amount of usable data per
+	subject as variable and does not write information in usable data
+	files anymore. This routine is now handled by save_erp.m
+
+	* func/checkFile.m (checkFile): Fixed Bug in trigger latency check
+	routine. Alert function was broken that warned the user if
+	predefined amount of triggers was exceeding predefined latency
+	range. Now excludes all triggers as specified in variable
+	trig.delete in triggerlabels.m and not only 'boundary' events
+	anymore.
+
+	* func/change_trig.m: Trigger codes of deviant, target and
+	responses for trigger exclusion are now configured in config.m and
+	not here anymore
+
+	* func/calc_diff.m: Now opens a loading GUI if no preprocessed ERP
+	file is found in the specified results folder.
+
+2013-11-28  Martin Reiche  <reiche.stud@googlemail.com>
+
+	* func/prepSubDir.m: Fixed a minor bug in the check procedure of
+	availability of raw data.
+
+	* func/checkFile.m (checkFile): Added conversion of old triggers
+	(EEG.urevent) to strings.
+
+2013-11-27  Martin Reiche  <reiche.stud@googlemail.com>
+
+	* func/plot_erp.m: Error bars are only plotted when there is more
+	then one subject. Otherwise meaningles to plot SEM, computes SEM
+	anyway due to dimension reshaping if erpAll contains only one
+	subject. Hence the new behavior. 
+
+	* func/prepSubDir.m: Fixed minor bug. Was unable to read raw data
+	folders of available subjects.
+
+	* func/save_erp.m: Fixed a bug concerning concatenating procedure
+	of erp structure when perfroming additional
+	analyses. erp.path.allFiles won't be saved anymore because it only
+	contains data of the subject which was processed at last.
+
+	* func/reReference.m: Added. Perform rereferencing before
+	calculation of difference waves and plotting procedure. Can be
+	enabled and disabled in config by variable analysis.reref. New
+	reference channel is specified in variale analysis.rerefChan. If
+	several channels are specified as reference channel, the
+	rereferencing will be carried out against the average of the
+	specied rereference channels.
+
+2013-11-25  Martin Reiche  <reiche.stud@googlemail.com>
+
+	* func/calc_diff.m: Implemented optional rereferencing before
+	baseline correction.
+
+	* config.m: Added settings for rereferencing procedure.
+
+2013-11-20  Martin Reiche  <reiche.stud@googlemail.com>
+
+	* func/segmentation.m (segmentation): Adjusted triggers to be
+	handled as strings. Added multi trigger selection routines.
+
+	* func/save_erp.m (save_erp): Adjusted triggers to be handled as
+	strings. Added multi trigger selection routines.
+
+	* func/retrigConf.m (retrigConf): Adjusted triggers to be handled
+	as strings. Added multi trigger selection routines.
+
+	* func/eeg_rejection.m (eeg_rejection): Adjusted triggers to be handled
+	as strings. Added multi trigger selection routines.
+
+	* func/bipolarize.m (bipolarize): Adjusted triggers to be handled
+	as strings. Added multi trigger selection routines.
+ 
+	* eeg_analysis.m (eeg_analysis): BioSig and Brainvision raw data
+	routines were merged. All triggertypes are now handled as strings
+	shortly after loading.
+
+	* func/checkFile.m (checkFile): Added. checkFileBioSig and
+	checkFileBv were merged to that file.
+
+2013-11-18  Martin Reiche  <reiche.stud@googlemail.com>
+
+	* lib/subplotERP.m (subplotERP): Implemented marking of
+	significant intervals determined by lib/runningStat.m
+
+	* lib/runningStat.m (runningStat): Included. Handles the whole
+	point-by-point rmanova procedure for a given ERP plot.
+
+	* lib/fdr.m: Included. Takes vector of p-values and returns new
+	p-value significance treshold.
+
+	* lib/OneWayrmAoV.m: Included. Calculates a one way repeated
+	measures ANOVA for each datapoint on given channel data. Returns
+	p-values for each test. The Script is based on - RMAOV1 -
+	Trujillo-Ortiz, A., R. Hernandez-Walls and
+	R.A. Trujillo-Perez. (2004). RMAOV1:One-way repeated measures
+	ANOVA. A MATLAB
+	file. (http://www.mathworks.com/matlabcentral/fileexchange)
+
+	* func/plot_erp.m (plot_erp): implemented point-by-point running
+	rmanova on ERP data
+
+	* config.m (config): added setting for point-by-point running
+	rmanova on ERP data
+
+2013-11-14  Martin Reiche  <reiche.stud@googlemail.com>
+
+	* triggerlabels.m: minor configuration changes
+
+	* config.m: minor configuration changes
+
+	* README: Added description of newly implemented scripts
+
+	* eeg_analysis.m: minor changes and inclusions to implement batch
+	mode and basic plotting routines.
+
