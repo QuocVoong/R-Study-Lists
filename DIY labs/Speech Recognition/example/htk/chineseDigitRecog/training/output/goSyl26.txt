@@ -1,0 +1,19 @@
+         pamFile: 'digitSyl.pam'
+      feaCfgFile: 'mfcc26.cfg'
+         waveDir: '..\waveFile'
+      sylMlfFile: 'digitSyl.mlf'
+    phoneMlfFile: 'digitSylPhone.mlf'
+         mnlFile: 'digitSyl.mnl'
+     grammarFile: 'digit.grammar'
+         feaType: 'MFCC_E_D_Z'
+          feaDim: 26
+      mixtureNum: 3
+        stateNum: 3
+     streamWidth: 26
+
+Pruning-Off 
+Pruning-Off 
+Pruning-Off 
+Pruning-Off 
+Pruning-Off 
+Inside test = 91.29%, outside test = 92.86%

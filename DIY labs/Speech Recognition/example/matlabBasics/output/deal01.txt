@@ -1,0 +1,2 @@
+myStruct(1).name = Roger
+myStruct(2).name = Sue

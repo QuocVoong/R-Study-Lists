@@ -1,0 +1,9 @@
+htkMixture01
+htkMixture02
+htkMixture03
+htkMixtureMfcc01
+goSyl26
+goSyl39
+goMonophone13
+goMonophone26
+goMonophone39

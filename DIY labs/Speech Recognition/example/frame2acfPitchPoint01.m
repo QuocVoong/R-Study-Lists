@@ -1,0 +1,23 @@
+waveFile='sunday.wav';
+[y, fs, nbits]=wavread(waveFile);
+index1=9000;
+frameSize=512;
+index2=index1+frameSize-1;
+frame=y(index1:index2);
+maxShift=length(frame);
+method=1;
+acf=frame2acf(frame, maxShift, method);
+acf2=acf;
+maxFreq=1000; acf2(1:fs/maxFreq)=-inf;
+minFreq=40; acf2(fs/minFreq:end)=-inf;
+[maxValue, maxIndex]=max(acf2);
+fprintf('Pitch = %f Hz = %f semitone\n', fs/(maxIndex-1), freq2pitch(fs/(maxIndex-1)));
+
+subplot(2,1,1);
+plot(frame, '.-');
+title('Input frame');
+subplot(2,1,2);
+xVec=1:length(acf);
+plot(xVec, acf, '.-', xVec, acf2, 'mo-', maxIndex, maxValue, 'ksquare');
+title(sprintf('ACF vector (method = %d)', method));
+legend('Original ACF', 'Truncated ACF', 'ACF pitch point');

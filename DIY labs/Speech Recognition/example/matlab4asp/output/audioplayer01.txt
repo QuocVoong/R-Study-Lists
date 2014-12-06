@@ -1,0 +1,14 @@
+       BitsPerSample: 16
+       CurrentSample: 1
+            DeviceID: -1
+    NumberOfChannels: 1
+             Running: 'off'
+          SampleRate: 8192
+            StartFcn: []
+             StopFcn: []
+                 Tag: ''
+            TimerFcn: []
+         TimerPeriod: 0.050000000000000
+        TotalSamples: 73113
+                Type: 'audioplayer'
+            UserData: []

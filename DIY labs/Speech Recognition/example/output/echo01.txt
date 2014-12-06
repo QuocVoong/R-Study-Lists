@@ -1,0 +1,7 @@
+{Warning: Data clipped during write to file:echo01.wav} 
+{> In <a href="matlab: opentoline('C:\Program Files\MATLAB\R2012a\toolbox\matlab\audiovideo\wavwrite.m',279,1)">wavwrite>PCM_Quantize at 279</a>
+  In <a href="matlab: opentoline('C:\Program Files\MATLAB\R2012a\toolbox\matlab\audiovideo\wavwrite.m',301,1)">wavwrite>write_wavedat at 301</a>
+  In <a href="matlab: opentoline('C:\Program Files\MATLAB\R2012a\toolbox\matlab\audiovideo\wavwrite.m',138,1)">wavwrite at 138</a>
+  In <a href="matlab: opentoline('D:\users\jang\books\audioSignalProcessing\example\echo01.m',15,1)">echo01 at 15</a>
+  In <a href="matlab: opentoline('D:\users\jang\books\goWriteOutputFile.m',82,1)">goWriteOutputFile>dummyFunction at 82</a>
+  In <a href="matlab: opentoline('D:\users\jang\books\goWriteOutputFile.m',52,1)">goWriteOutputFile at 52</a>} 

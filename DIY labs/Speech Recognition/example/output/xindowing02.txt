@@ -1,0 +1,1 @@
+Error in running xindowing02! (Logged to error.log)

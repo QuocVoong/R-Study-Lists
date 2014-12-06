@@ -1,0 +1,46 @@
+{Warning: The P-code file xml_parse.p was generated prior to
+MATLAB version 7.5 (R2007b) and will not be supported in a
+future release.  Use <a href="matlab:doc pcode">pcode</a> to regenerate xml_parse.p using
+MATLAB R2007b or later.} 
+{> In <a href="matlab: opentoline('d:\users\jang\matlab\toolbox\asr\asraOutputXmlRead.m',9,1)">asraOutputXmlRead at 9</a>
+  In <a href="matlab: opentoline('d:\users\jang\matlab\toolbox\asr\asraCore.m',151,1)">asraCore at 151</a>
+  In <a href="matlab: opentoline('d:\users\jang\matlab\toolbox\asr\waveAssess.m',79,1)">waveAssess at 79</a>
+  In <a href="matlab: opentoline('D:\users\jang\books\audioSignalProcessing\example\waveAssess01.m',5,1)">waveAssess01 at 5</a>
+  In <a href="matlab: opentoline('D:\users\jang\books\goWriteOutputFile.m',82,1)">goWriteOutputFile>dummyFunction at 82</a>
+  In <a href="matlab: opentoline('D:\users\jang\books\goWriteOutputFile.m',52,1)">goWriteOutputFile at 52</a>} 
+{Warning: The P-code file unblank.p was generated prior to
+MATLAB version 7.5 (R2007b) and will not be supported in a
+future release.  Use <a href="matlab:doc pcode">pcode</a> to regenerate unblank.p using
+MATLAB R2007b or later.} 
+{> In d:\users\jang\matlab\toolbox\asr\private\xml_parse.p>xml_parse at 155
+  In <a href="matlab: opentoline('d:\users\jang\matlab\toolbox\asr\asraOutputXmlRead.m',9,1)">asraOutputXmlRead at 9</a>
+  In <a href="matlab: opentoline('d:\users\jang\matlab\toolbox\asr\asraCore.m',151,1)">asraCore at 151</a>
+  In <a href="matlab: opentoline('d:\users\jang\matlab\toolbox\asr\waveAssess.m',79,1)">waveAssess at 79</a>
+  In <a href="matlab: opentoline('D:\users\jang\books\audioSignalProcessing\example\waveAssess01.m',5,1)">waveAssess01 at 5</a>
+  In <a href="matlab: opentoline('D:\users\jang\books\goWriteOutputFile.m',82,1)">goWriteOutputFile>dummyFunction at 82</a>
+  In <a href="matlab: opentoline('D:\users\jang\books\goWriteOutputFile.m',52,1)">goWriteOutputFile at 52</a>} 
+{Warning: The P-code file xml_toolbox_version.p was
+generated prior to MATLAB version 7.5 (R2007b) and will not
+be supported in a future release.  Use <a href="matlab:doc pcode">pcode</a> to regenerate
+xml_toolbox_version.p using MATLAB R2007b or later.} 
+{> In d:\users\jang\matlab\toolbox\asr\private\xml_parse.p>xml_parse at 202
+  In <a href="matlab: opentoline('d:\users\jang\matlab\toolbox\asr\asraOutputXmlRead.m',9,1)">asraOutputXmlRead at 9</a>
+  In <a href="matlab: opentoline('d:\users\jang\matlab\toolbox\asr\asraCore.m',151,1)">asraCore at 151</a>
+  In <a href="matlab: opentoline('d:\users\jang\matlab\toolbox\asr\waveAssess.m',79,1)">waveAssess at 79</a>
+  In <a href="matlab: opentoline('D:\users\jang\books\audioSignalProcessing\example\waveAssess01.m',5,1)">waveAssess01 at 5</a>
+  In <a href="matlab: opentoline('D:\users\jang\books\goWriteOutputFile.m',82,1)">goWriteOutputFile>dummyFunction at 82</a>
+  In <a href="matlab: opentoline('D:\users\jang\books\goWriteOutputFile.m',52,1)">goWriteOutputFile at 52</a>} 
+
+cmObj = 
+
+           version: 'version 1.4 (2010/06/24)'
+              text: {'what would you like to know'}
+               syl: {}
+    warningMessage: {}
+                cm: [1x1 struct]
+
+
+dosCmd =
+
+"assess.exe" "d:\users\jang\matlab\toolbox\asr\exe/english.sa.prm" "d:\users\jang\matlab\toolbox\sap\what_would_you_like_to_know.wav" "C:\Users\jang\AppData\Local\Temp\tpc104a069_c578_476c_891a_f07d85dc09f6.txt" 0 "output" "" "" "" 0
+

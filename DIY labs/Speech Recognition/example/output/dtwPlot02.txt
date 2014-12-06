@@ -1,0 +1,1 @@
+Error in running dtwPlot02! (Logged to error.log)

@@ -1,0 +1,6 @@
+i=1, sse=0.243515
+i=2, sse=0.209899
+i=3, sse=0.157896
+i=4, sse=0.000000
+Errors after transforming LSE to DFT coefficients (將 LSE 轉換成 DFT 係數的誤差)：error1=0.000000, error2=10.843660
+Due to the symmetry of DFT, one of the above error terms should be zero. (由於 DFT 的對稱性，上述誤差應該有一項為零。)

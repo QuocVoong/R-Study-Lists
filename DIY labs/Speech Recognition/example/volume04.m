@@ -1,0 +1,16 @@
+waveFile='aeiou.wav';
+wObj=waveFile2obj(waveFile);
+opt=wave2volume('defaultOpt');
+opt.frameSize=512; opt.overlap=0;
+time=(1:length(wObj.signal))/wObj.fs;
+subplot(3,1,1);
+plot(time, wObj.signal);
+xlabel('Time (sec)'); ylabel('Amplitude'); title(waveFile);
+subplot(3,1,2);
+opt1=opt; opt1.frame2volumeOpt.method='absSum';
+vollume1=wave2volume(wObj, opt1, 1);
+ylabel(opt1.frame2volumeOpt.method);
+subplot(3,1,3);
+opt2=opt; opt2.frame2volumeOpt.method='decibel';
+volume2=wave2volume(wObj, opt2, 1);
+ylabel(opt2.frame2volumeOpt.method);

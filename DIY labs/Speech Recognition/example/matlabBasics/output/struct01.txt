@@ -1,0 +1,7 @@
+
+student = 
+
+      name: '¬xÄPµ¾'
+        id: 'mr871912'
+    scores: [58 75 62]
+

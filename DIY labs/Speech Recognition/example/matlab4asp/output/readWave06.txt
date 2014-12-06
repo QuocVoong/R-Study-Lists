@@ -1,0 +1,10 @@
+
+ans = 
+
+         wFormatTag: 1
+          nChannels: 2
+     nSamplesPerSec: 22050
+    nAvgBytesPerSec: 88200
+        nBlockAlign: 4
+     nBitsPerSample: 16
+

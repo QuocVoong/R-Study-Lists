@@ -1,0 +1,2 @@
+isfield(s, 'name') = 1
+isfield(s, 'height') = 0

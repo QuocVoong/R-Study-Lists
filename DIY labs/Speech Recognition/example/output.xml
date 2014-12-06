@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xml_tb_version="3.2.1" idx="1" type="struct" size="1 1">
+<version idx="1" type="char" size="1 24">version 1.3 (2010/03/28)</version>
+<text idx="1" type="cell" size="1 1">
+	<item idx="1" type="char" size="1 24">what are you allergic to</item>
+</text>
+<syl idx="1" type="cell" size="1 0">
+</syl>
+<confidenceMeasure idx="1" type="struct" size="1 1">
+	<language idx="1" type="char" size="1 7">english</language>
+	<score idx="1" type="double" size="1 1">97.0355</score><!--Overall score-->
+	<timberScore idx="1" type="double" size="1 1">97.0355</timberScore>
+	<word idx="1" type="struct" size="1 6"><!--List of nodes, which each node is a word (for English) or a syllable (for Chinese)-->
+		<name idx="1" type="char" size="1 9">hh_w_ah_t</name><!--Phonetic alphabets of the node-->
+		<interval idx="1" type="double" size="1 2">0 0.24</interval><!--Time span of the node, in seconds-->
+		<text idx="1" type="char" size="1 4">what</text><!--Text of the node (empty if the node is sil/sp)-->
+		<timberScore idx="1" type="double" size="1 1">95.5357</timberScore><!--Score of the node (-1 if the node is sil/sp)-->
+		<pitch idx="1" type="double" size="1 0"></pitch><!--Pitch of the node (0 if no pitch at all)-->
+		<volume idx="1" type="double" size="1 24">6744 3798 7827 12024 18925 6941 110687 250352 333757 413742 419048 618869 797594 787129 706288 690564 682953 434068 248861 236930 250280 540522 845236 814921</volume><!--Volume of the node (0 if not computed)-->
+		<timberScores idx="1" type="double" size="1 3">97.0519 95.5357 99.9543</timberScores><!--All timber scores of the node (primarily for debugging)-->
+		<phone idx="1" type="struct" size="1 4"><!--List of phones in the node-->
+			<name idx="1" type="char" size="1 4">hh+w</name><!--Phonetic alphabets for the node-->
+			<interval idx="1" type="double" size="1 2">0 0.07</interval><!--Time span of the phone, in seconds-->
+			<timberScore idx="1" type="double" size="1 1">100</timberScore><!--Timber score of the node (-1 if the node is sil/sp)-->
+			<pitched idx="1" type="double" size="1 1">0</pitched>
+			<pitch idx="1" type="double" size="1 0"></pitch><!--Pitch of the node (0 if no pitch at all)-->
+			<volume idx="1" type="double" size="1 0"></volume><!--Volume of the node (0 if no pitch at all)-->
+			<cumLogProb idx="1" type="double" size="1 1">-575.44</cumLogProb><!--Cumulated log probability of the phone-->
+			<rankRatio idx="1" type="double" size="1 1">0</rankRatio><!--Rank ratio of the phone-->
+			<timeRatio idx="1" type="double" size="1 1">0.0486111</timeRatio><!--Time ratio of the phone-->
+			<competingModel idx="1" type="char" size="1 169">hh+w th+w s+w p+w t+w k+w ah+w d+w g+w sh+w z+w b+w ow+w n+w iy+w y+w l+w ao+w m+w er+w w+w r+w uw+w ay+w ih+w ae+w aa+w oy+w ch+w f+w aw+w ey+w jh+w eh+w ng+w zh+w dh+w</competingModel><!--Competing models of the phone-->
+			<competingModelLogProb idx="1" type="char" size="1 325">-493.114 -516.214 -538.325 -558.93 -571.029 -575.95 -586.514 -593.057 -607.412 -652.375 -720.82 -824.029 -928.285 -1025.57 -1058.69 -1068.46 -1088.69 -1104.46 -1110.7 -1131.1 -1195.14 -1315.55 -1339.81 -1381.78 -1487.03 -1516.7 -1882.49 -2290.93 -2346.9 -2359.75 -2476.97 -2551.09 -2652.13 -3192.58 -4638.78 -8018.61 -8910.76</competingModelLogProb><!--Log probabilities of the competing models of the phone-->
+			<timberScores idx="1" type="double" size="1 3">100 100 100</timberScores><!--All timber scores of the phone (primarily for debugging)-->
+			<name idx="2" type="char" size="1 4">w+ah</name>
+			<interval idx="2" type="double" size="1 2">0.07 0.16</interval>
+			<timberScore idx="2" type="double" size="1 1">100</timberScore>
+			<pitched idx="2" type="double" size="1 1">1</pitched>
+			<pitch idx="2" type="double" size="1 0"></pitch>
+			<volume idx="2" type="double" size="1 0"></volume>
+			<cumLogProb idx="2" type="double" size="1 1">-1268.86</cumLogProb>
+			<rankRatio idx="2" type="double" size="1 1">0</rankRatio>
+			<timeRatio idx="2" type="double" size="1 1">0.0625</timeRatio>
+			<competingModel idx="2" type="char" size="1 211">w+ah l+ah n+ah er+ah r+ah m+ah ow+ah t+ah uw+ah d+ah dh+ah y+ah b+ah hh+ah g+ah p+ah ay+ah k+ah iy+ah v+ah th+ah aw+ah jh+ah oy+ah ch+ah s+ah zh+ah z+ah ey+ah sh+ah f+ah ng+ah ih+ah ao+ah ae+ah eh+ah ah+ah aa+ah</competingModel>
+			<competingModelLogProb idx="2" type="char" size="1 337">-682.58 -755.208 -823.615 -853.583 -864.203 -866.831 -872.539 -875.589 -884.393 -907.9 -922.178 -923.264 -928.221 -944.367 -980.928 -994.517 -997.872 -997.947 -1005.45 -1012.32 -1032.45 -1035.61 -1065.34 -1076.32 -1077.23 -1113.55 -1118.55 -1141.64 -1146.92 -1187.13 -1227.17 -1374.09 -1527.88 -1544.89 -2076.12 -2259.64 -3183.6 -7900.29</competingModelLogProb>
+			<timberScores idx="2" type="double" size="1 3">100 100 100</timberScores>
+			<name idx="3" type="char" size="1 4">ah+t</name>
+			<interval idx="3" type="double" size="1 2">0.16 0.19</interval>
+			<timberScore idx="3" type="double" size="1 1">64.2857</timberScore>
+			<pitched idx="3" type="double" size="1 1">1</pitched>
+			<pitch idx="3" type="double" size="1 0"></pitch>
+			<volume idx="3" type="double" size="1 0"></volume>
+			<cumLogProb idx="3" type="double" size="1 1">-1545.02</cumLogProb>
+			<rankRatio idx="3" type="double" size="1 1">0.0277778</rankRatio>
+			<timeRatio idx="3" type="double" size="1 1">0.0208333</timeRatio>
+			<competingModel idx="3" type="char" size="1 165">r+t ah+t er+t n+t ih+t eh+t l+t aa+t uw+t ae+t ao+t uh+t aw+t ay+t k+t ow+t p+t ng+t m+t oy+t f+t b+t iy+t ey+t s+t ch+t sh+t y+t jh+t w+t d+t zh+t g+t hh+t t+t dh+t</competingModel>
+			<competingModelLogProb idx="3" type="char" size="1 323">-260.038 -277.848 -297.915 -301.863 -304.777 -305.778 -309.323 -311.043 -311.504 -312.967 -314.822 -321.488 -323.177 -323.191 -326.109 -327.081 -329.313 -338.939 -347.228 -364.066 -370.423 -371.551 -371.954 -373.911 -383.605 -389.306 -427.413 -596.619 -677.006 -696.231 -721.948 -1162.27 -2016.82 -2592.79 -3435.25 -9993.28</competingModelLogProb>
+			<timberScores idx="3" type="double" size="1 3">76.4151 64.2857 99.6344</timberScores>
+			<name idx="4" type="char" size="1 5">t+sil</name>
+			<interval idx="4" type="double" size="1 2">0.19 0.24</interval>
+			<timberScore idx="4" type="double" size="1 1">100</timberScore>
+			<pitched idx="4" type="double" size="1 1">0</pitched>
+			<pitch idx="4" type="double" size="1 0"></pitch>
+			<volume idx="4" type="double" size="1 0"></volume>
+			<cumLogProb idx="4" type="double" size="1 1">-1963.63</cumLogProb>
+			<rankRatio idx="4" type="double" size="1 1">0</rankRatio>
+			<timeRatio idx="4" type="double" size="1 1">0.0347222</timeRatio>
+			<competingModel idx="4" type="char" size="1 249">t+sil ah+sil ay+sil k+sil f+sil p+sil th+sil d+sil dh+sil g+sil r+sil v+sil uw+sil n+sil er+sil m+sil b+sil ch+sil z+sil s+sil jh+sil sh+sil ow+sil ey+sil l+sil iy+sil aw+sil ng+sil zh+sil aa+sil oy+sil ao+sil y+sil w+sil ih+sil ae+sil eh+sil hh+sil</competingModel>
+			<competingModelLogProb idx="4" type="char" size="1 336">-426.14 -445.909 -447.757 -448.376 -457.658 -458.316 -459.565 -461.826 -465.498 -466.359 -480.467 -483.655 -485.504 -489.43 -492.011 -492.646 -493.961 -501.411 -504.054 -504.418 -505.426 -509.412 -517.59 -521.737 -526.93 -527.357 -533.892 -543.699 -556.824 -557.563 -591.095 -630.374 -670.58 -737.333 -816.792 -1640.74 -1664.59 -4096.37</competingModelLogProb>
+			<timberScores idx="4" type="double" size="1 3">100 100 100</timberScores>
+		</phone>
+		<name idx="2" type="char" size="1 2">er</name>
+		<interval idx="2" type="double" size="1 2">0.24 0.31</interval>
+		<text idx="2" type="char" size="1 3">are</text>
+		<timberScore idx="2" type="double" size="1 1">100</timberScore>
+		<pitch idx="2" type="double" size="1 0"></pitch>
+		<volume idx="2" type="double" size="1 7">810275 923157 983615 1.04495e+006 1.02752e+006 942454 900340</volume>
+		<timberScores idx="2" type="double" size="1 3">100 100 100</timberScores>
+		<phone idx="2" type="struct" size="1 1">
+			<name idx="1" type="char" size="1 6">er+sil</name>
+			<interval idx="1" type="double" size="1 2">0.24 0.31</interval>
+			<timberScore idx="1" type="double" size="1 1">100</timberScore>
+			<pitched idx="1" type="double" size="1 1">1</pitched>
+			<pitch idx="1" type="double" size="1 0"></pitch>
+			<volume idx="1" type="double" size="1 0"></volume>
+			<cumLogProb idx="1" type="double" size="1 1">-2527.68</cumLogProb>
+			<rankRatio idx="1" type="double" size="1 1">0</rankRatio>
+			<timeRatio idx="1" type="double" size="1 1">0.0486111</timeRatio>
+			<competingModel idx="1" type="char" size="1 249">er+sil uw+sil r+sil ay+sil ah+sil m+sil n+sil aw+sil t+sil oy+sil g+sil ow+sil aa+sil ey+sil d+sil ng+sil k+sil l+sil iy+sil p+sil ao+sil v+sil dh+sil th+sil f+sil ch+sil b+sil s+sil z+sil jh+sil sh+sil zh+sil y+sil ih+sil w+sil ae+sil eh+sil hh+sil</competingModel>
+			<competingModelLogProb idx="1" type="char" size="1 331">-575.067 -578.725 -580.2 -583.81 -601.193 -602.746 -608.38 -613.454 -613.954 -624.184 -628.604 -629.651 -630.25 -630.364 -630.651 -643.008 -654.179 -664.22 -673.51 -683.106 -683.27 -685.759 -686.667 -707.541 -711.304 -721.701 -728.679 -732.02 -733.403 -750.442 -777.518 -842.391 -856.139 -993.464 -1021.8 -1349.71 -2173.85 -2834.94</competingModelLogProb>
+			<timberScores idx="1" type="double" size="1 3">100 100 100</timberScores>
+		</phone>
+		<name idx="3" type="char" size="1 4">y_uw</name>
+		<interval idx="3" type="double" size="1 2">0.31 0.56</interval>
+		<text idx="3" type="char" size="1 3">you</text>
+		<timberScore idx="3" type="double" size="1 1">100</timberScore>
+		<pitch idx="3" type="double" size="1 0"></pitch>
+		<volume idx="3" type="double" size="1 25">917083 841947 846281 939830 950819 942757 924079 960067 1.02782e+006 1.02312e+006 937840 866206 715290 625031 552922 395998 367521 468450 607079 812587 910782 978093 1.01377e+006 764311 503604</volume>
+		<timberScores idx="3" type="double" size="1 3">100 100 100</timberScores>
+		<phone idx="3" type="struct" size="1 2">
+			<name idx="1" type="char" size="1 4">y+uw</name>
+			<interval idx="1" type="double" size="1 2">0.31 0.4</interval>
+			<timberScore idx="1" type="double" size="1 1">100</timberScore>
+			<pitched idx="1" type="double" size="1 1">1</pitched>
+			<pitch idx="1" type="double" size="1 0"></pitch>
+			<volume idx="1" type="double" size="1 0"></volume>
+			<cumLogProb idx="1" type="double" size="1 1">-3108.28</cumLogProb>
+			<rankRatio idx="1" type="double" size="1 1">0</rankRatio>
+			<timeRatio idx="1" type="double" size="1 1">0.0625</timeRatio>
+			<competingModel idx="1" type="char" size="1 188">y+uw n+uw d+uw jh+uw hh+uw m+uw l+uw zh+uw t+uw sh+uw ch+uw s+uw r+uw f+uw z+uw k+uw b+uw iy+uw p+uw g+uw th+uw w+uw aw+uw er+uw ih+uw ow+uw ao+uw ae+uw ng+uw eh+uw aa+uw ah+uw oy+uw dh+uw</competingModel>
+			<competingModelLogProb idx="1" type="char" size="1 298">-589.203 -647.844 -670.392 -700.09 -725.821 -730.051 -730.859 -733.554 -735.856 -741.327 -751.403 -762.693 -766.483 -772.305 -782.492 -793.055 -806.504 -829.142 -860.286 -874.961 -950.46 -959.434 -1057.1 -1143.49 -1149.11 -1450 -1511.65 -1655.96 -2191.5 -2290.53 -3061.51 -3251.49 -3354.14 -5890.55</competingModelLogProb>
+			<timberScores idx="1" type="double" size="1 3">100 100 100</timberScores>
+			<name idx="2" type="char" size="1 6">uw+sil</name>
+			<interval idx="2" type="double" size="1 2">0.4 0.56</interval>
+			<timberScore idx="2" type="double" size="1 1">100</timberScore>
+			<pitched idx="2" type="double" size="1 1">1</pitched>
+			<pitch idx="2" type="double" size="1 0"></pitch>
+			<volume idx="2" type="double" size="1 0"></volume>
+			<cumLogProb idx="2" type="double" size="1 1">-4185.18</cumLogProb>
+			<rankRatio idx="2" type="double" size="1 1">0</rankRatio>
+			<timeRatio idx="2" type="double" size="1 1">0.111111</timeRatio>
+			<competingModel idx="2" type="char" size="1 249">uw+sil aw+sil ah+sil er+sil r+sil ow+sil l+sil ay+sil t+sil m+sil d+sil n+sil iy+sil ng+sil g+sil ey+sil aa+sil p+sil b+sil dh+sil v+sil k+sil th+sil f+sil s+sil z+sil ao+sil oy+sil sh+sil ch+sil jh+sil w+sil zh+sil ih+sil y+sil ae+sil eh+sil hh+sil</competingModel>
+			<competingModelLogProb idx="2" type="char" size="1 330">-1063.12 -1233.37 -1233.4 -1255.1 -1257.23 -1257.32 -1279.02 -1301.45 -1308.26 -1315.93 -1324.36 -1343.44 -1349 -1357.6 -1358.33 -1362.46 -1370.08 -1370.9 -1372.36 -1379.23 -1381.65 -1384.29 -1414.02 -1421.65 -1425.6 -1426.6 -1431.41 -1458.71 -1469.6 -1474.57 -1493.42 -1517.1 -1592.38 -1754.33 -1760.63 -2896.15 -3618.14 -4831.47</competingModelLogProb>
+			<timberScores idx="2" type="double" size="1 3">100 100 100</timberScores>
+		</phone>
+		<name idx="4" type="char" size="1 15">ah_l_er_jh_ih_k</name>
+		<interval idx="4" type="double" size="1 2">0.56 1.16</interval>
+		<text idx="4" type="char" size="1 8">allergic</text>
+		<timberScore idx="4" type="double" size="1 1">94.6708</timberScore>
+		<pitch idx="4" type="double" size="1 0"></pitch>
+		<volume idx="4" type="double" size="1 60">551807 553138 524333 570166 503946 569434 620018 552034 536396 606959 706263 882012 994612 1.08729e+006 1.10692e+006 1.09554e+006 1.10715e+006 1.04114e+006 1.07858e+006 1.15488e+006 1.03819e+006 860394 765763 753261 737760 703453 536472 424829 392020 364643 334680 307514 254804 144512 77745 96689 182143 309996 327551 265640 432756 652208 623778 469205 291813 145423 76844 55950 38163 47766 48916 52789 27472 23112 44163 52461 19950 18553 16839 13563</volume>
+		<timberScores idx="4" type="double" size="1 3">95.0389 94.6708 99.9679</timberScores>
+		<phone idx="4" type="struct" size="1 6">
+			<name idx="1" type="char" size="1 4">ah+l</name>
+			<interval idx="1" type="double" size="1 2">0.56 0.59</interval>
+			<timberScore idx="1" type="double" size="1 1">39.3939</timberScore>
+			<pitched idx="1" type="double" size="1 1">1</pitched>
+			<pitch idx="1" type="double" size="1 0"></pitch>
+			<volume idx="1" type="double" size="1 0"></volume>
+			<cumLogProb idx="1" type="double" size="1 1">-4393.89</cumLogProb>
+			<rankRatio idx="1" type="double" size="1 1">0.0769231</rankRatio>
+			<timeRatio idx="1" type="double" size="1 1">0.0208333</timeRatio>
+			<competingModel idx="1" type="char" size="1 178">n+l d+l t+l ah+l m+l ih+l g+l uw+l er+l ng+l v+l b+l r+l ay+l eh+l ao+l iy+l oy+l uh+l k+l aa+l ow+l p+l ae+l ey+l s+l jh+l z+l sh+l th+l f+l w+l aw+l l+l y+l ch+l hh+l zh+l dh+l</competingModel>
+			<competingModelLogProb idx="1" type="char" size="1 341">-207.928 -208.357 -210.538 -217.972 -220.064 -226.83 -229.23 -231.987 -234.573 -234.797 -236.404 -239.282 -246.301 -249.752 -249.892 -250.928 -251.975 -252.005 -252.956 -258.351 -258.76 -259.184 -266.977 -267.389 -272.855 -279.313 -282.629 -289.813 -291.473 -299.351 -303.089 -329.835 -431 -503.96 -511.225 -796.698 -1344.62 -2690.07 -5540.3</competingModelLogProb>
+			<timberScores idx="1" type="double" size="1 3">29.7012 39.3939 99.6236</timberScores>
+			<name idx="2" type="char" size="1 4">l+er</name>
+			<interval idx="2" type="double" size="1 2">0.59 0.69</interval>
+			<timberScore idx="2" type="double" size="1 1">100</timberScore>
+			<pitched idx="2" type="double" size="1 1">1</pitched>
+			<pitch idx="2" type="double" size="1 0"></pitch>
+			<volume idx="2" type="double" size="1 0"></volume>
+			<cumLogProb idx="2" type="double" size="1 1">-5109.12</cumLogProb>
+			<rankRatio idx="2" type="double" size="1 1">0</rankRatio>
+			<timeRatio idx="2" type="double" size="1 1">0.0694444</timeRatio>
+			<competingModel idx="2" type="char" size="1 211">l+er dh+er m+er n+er g+er d+er y+er b+er ng+er hh+er w+er t+er z+er v+er s+er k+er iy+er p+er th+er aw+er ay+er jh+er f+er uw+er zh+er r+er ow+er ey+er er+er sh+er ch+er ao+er oy+er ih+er ae+er eh+er ah+er aa+er</competingModel>
+			<competingModelLogProb idx="2" type="char" size="1 341">-705.542 -707.152 -708.082 -731.828 -743.897 -745.356 -750.095 -761.721 -766.962 -785.895 -788.123 -794.484 -796.087 -798.537 -801.965 -812.065 -819.065 -827.041 -838.297 -850.422 -873.224 -873.392 -880.146 -899.623 -907.414 -911.734 -912.075 -926.018 -927.053 -937.005 -948.694 -1096.51 -1096.83 -1114.71 -1582.06 -2549.91 -2979.59 -7538.43</competingModelLogProb>
+			<timberScores idx="2" type="double" size="1 3">100 100 100</timberScores>
+			<name idx="3" type="char" size="1 5">er+jh</name>
+			<interval idx="3" type="double" size="1 2">0.69 0.88</interval>
+			<timberScore idx="3" type="double" size="1 1">100</timberScore>
+			<pitched idx="3" type="double" size="1 1">1</pitched>
+			<pitch idx="3" type="double" size="1 0"></pitch>
+			<volume idx="3" type="double" size="1 0"></volume>
+			<cumLogProb idx="3" type="double" size="1 1">-6368.24</cumLogProb>
+			<rankRatio idx="3" type="double" size="1 1">0</rankRatio>
+			<timeRatio idx="3" type="double" size="1 1">0.131944</timeRatio>
+			<competingModel idx="3" type="char" size="1 206">er+jh r+jh ah+jh eh+jh aa+jh ih+jh uw+jh ae+jh ay+jh b+jh n+jh ey+jh l+jh iy+jh g+jh uh+jh y+jh oy+jh w+jh p+jh sh+jh z+jh d+jh ng+jh t+jh ch+jh k+jh f+jh m+jh ow+jh zh+jh ao+jh hh+jh aw+jh jh+jh s+jh dh+jh</competingModel>
+			<competingModelLogProb idx="3" type="char" size="1 326">-1243.87 -1327.03 -1369.58 -1415.76 -1447.62 -1450.81 -1450.85 -1488.06 -1499.01 -1606.54 -1606.9 -1648.67 -1663.06 -1720.96 -1765.44 -1881.46 -2070.97 -2122.4 -2186.35 -2189.04 -2301.16 -2452.94 -2516.28 -2555.57 -2623.41 -2665.7 -2710.22 -3074.85 -3631.99 -3647.28 -4526.42 -4832.75 -5248.59 -5963.56 -7506 -10841.4 -11754.9</competingModelLogProb>
+			<timberScores idx="3" type="double" size="1 3">100 100 100</timberScores>
+			<name idx="4" type="char" size="1 5">jh+ih</name>
+			<interval idx="4" type="double" size="1 2">0.88 0.98</interval>
+			<timberScore idx="4" type="double" size="1 1">100</timberScore>
+			<pitched idx="4" type="double" size="1 1">0</pitched>
+			<pitch idx="4" type="double" size="1 0"></pitch>
+			<volume idx="4" type="double" size="1 0"></volume>
+			<cumLogProb idx="4" type="double" size="1 1">-7085.84</cumLogProb>
+			<rankRatio idx="4" type="double" size="1 1">0</rankRatio>
+			<timeRatio idx="4" type="double" size="1 1">0.0694444</timeRatio>
+			<competingModel idx="4" type="char" size="1 211">jh+ih ch+ih sh+ih y+ih zh+ih t+ih k+ih g+ih d+ih hh+ih f+ih s+ih th+ih n+ih dh+ih z+ih v+ih p+ih b+ih r+ih w+ih l+ih m+ih er+ih iy+ih ng+ih uw+ih ay+ih ow+ih ey+ih ih+ih aw+ih eh+ih ae+ih ao+ih ah+ih aa+ih oy+ih</competingModel>
+			<competingModelLogProb idx="4" type="char" size="1 337">-731.141 -770.484 -781.537 -815.281 -824.161 -827.281 -828.724 -836.147 -839.327 -843.296 -871.279 -877.378 -881.904 -888.43 -916.059 -928.72 -951.351 -1005.3 -1023.56 -1055.15 -1127.37 -1189.54 -1255.86 -1418.07 -1483.39 -1576.93 -1603.96 -1637.44 -1714.7 -1817.54 -2069.98 -2730.98 -3141.17 -3309.65 -3747.56 -5627.27 -7144.52 -7420.97</competingModelLogProb>
+			<timberScores idx="4" type="double" size="1 3">100 100 100</timberScores>
+			<name idx="5" type="char" size="1 4">ih+k</name>
+			<interval idx="5" type="double" size="1 2">0.98 1.02</interval>
+			<timberScore idx="5" type="double" size="1 1">65.5172</timberScore>
+			<pitched idx="5" type="double" size="1 1">1</pitched>
+			<pitch idx="5" type="double" size="1 0"></pitch>
+			<volume idx="5" type="double" size="1 0"></volume>
+			<cumLogProb idx="5" type="double" size="1 1">-7363.44</cumLogProb>
+			<rankRatio idx="5" type="double" size="1 1">0.0263158</rankRatio>
+			<timeRatio idx="5" type="double" size="1 1">0.0277778</timeRatio>
+			<competingModel idx="5" type="char" size="1 174">ah+k ih+k uw+k uh+k eh+k er+k iy+k ay+k ae+k d+k ey+k r+k l+k ng+k n+k aa+k ow+k s+k t+k ao+k aw+k th+k y+k f+k g+k w+k k+k b+k sh+k jh+k oy+k z+k m+k ch+k p+k zh+k hh+k dh+k</competingModel>
+			<competingModelLogProb idx="5" type="char" size="1 340">-269.551 -275.503 -283.998 -296.471 -298.378 -298.776 -311.414 -311.616 -313.162 -313.952 -322.678 -326.646 -332.841 -333.839 -337.549 -345.048 -355.777 -367.845 -374.175 -382.647 -437.104 -470.29 -482.441 -509.583 -530.988 -537.733 -549.722 -555.433 -555.493 -566.397 -574.471 -582.298 -660.522 -705.237 -790.906 -830.878 -2493.82 -6220.78</competingModelLogProb>
+			<timberScores idx="5" type="double" size="1 3">78.308 65.5172 99.8001</timberScores>
+			<name idx="6" type="char" size="1 5">k+sil</name>
+			<interval idx="6" type="double" size="1 2">1.02 1.16</interval>
+			<timberScore idx="6" type="double" size="1 1">100</timberScore>
+			<pitched idx="6" type="double" size="1 1">0</pitched>
+			<pitch idx="6" type="double" size="1 0"></pitch>
+			<volume idx="6" type="double" size="1 0"></volume>
+			<cumLogProb idx="6" type="double" size="1 1">-8484.32</cumLogProb>
+			<rankRatio idx="6" type="double" size="1 1">0</rankRatio>
+			<timeRatio idx="6" type="double" size="1 1">0.0972222</timeRatio>
+			<competingModel idx="6" type="char" size="1 249">k+sil p+sil g+sil th+sil t+sil ah+sil f+sil d+sil b+sil dh+sil n+sil m+sil ow+sil ey+sil s+sil jh+sil l+sil r+sil ay+sil uw+sil z+sil v+sil er+sil ch+sil sh+sil iy+sil ng+sil aw+sil aa+sil oy+sil ao+sil zh+sil y+sil w+sil ih+sil ae+sil eh+sil hh+sil</competingModel>
+			<competingModelLogProb idx="6" type="char" size="1 338">-1104.3 -1113.27 -1121.86 -1126.16 -1126.57 -1134.37 -1138.39 -1139.81 -1143.92 -1151.65 -1155.63 -1162.56 -1165.75 -1168.34 -1170.46 -1170.58 -1173.75 -1174.42 -1174.54 -1175.26 -1177.45 -1177.6 -1178.25 -1180.08 -1185.43 -1187.14 -1198.61 -1211.03 -1214.7 -1231.94 -1262.48 -1321.38 -1524.83 -1716.26 -2129.08 -2193.29 -4042.59 -4518.89</competingModelLogProb>
+			<timberScores idx="6" type="double" size="1 3">100 100 100</timberScores>
+		</phone>
+		<name idx="5" type="char" size="1 4">t_uw</name>
+		<interval idx="5" type="double" size="1 2">1.16 1.44</interval>
+		<text idx="5" type="char" size="1 2">to</text>
+		<timberScore idx="5" type="double" size="1 1">100</timberScore>
+		<pitch idx="5" type="double" size="1 0"></pitch>
+		<volume idx="5" type="double" size="1 28">27739 48288 88946 175023 195240 149753 131181 124791 126228 109576 85564 60195 150624 366789 510414 415668 417713 468323 405853 331680 284476 304240 253915 195541 162638 147269 121901 104784</volume>
+		<timberScores idx="5" type="double" size="1 3">100 100 100</timberScores>
+		<phone idx="5" type="struct" size="1 2">
+			<name idx="1" type="char" size="1 4">t+uw</name>
+			<interval idx="1" type="double" size="1 2">1.16 1.29</interval>
+			<timberScore idx="1" type="double" size="1 1">100</timberScore>
+			<pitched idx="1" type="double" size="1 1">0</pitched>
+			<pitch idx="1" type="double" size="1 0"></pitch>
+			<volume idx="1" type="double" size="1 0"></volume>
+			<cumLogProb idx="1" type="double" size="1 1">-9426.6</cumLogProb>
+			<rankRatio idx="1" type="double" size="1 1">0</rankRatio>
+			<timeRatio idx="1" type="double" size="1 1">0.0902778</timeRatio>
+			<competingModel idx="1" type="char" size="1 188">t+uw ch+uw s+uw jh+uw d+uw sh+uw k+uw zh+uw hh+uw f+uw y+uw b+uw p+uw z+uw th+uw l+uw n+uw g+uw m+uw r+uw aw+uw w+uw ih+uw ow+uw iy+uw er+uw ae+uw ao+uw eh+uw ah+uw ng+uw dh+uw oy+uw aa+uw</competingModel>
+			<competingModelLogProb idx="1" type="char" size="1 303">-961.558 -1002.4 -1026.49 -1050.91 -1063.64 -1084.14 -1090.71 -1096.23 -1132.23 -1164.73 -1268.08 -1282.26 -1287.78 -1296.63 -1421.63 -1525.42 -1578.34 -1636.22 -1692.51 -1728.3 -1865.55 -1977.55 -2360.22 -2461.95 -2473.01 -2702.06 -3603.64 -4138.74 -4467.94 -5921.96 -8014.35 -8273.89 -8370.14 -8561.36</competingModelLogProb>
+			<timberScores idx="1" type="double" size="1 3">100 100 100</timberScores>
+			<name idx="2" type="char" size="1 6">uw+sil</name>
+			<interval idx="2" type="double" size="1 2">1.29 1.44</interval>
+			<timberScore idx="2" type="double" size="1 1">100</timberScore>
+			<pitched idx="2" type="double" size="1 1">1</pitched>
+			<pitch idx="2" type="double" size="1 0"></pitch>
+			<volume idx="2" type="double" size="1 0"></volume>
+			<cumLogProb idx="2" type="double" size="1 1">-10330.5</cumLogProb>
+			<rankRatio idx="2" type="double" size="1 1">0</rankRatio>
+			<timeRatio idx="2" type="double" size="1 1">0.104167</timeRatio>
+			<competingModel idx="2" type="char" size="1 249">uw+sil er+sil ah+sil ey+sil r+sil iy+sil ay+sil d+sil ow+sil t+sil g+sil n+sil k+sil oy+sil dh+sil aw+sil jh+sil m+sil f+sil ch+sil v+sil th+sil aa+sil sh+sil ng+sil p+sil s+sil z+sil l+sil ao+sil b+sil zh+sil ih+sil y+sil w+sil ae+sil eh+sil hh+sil</competingModel>
+			<competingModelLogProb idx="2" type="char" size="1 336">-893.522 -945.941 -961.176 -1002.89 -1009.44 -1022.33 -1036.44 -1044.9 -1055.64 -1065.64 -1087.87 -1088.9 -1102.57 -1110.82 -1113.18 -1117.86 -1120.98 -1126.45 -1126.71 -1127.5 -1127.99 -1132.18 -1132.89 -1134.89 -1135.79 -1139.1 -1140.94 -1149.05 -1168.16 -1171.22 -1171.92 -1200.05 -1331.8 -1416.58 -1443.83 -1967.15 -2463.53 -3254.98</competingModelLogProb>
+			<timberScores idx="2" type="double" size="1 3">100 100 100</timberScores>
+		</phone>
+		<name idx="6" type="char" size="1 3">sil</name>
+		<interval idx="6" type="double" size="1 2">1.44 1.68</interval>
+		<text idx="6" type="char" size="1 0"></text>
+		<timberScore idx="6" type="double" size="1 1">-1</timberScore>
+		<pitch idx="6" type="double" size="1 0"></pitch>
+		<volume idx="6" type="double" size="1 24">122801 126120 124588 110440 92476 79306 82042 63226 55682 27703 23028 39692 35963 16067 5307 19278 22439 12052 9790 5626 18724 25490 12688 47140</volume>
+		<timberScores idx="6" type="double" size="1 3">-1 -1 -1</timberScores>
+		<phone idx="6" type="struct" size="1 1">
+			<name idx="1" type="char" size="1 3">sil</name>
+			<interval idx="1" type="double" size="1 2">1.44 1.68</interval>
+			<timberScore idx="1" type="double" size="1 1">-1</timberScore>
+			<pitched idx="1" type="double" size="1 1">0</pitched>
+			<pitch idx="1" type="double" size="1 0"></pitch>
+			<volume idx="1" type="double" size="1 0"></volume>
+			<cumLogProb idx="1" type="double" size="1 1">-11950.7</cumLogProb>
+			<rankRatio idx="1" type="double" size="1 1">-1</rankRatio>
+			<timeRatio idx="1" type="double" size="1 1">-1</timeRatio>
+			<competingModel idx="1" type="char" size="1 0"></competingModel>
+			<competingModelLogProb idx="1" type="char" size="1 0"></competingModelLogProb>
+			<timberScores idx="1" type="double" size="1 3">-1 -1 -1</timberScores>
+		</phone>
+	</word>
+	<discountFactor idx="1" type="struct" size="1 7"><!--Discount factors for computing the discounted scores-->
+		<occurrence idx="1" type="double" size="1 1">0</occurrence>
+		<ratio idx="1" type="double" size="1 1">1.000000</ratio>
+		<type idx="1" type="char" size="1 30">Incomplete Viterbi search path</type>
+		<occurrence idx="2" type="double" size="1 1">0</occurrence>
+		<ratio idx="2" type="double" size="1 1">1.000000</ratio>
+		<type idx="2" type="char" size="1 27">No. of over-short syllables</type>
+		<occurrence idx="3" type="double" size="1 1">0</occurrence>
+		<ratio idx="3" type="double" size="1 1">1.000000</ratio>
+		<type idx="3" type="char" size="1 25">No. of overlong syllables</type>
+		<occurrence idx="4" type="double" size="1 1">0</occurrence>
+		<ratio idx="4" type="double" size="1 1">1.000000</ratio>
+		<type idx="4" type="char" size="1 30">No. of sp longer than 0.25 sec</type>
+		<occurrence idx="5" type="double" size="1 1">0</occurrence>
+		<ratio idx="5" type="double" size="1 1">1.000000</ratio>
+		<type idx="5" type="char" size="1 57">Difference between identified and actual no. of syllables</type>
+		<occurrence idx="6" type="double" size="1 1">1</occurrence>
+		<ratio idx="6" type="double" size="1 1">1.000000</ratio>
+		<type idx="6" type="char" size="1 63">Ratio between the longest and shortest syllables greater than 4</type>
+		<occurrence idx="7" type="double" size="1 1">0</occurrence>
+		<ratio idx="7" type="double" size="1 1">0.700000</ratio>
+		<type idx="7" type="char" size="1 23">Volume of sil too large</type>
+	</discountFactor>
+</confidenceMeasure>
+</root>

@@ -1,0 +1,9 @@
+assoc .mlf=
+assoc .scp=
+assoc .template=
+assoc .cfg=
+assoc .pam=
+assoc .init=
+assoc .hmm=
+assoc .net=
+assoc .grammar=

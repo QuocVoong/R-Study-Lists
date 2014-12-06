@@ -1,0 +1,6 @@
+
+allFields = 
+
+    'name'
+    'scores'
+

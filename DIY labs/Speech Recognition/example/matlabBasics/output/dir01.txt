@@ -1,0 +1,10 @@
+
+dirinfo = 
+
+20x1 struct array with fields:
+    name
+    date
+    bytes
+    isdir
+    datenum
+

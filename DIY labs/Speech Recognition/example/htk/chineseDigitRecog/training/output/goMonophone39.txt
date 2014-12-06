@@ -1,0 +1,19 @@
+         pamFile: 'digitMonophone.pam'
+      feaCfgFile: 'mfcc39.cfg'
+         waveDir: '..\waveFile'
+      sylMlfFile: 'digitSyl.mlf'
+    phoneMlfFile: 'digitMonophone.mlf'
+         mnlFile: 'digitMonophone.mnl'
+     grammarFile: 'digit.grammar'
+         feaType: 'MFCC_E_D_A_Z'
+          feaDim: 39
+      mixtureNum: 3
+        stateNum: 3
+     streamWidth: 39
+
+Pruning-Off 
+Pruning-Off 
+Pruning-Off 
+Pruning-Off 
+Pruning-Off 
+Inside test = 84.6%, outside test = 89.29%

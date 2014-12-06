@@ -1,0 +1,117 @@
+% ====== Introduction to Audio Signals
+voicedFrame01
+unvoicedFrame01
+
+% ====== Basic Features of Audio Signals
+volume01
+volume02
+volume03
+volume04
+zcr01
+zcr02
+zcrWithShift
+zcrOn8bit
+zcrOn16bit
+pitchTuningFork01
+pitchVoice01
+
+% ====== EPD
+epdByVolTh01
+epdByVol01
+epdByVolZcr01
+highOrderDiff01
+epdByVolHod01
+
+% ====== Pitch tracking
+frame2acf01
+frame2acf02
+frame2acf03
+frame2acfPitchPoint01
+wave2pitchByAcf01
+frame2nsdf01
+frame2amdf01
+frame2amdf02
+frame2amdf03
+frame2acfOverAmdf01
+frame2acfOverAmdf02
+hps01
+ceps01
+siftAcf01
+wave2pitchBySiftAcf01
+pitchResolution01
+
+% ====== Digital Signals and Systems 
+convolution01
+impulse01
+impulse02
+sinusoid01
+unitStep01
+
+% ====== Digital Filters
+butter01
+butter02
+butter03
+butter04
+butter05
+echo01
+echo02
+hpf01
+lpf01
+
+% ====== Speech Features
+fftFormant01
+hammingWindow01
+preEmphasis01
+showMelFreq01
+windowing01
+windowing02
+
+% ====== Melody Recognition
+binarySearch4min01
+linScaling01
+linScaling02
+mrDtw1plot01
+mrDtw1plot02
+mrDtw1plot03
+dtw3path01
+dtw3inducedPitch01
+dtw3inducedPitch02
+mrDtw2plot01
+noteSegment01
+displaySeven
+displayFrame
+
+% ====== FT
+fft01
+fft02
+fft03
+fft04
+fftSym01
+fftApproximate01
+fftApproximate02
+fftRepeat01
+fftZeroPadding01
+fftReSample01
+fftViaLse01
+%fftFormant01
+%preEmphasis01
+%showMelFreq01
+%showTriFilterBank01
+%hammingWindow01
+%windowing01
+%windowing02
+
+% ====== QBT
+qbtVolume01
+qbtFeatureExtract01
+qbtCueLabelRead01
+odByVol01
+odByVolViaFile01
+odByVolViaFile02
+qbtRetrievalExample01
+
+% ====== ASRA
+waveAssess01
+waveAssess02
+waveAssess03
+waveAssess04

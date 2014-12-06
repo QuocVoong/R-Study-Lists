@@ -1,0 +1,12 @@
+
+ans = 
+
+      name: '±i®xºÓ'
+    scores: [50 60]
+
+
+ans = 
+
+      name: '±i®x¦w'
+    scores: [60 70]
+

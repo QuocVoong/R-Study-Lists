@@ -1,0 +1,17 @@
+dosCmd="assess.exe" "d:\users\jang\matlab\toolbox\asr\exe/japanese.sa.prm" "d:\users\jang\matlab\toolbox\asr/testInput/ka_ko_no_o_mo_i_de_o_hu_ri_ka_e_tte_mi_ru.wav" "C:\Users\jang\AppData\Local\Temp\tp6c25b3a2_1e3b_4b2f_9db2_7aa0a278536c.txt" 0 "output" "d:\users\jang\matlab\toolbox\asr\japanese0001.syl" "" "" 1
+exeStatus=0
+exeResult=0.004 sec: Read wave file "d:\users\jang\matlab\toolbox\asr/testInput/ka_ko_no_o_mo_i_de_o_hu_ri_ka_e_tte_mi_ru.wav"
+0.025 sec: Read "asraData/japanese/japanese.macb" (modelNum=120) and ""
+Warning of model substitution: g+u	w+a is replaced by g+a
+Warning of model substitution: w+u is replaced by w+a
+0.007 sec: Read pam "asraData/japanese/japanese.dic" (m_pronDict.size()=279)
+0.024 sec: Read text normalization mapping file "asraData/japanese/japanese.tnm" (myText.m_textNormSp.size()=0)
+0.001 sec: Read text "C:\Users\jang\AppData\Local\Temp\tp6c25b3a2_1e3b_4b2f_9db2_7aa0a278536c.txt" (m_txtVs.size()=1)
+0.000 sec: text normalization (m_txtVsNormalized.size()=1)
+	===> Saved output/output.nt
+
+Saved error log at C:\Users\jang\AppData\Local\Temp/error_20130325_140152.log...
+Cannot open file d:\users\jang\matlab\toolbox\asr\japanese0001.syl (line 100 of \users\jang\c\lib\utility\utility.cpp)
+
+Something went wrong!
+You can copy the dosCmd and run it under DOS window within {asrToolbox}\exe directory to see the results for debugging.

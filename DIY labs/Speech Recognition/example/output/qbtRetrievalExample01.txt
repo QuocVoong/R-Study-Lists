@@ -1,0 +1,15 @@
+Reading the song database...
+Process the song database...
+Process the query file...
+Compare the query with the database...
+Top-10 results:
+1: songName=喔，蘇珊娜_不詳, distance=0.101353
+2: songName=歡樂年華_不詳, distance=0.615711
+3: songName=潑水歌_不詳, distance=0.629016
+4: songName=捕魚歌_不詳, distance=0.638528
+5: songName=火車快飛_不詳, distance=0.646215
+6: songName=兩隻老虎_不詳, distance=0.655776
+7: songName=yankee doodle_不詳, distance=0.660146
+8: songName=三輪車_不詳, distance=0.702796
+9: songName=魯啦啦_不詳, distance=0.709397
+10: songName=小星星_不詳, distance=0.716578

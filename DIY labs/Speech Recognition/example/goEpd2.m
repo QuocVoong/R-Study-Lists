@@ -1,0 +1,15 @@
+epdPrm.frameSize = 256;
+epdPrm.overlap = 86;
+epdPrm.deltaEnergyLevel1 = -20;
+epdPrm.deltaEnergyLevel2 = -10;
+epdPrm.zcrRatio = 0.2;
+plotOpt = 1;
+wavefile='testEPD/Db.wav';
+wavefile='testEPD/Ka.wav';
+wavefile='testEPD/Pa.wav';
+wavefile='testEPD/Pb.wav';
+%wavefile='testEPD/Tb.wav';
+%wavefile='testEPD/Xa.wav';
+[y, fs, nbits] = wavread(wavefile);
+%y=y*(2^nbits/2);
+out = endPointDetect02(y, fs, plotOpt, epdPrm)

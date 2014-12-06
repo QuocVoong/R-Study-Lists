@@ -1,0 +1,48 @@
+midiName=midi\¤T½ü¨®_¤£¸Ô.mid	songName=¤T½ü¨®_¤£¸Ô	language=	singer=	sex= 	album= 	start=0	size=64	refrain= 
+midiName=midi\¥@¤W¥u¦³¶ý¶ý¦n_¤£¸Ô.mid	songName=¥@¤W¥u¦³¶ý¶ý¦n_¤£¸Ô	language=	singer=	sex= 	album= 	start=65	size=66	refrain= 
+midiName=midi\­Û´°ÅK¾ô«±¤U¨Ó_¤£¸Ô.mid	songName=­Û´°ÅK¾ô«±¤U¨Ó_¤£¸Ô	language=	singer=	sex= 	album= 	start=132	size=50	refrain= 
+midiName=midi\¨â°¦¦Ñªê_¤£¸Ô.mid	songName=¨â°¦¦Ñªê_¤£¸Ô	language=	singer=	sex= 	album= 	start=183	size=70	refrain= 
+midiName=midi\¤Q­Ó¦L²Ä¦w¤H_¤£¸Ô.mid	songName=¤Q­Ó¦L²Ä¦w¤H_¤£¸Ô	language=	singer=	sex= 	album= 	start=254	size=86	refrain= 
+midiName=midi\¥u­n§Úªø¤j_¤£¸Ô.mid	songName=¥u­n§Úªø¤j_¤£¸Ô	language=	singer=	sex= 	album= 	start=341	size=100	refrain= 
+midiName=midi\³á¡AÄ¬¬À®R_¤£¸Ô.mid	songName=³á¡AÄ¬¬À®R_¤£¸Ô	language=	singer=	sex= 	album= 	start=442	size=60	refrain= 
+midiName=midi\¤p¬P¬P_¤£¸Ô.mid	songName=¤p¬P¬P_¤£¸Ô	language=	singer=	sex= 	album= 	start=503	size=84	refrain= 
+midiName=midi\¤p¤òÆj_¤£¸Ô.mid	songName=¤p¤òÆj_¤£¸Ô	language=	singer=	sex= 	album= 	start=588	size=116	refrain= 
+midiName=midi\¤p¯ù³ý_¤£¸Ô.mid	songName=¤p¯ù³ý_¤£¸Ô	language=	singer=	sex= 	album= 	start=705	size=56	refrain= 
+midiName=midi\Ãi´kÂÎ_¤£¸Ô.mid	songName=Ãi´kÂÎ_¤£¸Ô	language=	singer=	sex= 	album= 	start=762	size=134	refrain= 
+midiName=midi\®»ªdÄÏ_¤£¸Ô.mid	songName=®»ªdÄÏ_¤£¸Ô	language=	singer=	sex= 	album= 	start=897	size=734	refrain= 
+midiName=midi\®·³½ºq_¤£¸Ô.mid	songName=®·³½ºq_¤£¸Ô	language=	singer=	sex= 	album= 	start=1632	size=74	refrain= 
+midiName=midi\©ú¤Ñ·|§ó¦n_¤£¸Ô.mid	songName=©ú¤Ñ·|§ó¦n_¤£¸Ô	language=	singer=	sex= 	album= 	start=1707	size=1232	refrain= 
+midiName=midi\Åw¼Ö¦~µØ_¤£¸Ô.mid	songName=Åw¼Ö¦~µØ_¤£¸Ô	language=	singer=	sex= 	album= 	start=2940	size=122	refrain= 
+midiName=midi\ªd«½«½_¤£¸Ô.mid	songName=ªd«½«½_¤£¸Ô	language=	singer=	sex= 	album= 	start=3063	size=118	refrain= 
+midiName=midi\¼â¤ôºq_¤£¸Ô.mid	songName=¼â¤ôºq_¤£¸Ô	language=	singer=	sex= 	album= 	start=3182	size=132	refrain= 
+midiName=midi\¤õ¨®§Ö­¸_¤£¸Ô.mid	songName=¤õ¨®§Ö­¸_¤£¸Ô	language=	singer=	sex= 	album= 	start=3315	size=78	refrain= 
+midiName=midi\¤ý¦Ñ¥ý¥Í¦³¶ô¦a_¤£¸Ô.mid	songName=¤ý¦Ñ¥ý¥Í¦³¶ô¦a_¤£¸Ô	language=	singer=	sex= 	album= 	start=3394	size=104	refrain= 
+midiName=midi\²¢»eªº®a®x_¤£¸Ô.mid	songName=²¢»eªº®a®x_¤£¸Ô	language=	singer=	sex= 	album= 	start=3499	size=168	refrain= 
+midiName=midi\¥Í¤é§Ö¼Ö_¤£¸Ô.mid	songName=¥Í¤é§Ö¼Ö_¤£¸Ô	language=	singer=	sex= 	album= 	start=3668	size=52	refrain= 
+midiName=midi\·í§Ú­Ì¦P¦b¤@°__¤£¸Ô.mid	songName=·í§Ú­Ì¦P¦b¤@°__¤£¸Ô	language=	singer=	sex= 	album= 	start=3721	size=104	refrain= 
+midiName=midi\¬îÂÍ_¤£¸Ô.mid	songName=¬îÂÍ_¤£¸Ô	language=	singer=	sex= 	album= 	start=3826	size=666	refrain= 
+midiName=midi\µ£¦~_±i¦ã¹Å.mid	songName=µ£¦~_±i¦ã¹Å	language=	singer=	sex= 	album= 	start=4493	size=162	refrain= 
+midiName=midi\ºñªoºë_¤£¸Ô.mid	songName=ºñªoºë_¤£¸Ô	language=	singer=	sex= 	album= 	start=4656	size=64	refrain= 
+midiName=midi\­[²úªá_¤£¸Ô.mid	songName=­[²úªá_¤£¸Ô	language=	singer=	sex= 	album= 	start=4721	size=134	refrain= 
+midiName=midi\µÓ»E_§õÖö§g.mid	songName=µÓ»E_§õÖö§g	language=	singer=	sex= 	album= 	start=4856	size=580	refrain= 
+midiName=midi\ªê©h±C_¤£¸Ô.mid	songName=ªê©h±C_¤£¸Ô	language=	singer=	sex= 	album= 	start=5437	size=194	refrain= 
+midiName=midi\½¹½º_¤£¸Ô.mid	songName=½¹½º_¤£¸Ô	language=	singer=	sex= 	album= 	start=5632	size=80	refrain= 
+midiName=midi\½½¤û»P¶ÀùÏ³¾_»ÈÁø.mid	songName=½½¤û»P¶ÀùÏ³¾_»ÈÁ	language=	singer=	sex= 	album= 	start=5713	size=194	refrain= 
+midiName=midi\¦è­·ªº¸Ü_¤£¸Ô.mid	songName=¦è­·ªº¸Ü_¤£¸Ô	language=	singer=	sex= 	album= 	start=5908	size=120	refrain= 
+midiName=midi\¹C¤l§u_¤£¸Ô.mid	songName=¹C¤l§u_¤£¸Ô	language=	singer=	sex= 	album= 	start=6029	size=84	refrain= 
+midiName=midi\ªø«°ÁÁ_¤£¸Ô.mid	songName=ªø«°ÁÁ_¤£¸Ô	language=	singer=	sex= 	album= 	start=6114	size=514	refrain= 
+midiName=midi\«C¬K»R¦±_¤£¸Ô.mid	songName=«C¬K»R¦±_¤£¸Ô	language=	singer=	sex= 	album= 	start=6629	size=164	refrain= 
+midiName=midi\°ª¤s«C_¤£¸Ô.mid	songName=°ª¤s«C_¤£¸Ô	language=	singer=	sex= 	album= 	start=6794	size=174	refrain= 
+midiName=midi\³½¨à³½¨à¤ô¤¤´å_¤£¸Ô.mid	songName=³½¨à³½¨à¤ô¤¤´å_¤£¸Ô	language=	singer=	sex= 	album= 	start=6969	size=94	refrain= 
+midiName=midi\¾|°Õ°Õ_¤£¸Ô.mid	songName=¾|°Õ°Õ_¤£¸Ô	language=	singer=	sex= 	album= 	start=7064	size=80	refrain= 
+midiName=midi\Àsªº¶Ç¤H_§õ°·´_.mid	songName=Àsªº¶Ç¤H_§õ°·´_	language=	singer=	sex= 	album= 	start=7145	size=630	refrain= 
+midiName=midi\humpty dumpty_¤£¸Ô.mid	songName=humpty dumpty_¤£¸Ô	language=	singer=	sex= 	album= 	start=7776	size=72	refrain= 
+midiName=midi\I'm the teapot_¤£¸Ô.mid	songName=I'm the teapot_¤£¸Ô	language=	singer=	sex= 	album= 	start=7849	size=124	refrain= 
+midiName=midi\skip to my lou_¤£¸Ô.mid	songName=skip to my lou_¤£¸Ô	language=	singer=	sex= 	album= 	start=7974	size=68	refrain= 
+midiName=midi\yankee doodle_¤£¸Ô.mid	songName=yankee doodle_¤£¸Ô	language=	singer=	sex= 	album= 	start=8043	size=118	refrain= 
+midiName=midi\hictory dickory dock_¤£¸Ô.mid	songName=hictory dickory dock_¤£¸Ô	language=	singer=	sex= 	album= 	start=8162	size=68	refrain= 
+midiName=midi\I've been working on the railroad_¤£¸Ô.mid	songName=I've been working on the railroad_¤£¸Ô	language=	singer=	sex= 	album= 	start=8231	size=120	refrain= 
+midiName=midi\merrily we roll along_¤£¸Ô.mid	songName=merrily we roll along_¤£¸Ô	language=	singer=	sex= 	album= 	start=8352	size=102	refrain= 
+midiName=midi\the farmer in the dell_¤£¸Ô.mid	songName=the farmer in the dell_¤£¸Ô	language=	singer=	sex= 	album= 	start=8455	size=92	refrain= 
+midiName=midi\six little ducks_¤£¸Ô.mid	songName=six little ducks_¤£¸Ô	language=	singer=	sex= 	album= 	start=8548	size=150	refrain= 
+midiName=midi\wheels on the bus_¤£¸Ô.mid	songName=wheels on the bus_¤£¸Ô	language=	singer=	sex= 	album= 	start=8699	size=54	refrain= 

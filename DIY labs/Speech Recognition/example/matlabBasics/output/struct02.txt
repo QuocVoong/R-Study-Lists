@@ -1,0 +1,8 @@
+
+student = 
+
+1x2 struct array with fields:
+    name
+    id
+    scores
+

@@ -1,0 +1,14 @@
+
+ans = 
+
+      name: 'Roland'
+    scores: [80 90]
+       age: []
+
+
+ans = 
+
+      name: []
+    scores: []
+       age: 20
+

@@ -1,0 +1,11 @@
+
+student = 
+
+      name: 'Roland'
+    scores: [80 90]
+
+
+student2 = 
+
+    name: 'Roland'
+

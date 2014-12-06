@@ -1,0 +1,12 @@
+
+ans = 
+
+      name: '張庭安'
+    scores: [50 60]
+
+
+ans = 
+
+      name: '張庭安'
+    scores: [90 100]
+

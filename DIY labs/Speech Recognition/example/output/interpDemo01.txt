@@ -1,0 +1,2 @@
+Desired length ratio = 1.800000
+Actual length ratio = 1.700000

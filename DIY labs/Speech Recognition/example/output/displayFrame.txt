@@ -1,0 +1,3 @@
+Fundamental period = 0.008375 second
+Fundamental frequency = 119.403 Hertz
+Pitch = 46.42 semitone

@@ -1,0 +1,4 @@
+Information of the sound file "welcome.wav":
+Duration = 1.45134 seconds
+Sampling rate = 11025 samples/second
+Bit resolution = 8 bits/sample

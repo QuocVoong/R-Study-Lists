@@ -1,0 +1,12 @@
+waveFile='csNthu.wav';
+frameSize=256;
+overlap=0;
+[y, fs, nbits]=wavread(waveFile);
+frameMat=enframe(y, frameSize, overlap);
+frameNum=size(frameMat, 2);
+zcr=frame2zcr(frameMat);
+sampleTime=(1:length(y))/fs;
+frameTime=frame2sampleIndex(1:frameNum, frameSize, overlap)/fs;
+subplot(2,1,1); plot(sampleTime, y); ylabel('Amplitude'); title(waveFile);
+subplot(2,1,2); plot(frameTime, zcr, '.-');
+xlabel('Time (sec)'); ylabel('Count'); title('ZCR');

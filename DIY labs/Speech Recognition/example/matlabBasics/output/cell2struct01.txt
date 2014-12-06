@@ -1,0 +1,12 @@
+
+ans = 
+
+    name: 'Tim'
+     age: 9
+
+
+ans = 
+
+    name: 'Annie'
+     age: 6
+

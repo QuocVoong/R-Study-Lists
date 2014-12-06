@@ -1,0 +1,1 @@
+waveFile=tappingNoisy.wav, insertCount=0, deleteCount=5

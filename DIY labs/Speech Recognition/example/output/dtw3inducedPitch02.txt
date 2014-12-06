@@ -1,0 +1,2 @@
+Best shift = 1.300000
+Min. distance = 103.332368
