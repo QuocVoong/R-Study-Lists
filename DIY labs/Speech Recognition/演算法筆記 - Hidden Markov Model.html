@@ -1,0 +1,464 @@
+
+<!-- saved from url=(0058)http://www.csie.ntnu.edu.tw/~u91029/HiddenMarkovModel.html -->
+<html lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><link rel="stylesheet" href="http://www.csie.ntnu.edu.tw/~u91029/style.css">
+<title>演算法筆記 - Hidden Markov Model</title></head><body>
+<div class="a"><div class="h" id="1">
+<p class="b">Markov Model</p>
+<p class="r">程度★　難度★★</p>
+</div><div class="c">
+<p class="t">Markov Model</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/MarkovModel1.png">
+<p>馬可夫模型大意是：選一個狀態作為起點，然後沿著邊隨意走訪任何一個狀態，一直走一直走，沿途累計機率，走累了就停在某個狀態。</p>
+<p>熟悉「<a href="http://www.csie.ntnu.edu.tw/~u91029/Graph.html">圖論</a>」的讀者應該很快就能上手，馬可夫模型的外觀看起來就是圖──只不過代數符號多得令人生厭。</p>
+<p>建議閱讀： L. Rabiner, A Tutorial on Hidden Markov Models and Selected Applications in Speech Recognition, Proceedings of the IEEE, vol. 77, No. 2, February 1989.</p>
+<p class="t">State, S</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/MarkovModel2.png">
+<p>圖片中，每一個圓圈叫做一個「狀態」。馬可夫模型一共有 N 個狀態，通常標作 s <sub> 1 </sub>到 s <sub> N </sub>。 N 是我們自行設定的常數。</p>
+<p>全部狀態構成的集合，標作大寫 S 。</p>
+<p class="t">Transition Probability, A</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/MarkovModel3.png">
+<p>每一個狀態都會射出 N 條邊，這 N 條邊分別連向每一個狀態，這 N 條邊的數值都是機率，這 N 條邊的數值皆介於 0 到 1 ，這 N 條邊的數值總和必為 1 ，滿足機率公設。</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/MarkovModel4.png">
+<p>一條由狀態 s <sub> i </sub>到狀態 s <sub> j </sub>的邊，其數值通常標作 a <sub> ij </sub>。亦可標作條件機率 P( s <sub> j </sub>  | s <sub> i </sub>  ) ，意思是現在在狀態 s <sub> i </sub>、要來去狀態 s <sub> j </sub>。亦可套用稍後提到的狀態序列，標作 P( q <sub> t+1 </sub>  = j | q <sub> t </sub>  = i ) 。</p>
+<p>全部邊構成的集合，標作 A 。通常把 A 看作一個 N×N 矩陣。</p>
+<p>寫程式時，我們可以利用圖的資料結構 adjacency matrix 儲存全部的數值。當 A 有很多數值是零，去掉一些邊之後，也可以改用 adjacency lists 。</p>
+<p class="t">Initial Probability, Π</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/MarkovModel5.png">
+<p>我們可以選擇任何一個狀態作為起點。機率總和為 1 。</p>
+<p>繪製圖片時，我們可以設計一個虛幻狀態 s <sub> 0 </sub>，讓 s <sub> 0 </sub>射出 N 條虛幻邊，分別連向每一個狀態，其數值滿足機率公設。如此一來我們就可以從冥冥之中的 s <sub> 0 </sub>開始行動。</p>
+<p>這 N 條虛幻邊的數值通常標作 π <sub> 1 </sub>到 π <sub> N </sub>。亦可標作機率 P( s <sub> 1 </sub>  ) 到 P( s <sub> N </sub>  ) 。亦可套用稍後提到的狀態序列，標作 P( q <sub> 1 </sub>  = 1 ) 到 P( q <sub> 1 </sub>  = N ) 。</p>
+<p>這 N 條虛幻邊構成的集合，標作 Π 。通常把 Π 看作一個 N 維向量、一個 N×1 矩陣。</p>
+<p>寫程式時，通常我們不會設計一個虛幻的狀態 s <sub> 0 </sub>，而是把狀態 s <sub> 1 </sub>到 s <sub> N </sub>重新標作 s <sub> 0 </sub>到 s <sub> N-1 </sub>。</p>
+<div class="sh"><div class="bar">&nbsp;</div><ol><li><span class="keyword">const</span><span>&nbsp;</span><span class="type">int</span><span>&nbsp;</span><span class="word">N</span><span>&nbsp;=&nbsp;</span><span class="value">3</span><span>;</span></li><li><span class="type">double</span><span>&nbsp;</span><span class="word">a</span><span>[</span><span class="word">N</span><span>][</span><span class="word">N</span><span>];</span></li><li><span class="type">double</span><span>&nbsp;π[</span><span class="word">N</span><span>];</span></li></ol></div><textarea style="display: none;">const int N = 3;
+double a[N][N];
+double π[N];
+</textarea>
+<p class="t">State Sequence, q <sub> 1 </sub>  q <sub> 2 </sub>  ...... q <sub> T </sub></p>
+<img src="./演算法筆記 - Hidden Markov Model_files/MarkovModel6.png">
+<p>選定起點後，可以沿著邊，到處走來走去，一路走過 T 個狀態以及 T-1 條邊之後，就停下來。 T 是我們自行設定的常數。</p>
+<p>一條路徑，通常標作 q <sub> 1 </sub>  q <sub> 2 </sub>  ...... q <sub> T </sub>，為途經的狀態編號。</p>
+<p>一條路徑的機率，可以寫成 π <sub> q<sub>1</sub> </sub>  × a <sub> q<sub>1</sub>q<sub>2</sub> </sub>  × ...... × a <sub> q<sub>T-1</sub>q<sub>T</sub> </sub>，也可以寫成 P( s <sub> q<sub>1</sub> </sub>  ) × P( s <sub> q<sub>2</sub> </sub>  | s <sub> q<sub>1</sub> </sub>  ) × ...... × P( s <sub> q<sub>T-1</sub> </sub>  | s <sub> q<sub>T</sub> </sub>  ) 。</p>
+<div class="sh"><div class="bar">&nbsp;</div><ol><li><span class="keyword">const</span><span>&nbsp;</span><span class="type">int</span><span>&nbsp;</span><span class="word">N</span><span>&nbsp;=&nbsp;</span><span class="value">3</span><span>;</span></li><li><span class="type">double</span><span>&nbsp;π[</span><span class="word">N</span><span>],&nbsp;</span><span class="word">a</span><span>[</span><span class="word">N</span><span>][</span><span class="word">N</span><span>];&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;Markov&nbsp;Model</span></li><li>&nbsp;</li><li><span class="type">double</span><span>&nbsp;</span><span class="word">probability</span><span>(</span><span class="type">int</span><span>*&nbsp;</span><span class="word">q</span><span>,&nbsp;</span><span class="type">int</span><span>&nbsp;</span><span class="word">T</span><span>)</span></li><li><span>{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">p</span><span>&nbsp;=&nbsp;π[</span><span class="word">q</span><span>[</span><span class="value">0</span><span>]];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">i</span><span>=</span><span class="value">1</span><span>;&nbsp;</span><span class="word">i</span><span>&lt;</span><span class="word">T</span><span>;&nbsp;++</span><span class="word">i</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">p</span><span>&nbsp;*=&nbsp;</span><span class="word">a</span><span>[</span><span class="word">q</span><span>[</span><span class="word">i</span><span>-</span><span class="value">1</span><span>]][</span><span class="word">q</span><span>[</span><span class="word">i</span><span>]];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">return</span><span>&nbsp;</span><span class="word">p</span><span>;</span></li><li><span>}</span></li></ol></div><textarea style="display: none;">const int N = 3;
+double π[N], a[N][N];	// Markov Model
+
+double probability(int* q, int T)
+{
+	double p = π[q[0]];
+	for (int i=1; i&lt;T; ++i)
+		p *= a[q[i-1]][q[i]];
+	return p;
+}
+</textarea>
+<p class="t">延伸閱讀： time variant</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/MarkovModel7.png">
+<p>馬可夫模型的 A 的數值，會隨時間而改變。</p>
+<p>時刻 t ，一條由狀態 s <sub> i </sub>到狀態 s <sub> j </sub>的邊，其數值通常標作 a <sub> tij </sub>。</p>
+<p>平常不會搞到這麼複雜啦。一般只用 time invariant 。</p>
+<p class="t">延伸閱讀： order</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/MarkovModel8.png">
+<p>馬可夫模型的 A 的數值，會受到來源狀態影響。</p>
+<p>如果只受到上一個狀態影響，稱作 first-order ，也就是我們慣用的：一條由狀態 s <sub> i </sub>到狀態 s <sub> j </sub>的邊，其數值標作 a <sub> ij </sub>，亦可標作 P( s <sub> j </sub>  | s <sub> i </sub>  ) ，亦可標作 P( q <sub> t+1 </sub>  = j | q <sub> t </sub>  = i ) 。</p>
+<p>如果受到上一個狀態、上上個狀態影響，稱作 second-order ：其數值標作 a <sub> ijk </sub>，亦可標作 P( s <sub> k </sub>  | s <sub> i </sub>  s <sub> j </sub>  ) ，亦可標作 P( q <sub> t+1 </sub>  = k | q <sub> t </sub>  = j , q <sub> t-1 </sub>  = i ) 。</p>
+<p>如果受到以前所有狀態影響，我不知道要稱作甚麼：可標示成條件機率 P( q <sub> t+1 </sub>  = j | q <sub> t </sub>  = i <sub> t </sub>  , q <sub> t-1 </sub>  = i <sub> t-1 </sub>  , ...... , q <sub> 0 </sub>  = i <sub> 0 </sub>  ) 。</p>
+<p>平常不會搞到這麼複雜啦。一般只用 first-order 。</p>
+
+</div></div><div class="a"><div class="h" id="2">
+<p class="b">Hidden Markov Model</p>
+<p class="r">程度★★　難度★★★</p>
+</div><div class="c">
+<p class="t">Observation, V</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/HiddenMarkovModel1.png">
+<p>隱藏馬可夫模型添加了一個新要素：每當造訪一個狀態，就立刻從 M 個值當中，噴出其中一個值。每一個狀態都是噴出相同的 M 種值，這 M 個值通常標作 v <sub> 1 </sub>到 v <sub> M </sub>。 M 是我們自行設定的常數。</p>
+<p>全部觀察構成的集合，標作大寫 V 。</p>
+<p class="t">Observation Probability, B</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/HiddenMarkovModel2.png">
+<p>每一個狀態噴出這 M 種值的機率都不相同。</p>
+<p>狀態 s <sub> i </sub>噴出 v <sub> k </sub>的機率，通常標作 b <sub> i </sub> ( k ) 或者簡單標作 b <sub> ik </sub>。亦可標作條件機率 P( v <sub> k </sub>  | s <sub> i </sub>  ) ，意思是現在在狀態 s <sub> i </sub>、噴出觀察 v <sub> k </sub>。亦可套用狀態序列與觀察序列，標作 P( o <sub> t </sub>  = k | q <sub> t </sub>  = i ) 。</p>
+<p>每個狀態各自的噴出機率構成的集合，標作 B 。通常把 B 看作 N 個函數，或者簡單地看作一個 N×M 矩陣。</p>
+<p class="t">Observation Sequence, o <sub> 1 </sub>  o <sub> 2 </sub>  ...... o <sub> T </sub></p>
+<img src="./演算法筆記 - Hidden Markov Model_files/HiddenMarkovModel3.png">
+<p>走 T 步後，一路上 T 個狀態個別噴出的值的編號。</p>
+<p>有了狀態序列與觀察序列，一條路徑的機率，可以寫成 π <sub> q<sub>1</sub> </sub>  × b <sub> q<sub>1</sub> </sub> ( o <sub> 1 </sub>  ) × a <sub> q<sub>1</sub>q<sub>2</sub> </sub>  × b <sub> q<sub>2</sub> </sub> ( o <sub> 2 </sub>  ) × ...... × a <sub> q<sub>T-1</sub>q<sub>T</sub> </sub>  × b <sub> q<sub>T</sub> </sub> ( o <sub> T </sub>  ) ，也可以寫成 P( s <sub> q<sub>1</sub> </sub>  ) × P( v <sub> o<sub>1</sub> </sub>  | s <sub> q<sub>1</sub> </sub>  ) × P( s <sub> q<sub>2</sub> </sub>  | s <sub> q<sub>1</sub> </sub>  ) × P( v <sub> o<sub>2</sub> </sub>  | s <sub> q<sub>2</sub> </sub>  ) × ...... × P( s <sub> q<sub>T-1</sub> </sub>  | s <sub> q<sub>T</sub> </sub>  ) × P( v <sub> o<sub>T</sub> </sub>  | s <sub> q<sub>T</sub> </sub>  ) 。我想各位差不多眼花撩亂了。名可名，非常名，若能領會原理就不用刻意背誦代數了。</p>
+<div class="sh"><div class="bar">&nbsp;</div><ol><li><span class="keyword">const</span><span>&nbsp;</span><span class="type">int</span><span>&nbsp;</span><span class="word">N</span><span>&nbsp;=&nbsp;</span><span class="value">3</span><span>,&nbsp;</span><span class="word">M</span><span>&nbsp;=&nbsp;</span><span class="value">3</span><span>,&nbsp;</span><span class="word">T</span><span>&nbsp;=&nbsp;</span><span class="value">15</span><span>;</span></li><li><span class="type">double</span><span>&nbsp;π[</span><span class="word">N</span><span>],&nbsp;</span><span class="word">a</span><span>[</span><span class="word">N</span><span>][</span><span class="word">N</span><span>],&nbsp;</span><span class="word">b</span><span>[</span><span class="word">N</span><span>][</span><span class="word">M</span><span>];&nbsp;&nbsp;</span><span class="comment">//&nbsp;HMM</span></li><li>&nbsp;</li><li><span class="type">double</span><span>&nbsp;</span><span class="word">probability</span><span>(</span><span class="type">int</span><span>*&nbsp;</span><span class="word">q</span><span>,&nbsp;</span><span class="type">int</span><span>*&nbsp;</span><span class="word">o</span><span>,&nbsp;</span><span class="type">int</span><span>&nbsp;</span><span class="word">T</span><span>)</span></li><li><span>{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">p</span><span>&nbsp;=&nbsp;π[</span><span class="word">q</span><span>[</span><span class="value">0</span><span>]]&nbsp;*&nbsp;</span><span class="word">b</span><span>[</span><span class="word">q</span><span>[</span><span class="value">0</span><span>]][</span><span class="word">o</span><span>[</span><span class="value">0</span><span>]];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">i</span><span>=</span><span class="value">1</span><span>;&nbsp;</span><span class="word">i</span><span>&lt;</span><span class="word">T</span><span>;&nbsp;++</span><span class="word">i</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">p</span><span>&nbsp;*=&nbsp;</span><span class="word">a</span><span>[</span><span class="word">q</span><span>[</span><span class="word">i</span><span>-</span><span class="value">1</span><span>]][</span><span class="word">q</span><span>[</span><span class="word">i</span><span>]]&nbsp;*&nbsp;</span><span class="word">b</span><span>[</span><span class="word">q</span><span>[</span><span class="word">i</span><span>]][</span><span class="word">o</span><span>[</span><span class="word">i</span><span>]];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">return</span><span>&nbsp;</span><span class="word">p</span><span>;</span></li><li><span>}</span></li></ol></div><textarea style="display: none;">const int N = 3, M = 3, T = 15;
+double π[N], a[N][N], b[N][M];	// HMM
+
+double probability(int* q, int* o, int T)
+{
+	double p = π[q[0]] * b[q[0]][o[0]];
+	for (int i=1; i&lt;T; ++i)
+		p *= a[q[i-1]][q[i]] * b[q[i]][o[i]];
+	return p;
+}
+</textarea>
+<p class="t">Hidden Markov Model</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/HiddenMarkovModel4.png">
+<p>隱藏馬可夫模型的特色就是：我們只看到了觀察序列（果），但是我們看不到狀態序列（因）；我們只看到了依序噴出的 T 個值，但是我們看不到一路走過的是哪 T 個狀態。</p>
+<p>「隱藏」二字便是指行蹤被隱藏了，狀態序列被隱藏了。</p>
+<p>接下來要討論隱藏馬可夫模型的三個基本問題，以及演算法。</p>
+<p class="t">1. Evaluation Problem: Forward-backward Algorithm</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/HiddenMarkovModel5.png">
+<p>看到一個觀察序列 o <sub> 1 </sub>  o <sub> 2 </sub>  ...... o <sub> T </sub>，但是看不到狀態序列 s <sub> 1 </sub>  s <sub> 2 </sub>  ...... s <sub> T </sub>的情況下，找出所有可能的路徑的機率的總和。</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/HiddenMarkovModel6.png">
+<img src="./演算法筆記 - Hidden Markov Model_files/HiddenMarkovModel7.png">
+<p>對於一個觀察序列來說，狀態序列有各式各樣的可能性，一共有 N <sup> T </sup>種可能性。</p>
+<p>運用窮舉法，時間複雜度為 O(N <sup> T </sup>  * T) 。運用「<a href="http://www.csie.ntnu.edu.tw/~u91029/AlgorithmDesign#2.html">動態規劃</a>」，時間複雜度降低為 O(N <sup> 2 </sup>  * T) 。</p>
+<p>原理是結合律，比如 x×b×c + y×b×c + z×b×c = (x+y+z)×b×c ，能加的先加一加。左端結合是 forward ，右端結合是 backward ；使用其中一種即可，計算結果都一樣。</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/HiddenMarkovModel8.png">
+<img src="./演算法筆記 - Hidden Markov Model_files/HiddenMarkovModel9.png">
+<pre>forward:
+α<sub>1  </sub>(j) = π<sub>j</sub> × b<sub>j</sub>(o<sub>1</sub>)
+α<sub>t+1</sub>(j) = ∑<sub>i=1~N</sub>[ α<sub>t</sub>(i) × a<sub>ij</sub> ] × b<sub>j</sub>(o<sub>t+1</sub>)
+
+backward:
+β<sub>T</sub>(i) = 1
+β<sub>t</sub>(i) = ∑<sub>j=1~N</sub>[ a<sub>ij</sub> × b<sub>j</sub>(o<sub>t+1</sub>) × β<sub>t+1</sub>(j) ]
+</pre>
+<div class="sh"><div class="bar">&nbsp;</div><ol><li><span class="keyword">const</span><span>&nbsp;</span><span class="type">int</span><span>&nbsp;</span><span class="word">N</span><span>&nbsp;=&nbsp;</span><span class="value">3</span><span>,&nbsp;</span><span class="word">M</span><span>&nbsp;=&nbsp;</span><span class="value">3</span><span>,&nbsp;</span><span class="word">T</span><span>&nbsp;=&nbsp;</span><span class="value">15</span><span>;</span></li><li><span class="type">double</span><span>&nbsp;π[</span><span class="word">N</span><span>],&nbsp;</span><span class="word">a</span><span>[</span><span class="word">N</span><span>][</span><span class="word">N</span><span>],&nbsp;</span><span class="word">b</span><span>[</span><span class="word">N</span><span>][</span><span class="word">M</span><span>];&nbsp;&nbsp;</span><span class="comment">//&nbsp;HMM</span></li><li><span class="type">double</span><span>&nbsp;α[</span><span class="word">T</span><span>][</span><span class="word">N</span><span>];&nbsp;</span><span class="comment">//&nbsp;可以簡化成α[2][N]</span></li><li><span class="type">double</span><span>&nbsp;β[</span><span class="word">T</span><span>][</span><span class="word">N</span><span>];&nbsp;</span><span class="comment">//&nbsp;可以簡化成β[2][N]</span></li><li>&nbsp;</li><li><span class="type">double</span><span>&nbsp;</span><span class="word">forward</span><span>(</span><span class="type">int</span><span>*&nbsp;</span><span class="word">o</span><span>,&nbsp;</span><span class="type">int</span><span>&nbsp;</span><span class="word">T</span><span>)</span></li><li><span>{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">t</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">t</span><span>&lt;</span><span class="word">T</span><span>;&nbsp;++</span><span class="word">t</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">j</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">j</span><span>&lt;</span><span class="word">N</span><span>;&nbsp;++</span><span class="word">j</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">if</span><span>&nbsp;(</span><span class="word">t</span><span>&nbsp;==&nbsp;</span><span class="value">0</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;α[</span><span class="word">t</span><span>][</span><span class="word">j</span><span>]&nbsp;=&nbsp;π[</span><span class="word">j</span><span>]&nbsp;*&nbsp;</span><span class="word">b</span><span>[</span><span class="word">j</span><span>][</span><span class="word">o</span><span>[</span><span class="word">t</span><span>]];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">else</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">p</span><span>&nbsp;=&nbsp;</span><span class="value">0</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">i</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">i</span><span>&lt;</span><span class="word">N</span><span>;&nbsp;++</span><span class="word">i</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">p</span><span>&nbsp;+=&nbsp;α[</span><span class="word">t</span><span>-</span><span class="value">1</span><span>][</span><span class="word">i</span><span>]&nbsp;*&nbsp;</span><span class="word">a</span><span>[</span><span class="word">i</span><span>][</span><span class="word">j</span><span>];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;α[</span><span class="word">t</span><span>][</span><span class="word">j</span><span>]&nbsp;=&nbsp;</span><span class="word">p</span><span>&nbsp;*&nbsp;</span><span class="word">b</span><span>[</span><span class="word">j</span><span>][</span><span class="word">o</span><span>[</span><span class="word">t</span><span>]];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></li><li>&nbsp;</li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">p</span><span>&nbsp;=&nbsp;</span><span class="value">0</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">i</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">i</span><span>&lt;</span><span class="word">N</span><span>;&nbsp;++</span><span class="word">i</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">p</span><span>&nbsp;+=&nbsp;α[</span><span class="word">T</span><span>-</span><span class="value">1</span><span>][</span><span class="word">i</span><span>];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">return</span><span>&nbsp;</span><span class="word">p</span><span>;</span></li><li><span>}</span></li><li>&nbsp;</li><li><span class="type">double</span><span>&nbsp;</span><span class="word">backward</span><span>(</span><span class="type">int</span><span>*&nbsp;</span><span class="word">o</span><span>,&nbsp;</span><span class="type">int</span><span>&nbsp;</span><span class="word">T</span><span>)</span></li><li><span>{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">t</span><span>=</span><span class="word">T</span><span>-</span><span class="value">1</span><span>;&nbsp;</span><span class="word">t</span><span>&gt;=</span><span class="value">0</span><span>;&nbsp;--</span><span class="word">t</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">i</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">i</span><span>&lt;</span><span class="word">N</span><span>;&nbsp;++</span><span class="word">i</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">if</span><span>&nbsp;(</span><span class="word">t</span><span>&nbsp;==&nbsp;</span><span class="word">T</span><span>-</span><span class="value">1</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;β[</span><span class="word">t</span><span>][</span><span class="word">i</span><span>]&nbsp;=&nbsp;</span><span class="value">1.0</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">else</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">p</span><span>&nbsp;=&nbsp;</span><span class="value">0</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">j</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">j</span><span>&lt;</span><span class="word">N</span><span>;&nbsp;++</span><span class="word">j</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">p</span><span>&nbsp;+=&nbsp;</span><span class="word">a</span><span>[</span><span class="word">i</span><span>][</span><span class="word">j</span><span>]&nbsp;*&nbsp;</span><span class="word">b</span><span>[</span><span class="word">j</span><span>][</span><span class="word">o</span><span>[</span><span class="word">t</span><span>+</span><span class="value">1</span><span>]]&nbsp;*&nbsp;β[</span><span class="word">t</span><span>+</span><span class="value">1</span><span>][</span><span class="word">j</span><span>];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;β[</span><span class="word">t</span><span>][</span><span class="word">i</span><span>]&nbsp;=&nbsp;</span><span class="word">p</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></li><li>&nbsp;</li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">p</span><span>&nbsp;=&nbsp;</span><span class="value">0</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">j</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">j</span><span>&lt;</span><span class="word">N</span><span>;&nbsp;++</span><span class="word">j</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">p</span><span>&nbsp;+=&nbsp;π[</span><span class="word">j</span><span>]&nbsp;*&nbsp;</span><span class="word">b</span><span>[</span><span class="word">j</span><span>][</span><span class="word">o</span><span>[</span><span class="value">0</span><span>]]&nbsp;*&nbsp;β[</span><span class="value">0</span><span>][</span><span class="word">j</span><span>];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">return</span><span>&nbsp;</span><span class="word">p</span><span>;</span></li><li><span>}</span></li></ol></div><textarea style="display: none;">const int N = 3, M = 3, T = 15;
+double π[N], a[N][N], b[N][M];	// HMM
+double α[T][N];	// 可以簡化成α[2][N]
+double β[T][N];	// 可以簡化成β[2][N]
+
+double forward(int* o, int T)
+{
+	for (int t=0; t&lt;T; ++t)
+		for (int j=0; j&lt;N; ++j)
+			if (t == 0)
+				α[t][j] = π[j] * b[j][o[t]];
+			else
+			{
+				double p = 0;
+				for (int i=0; i&lt;N; ++i)
+					p += α[t-1][i] * a[i][j];
+				α[t][j] = p * b[j][o[t]];
+			}
+
+	double p = 0;
+	for (int i=0; i&lt;N; ++i)
+		p += α[T-1][i];
+	return p;
+}
+
+double backward(int* o, int T)
+{
+	for (int t=T-1; t&gt;=0; --t)
+		for (int i=0; i&lt;N; ++i)
+			if (t == T-1)
+				β[t][i] = 1.0;
+			else
+			{
+				double p = 0;
+				for (int j=0; j&lt;N; ++j)
+					p += a[i][j] * b[j][o[t+1]] * β[t+1][j];
+				β[t][i] = p;
+			}
+
+	double p = 0;
+	for (int j=0; j&lt;N; ++j)
+		p += π[j] * b[j][o[0]] * β[0][j];
+	return p;
+}
+</textarea>
+<p class="t">2. Decoding Problem: Viterbi Algorithm</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/HiddenMarkovModel7.png">
+<p>看到一個觀察序列 o <sub> 1 </sub>  o <sub> 2 </sub>  ...... o <sub> T </sub>，但是看不到狀態序列 s <sub> 1 </sub>  s <sub> 2 </sub>  ...... s <sub> T </sub>的情況下，從所有可能的路徑當中，找出機率最大的一條路徑，以及其機率。</p>
+<p>這跟上一個問題如出一轍，運用「<a href="http://www.csie.ntnu.edu.tw/~u91029/AlgorithmDesign#2.html">動態規劃</a>」就可以解決。唯一的差別就是把 ∑ 換成 max 而已。</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/HiddenMarkovModel10.png">
+<pre>forward:
+δ<sub>1  </sub>(j) = π<sub>j</sub> × b<sub>j</sub>(o<sub>1</sub>)
+δ<sub>t+1</sub>(j) = max<sub>i=1~N</sub>[ δ<sub>t</sub>(i) × a<sub>ij</sub> ] × b<sub>j</sub>(o<sub>t+1</sub>)
+
+path tracing:
+ψ<sub>t</sub>(j) = arg max<sub>i=1~N</sub>[ δ<sub>t-1</sub>(i) × a<sub>ij</sub> ] × b<sub>j</sub>(o<sub>t</sub>)
+      = arg max<sub>i=1~N</sub>[ δ<sub>t-1</sub>(i) × a<sub>ij</sub> ]
+</pre>
+<div class="sh"><div class="bar">&nbsp;</div><ol><li><span class="keyword">const</span><span>&nbsp;</span><span class="type">int</span><span>&nbsp;</span><span class="word">N</span><span>&nbsp;=&nbsp;</span><span class="value">3</span><span>,&nbsp;</span><span class="word">M</span><span>&nbsp;=&nbsp;</span><span class="value">3</span><span>,&nbsp;</span><span class="word">T</span><span>&nbsp;=&nbsp;</span><span class="value">15</span><span>;</span></li><li><span class="type">double</span><span>&nbsp;π[</span><span class="word">N</span><span>],&nbsp;</span><span class="word">a</span><span>[</span><span class="word">N</span><span>][</span><span class="word">N</span><span>],&nbsp;</span><span class="word">b</span><span>[</span><span class="word">N</span><span>][</span><span class="word">M</span><span>];&nbsp;&nbsp;</span><span class="comment">//&nbsp;HMM</span></li><li><span class="type">double</span><span>&nbsp;δ[</span><span class="word">T</span><span>][</span><span class="word">N</span><span>];&nbsp;</span><span class="comment">//&nbsp;可以簡化成δ[2][N]</span></li><li><span class="type">int</span><span>&nbsp;ψ[</span><span class="word">T</span><span>][</span><span class="word">N</span><span>];</span></li><li>&nbsp;</li><li><span class="type">double</span><span>&nbsp;</span><span class="word">decode</span><span>(</span><span class="type">int</span><span>*&nbsp;</span><span class="word">o</span><span>,&nbsp;</span><span class="type">int</span><span>&nbsp;</span><span class="word">T</span><span>,&nbsp;</span><span class="type">int</span><span>*&nbsp;</span><span class="word">q</span><span>)</span></li><li><span>{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">t</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">t</span><span>&lt;</span><span class="word">T</span><span>;&nbsp;++</span><span class="word">t</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">j</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">j</span><span>&lt;</span><span class="word">N</span><span>;&nbsp;++</span><span class="word">j</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">if</span><span>&nbsp;(</span><span class="word">t</span><span>&nbsp;==&nbsp;</span><span class="value">0</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;δ[</span><span class="word">t</span><span>][</span><span class="word">j</span><span>]&nbsp;=&nbsp;π[</span><span class="word">j</span><span>]&nbsp;*&nbsp;</span><span class="word">b</span><span>[</span><span class="word">j</span><span>][</span><span class="word">o</span><span>[</span><span class="word">t</span><span>]];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">else</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">p</span><span>&nbsp;=&nbsp;-</span><span class="value">1e9</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">i</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">i</span><span>&lt;</span><span class="word">N</span><span>;&nbsp;++</span><span class="word">i</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">w</span><span>&nbsp;=&nbsp;δ[</span><span class="word">t</span><span>-</span><span class="value">1</span><span>][</span><span class="word">i</span><span>]&nbsp;*&nbsp;</span><span class="word">a</span><span>[</span><span class="word">i</span><span>][</span><span class="word">j</span><span>];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">if</span><span>&nbsp;(</span><span class="word">w</span><span>&nbsp;&gt;&nbsp;</span><span class="word">v</span><span>)&nbsp;</span><span class="word">p</span><span>&nbsp;=&nbsp;</span><span class="word">w</span><span>,&nbsp;ψ[</span><span class="word">t</span><span>][</span><span class="word">j</span><span>]&nbsp;=&nbsp;</span><span class="word">i</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;δ[</span><span class="word">t</span><span>][</span><span class="word">j</span><span>]&nbsp;=&nbsp;</span><span class="word">p</span><span>&nbsp;*&nbsp;</span><span class="word">b</span><span>[</span><span class="word">j</span><span>][</span><span class="word">o</span><span>[</span><span class="word">t</span><span>]];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></li><li>&nbsp;</li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">p</span><span>&nbsp;=&nbsp;-</span><span class="value">1e9</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">j</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">j</span><span>&lt;</span><span class="word">N</span><span>;&nbsp;++</span><span class="word">j</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">if</span><span>&nbsp;(δ[</span><span class="word">T</span><span>-</span><span class="value">1</span><span>][</span><span class="word">j</span><span>]&nbsp;&gt;&nbsp;</span><span class="word">v</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">p</span><span>&nbsp;=&nbsp;δ[</span><span class="word">T</span><span>-</span><span class="value">1</span><span>][</span><span class="word">j</span><span>],&nbsp;</span><span class="word">q</span><span>[</span><span class="word">T</span><span>-</span><span class="value">1</span><span>]&nbsp;=&nbsp;</span><span class="word">j</span><span>;</span></li><li>&nbsp;</li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">t</span><span>=</span><span class="word">T</span><span>-</span><span class="value">1</span><span>;&nbsp;</span><span class="word">t</span><span>&gt;</span><span class="value">0</span><span>;&nbsp;--</span><span class="word">t</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">q</span><span>[</span><span class="word">t</span><span>-</span><span class="value">1</span><span>]&nbsp;=&nbsp;ψ[</span><span class="word">t</span><span>][</span><span class="word">q</span><span>[</span><span class="word">t</span><span>]];</span></li><li>&nbsp;</li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">return</span><span>&nbsp;</span><span class="word">p</span><span>;</span></li><li><span>}</span></li></ol></div><textarea style="display: none;">const int N = 3, M = 3, T = 15;
+double π[N], a[N][N], b[N][M];	// HMM
+double δ[T][N];	// 可以簡化成δ[2][N]
+int ψ[T][N];
+
+double decode(int* o, int T, int* q)
+{
+	for (int t=0; t&lt;T; ++t)
+		for (int j=0; j&lt;N; ++j)
+			if (t == 0)
+				δ[t][j] = π[j] * b[j][o[t]];
+			else
+			{
+				double p = -1e9;
+				for (int i=0; i&lt;N; ++i)
+				{
+					double w = δ[t-1][i] * a[i][j];
+					if (w &gt; v) p = w, ψ[t][j] = i;
+				}
+				δ[t][j] = p * b[j][o[t]];
+			}
+
+	double p = -1e9;
+	for (int j=0; j&lt;N; ++j)
+		if (δ[T-1][j] &gt; v)
+			p = δ[T-1][j], q[T-1] = j;
+
+	for (int t=T-1; t&gt;0; --t)
+		q[t-1] = ψ[t][q[t]];
+
+	return p;
+}
+</textarea>
+<p class="t">3. Learning Problem: EM Algorithm</p>
+<p>給定一個觀察序列 o <sub> 1 </sub>  o <sub> 2 </sub>  ...... o <sub> T </sub>，更新 ABΠ 使得 Evaluation Problem 算得的機率盡量大。</p>
+<p>更新的原理，採用了「 Maximum Likelihood Estimation 」，以樣本平均值作為分布平均值，出現這些樣本的機率就是最大。</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/HiddenMarkovModel11.png">
+<img src="./演算法筆記 - Hidden Markov Model_files/HiddenMarkovModel12.png">
+<pre>分子是穿越狀態s<sub>i</sub>的所有路徑的機率的總和：
+
+              α<sub>t</sub>(i) × β<sub>t</sub>(i)
+γ<sub>t</sub>(i) = ————————————————————————— = ∑<sub>j=1~N</sub> ξ<sub>t</sub>(i,j)
+         ∑<sub>i=1~N</sub> [ α<sub>t</sub>(i) × β<sub>t</sub>(i) ]
+
+分子是穿越邊a<sub>ij</sub>的所有路徑的機率的總和：
+
+                  α<sub>t</sub>(i) × a<sub>ij</sub> × b<sub>j</sub>(o<sub>t+1</sub>) × β<sub>t+1</sub>(j)
+ξ<sub>t</sub>(i,j) = —————————————————————————————————————————————————
+           ∑<sub>i=1~N</sub> ∑<sub>j=1~N</sub> [ α<sub>t</sub>(i) × a<sub>ij</sub> × b<sub>j</sub>(o<sub>t+1</sub>) × β<sub>t+1</sub>(j) ]
+
+更新：
+
+<u>π</u><sub>i</sub>    = γ<sub>1</sub>(i)
+<u>a</u><sub>ij</sub>   = ∑<sub>t=1~T-1</sub> [ ξ<sub>t</sub>(i,j) ] ÷ ∑<sub>t=1~T-1</sub> [ γ<sub>t</sub>(i) ]
+<u>b</u><sub>j</sub>(k) = ∑<sub>t=1~T, o<sub>t</sub>=k</sub> [ γ<sub>t</sub>(i) ] ÷ ∑<sub>t=1~T</sub> [ γ<sub>t</sub>(i) ]
+</pre>
+<div class="sh"><div class="bar">&nbsp;</div><ol><li><span class="keyword">const</span><span>&nbsp;</span><span class="type">int</span><span>&nbsp;</span><span class="word">N</span><span>&nbsp;=&nbsp;</span><span class="value">3</span><span>,&nbsp;</span><span class="word">M</span><span>&nbsp;=&nbsp;</span><span class="value">3</span><span>,&nbsp;</span><span class="word">T</span><span>&nbsp;=&nbsp;</span><span class="value">15</span><span>;</span></li><li><span class="type">double</span><span>&nbsp;π[</span><span class="word">N</span><span>],&nbsp;</span><span class="word">a</span><span>[</span><span class="word">N</span><span>][</span><span class="word">N</span><span>],&nbsp;</span><span class="word">b</span><span>[</span><span class="word">N</span><span>][</span><span class="word">M</span><span>];&nbsp;&nbsp;</span><span class="comment">//&nbsp;HMM</span></li><li><span class="type">double</span><span>&nbsp;α[</span><span class="word">T</span><span>][</span><span class="word">N</span><span>],&nbsp;β[</span><span class="word">T</span><span>][</span><span class="word">N</span><span>];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;evaluation&nbsp;problem</span></li><li><span class="type">double</span><span>&nbsp;δ[</span><span class="word">T</span><span>][</span><span class="word">N</span><span>];&nbsp;</span><span class="type">int</span><span>&nbsp;ψ[</span><span class="word">T</span><span>][</span><span class="word">N</span><span>];&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;decoding&nbsp;problem</span></li><li><span class="type">double</span><span>&nbsp;γ[</span><span class="word">T</span><span>][</span><span class="word">N</span><span>],&nbsp;ξ[</span><span class="word">T</span><span>][</span><span class="word">N</span><span>][</span><span class="word">N</span><span>];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;learning&nbsp;problem</span></li><li>&nbsp;</li><li><span class="keyword">void</span><span>&nbsp;</span><span class="word">learn</span><span>(</span><span class="type">int</span><span>*&nbsp;</span><span class="word">o</span><span>,&nbsp;</span><span class="type">int</span><span>&nbsp;</span><span class="word">T</span><span>)</span></li><li><span>{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">forward</span><span>(</span><span class="word">o</span><span>,&nbsp;</span><span class="word">T</span><span>);</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">backward</span><span>(</span><span class="word">o</span><span>,&nbsp;</span><span class="word">T</span><span>);</span></li><li>&nbsp;</li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">t</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">t</span><span>&lt;</span><span class="word">T</span><span>;&nbsp;++</span><span class="word">t</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">p</span><span>&nbsp;=&nbsp;</span><span class="value">0</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">i</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">i</span><span>&lt;</span><span class="word">N</span><span>;&nbsp;++</span><span class="word">i</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">p</span><span>&nbsp;+=&nbsp;α[</span><span class="word">t</span><span>][</span><span class="word">i</span><span>]&nbsp;*&nbsp;β[</span><span class="word">t</span><span>][</span><span class="word">i</span><span>];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">assert</span><span>(</span><span class="word">p</span><span>&nbsp;!=&nbsp;</span><span class="value">0</span><span>);</span></li><li>&nbsp;</li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">i</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">i</span><span>&lt;</span><span class="word">N</span><span>;&nbsp;++</span><span class="word">i</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;γ[</span><span class="word">t</span><span>][</span><span class="word">i</span><span>]&nbsp;=&nbsp;α[</span><span class="word">t</span><span>][</span><span class="word">i</span><span>]&nbsp;*&nbsp;β[</span><span class="word">t</span><span>][</span><span class="word">i</span><span>]&nbsp;/&nbsp;</span><span class="word">p</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;}</span></li><li>&nbsp;</li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">t</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">t</span><span>&lt;</span><span class="word">T</span><span>-</span><span class="value">1</span><span>;&nbsp;++</span><span class="word">t</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">p</span><span>&nbsp;=&nbsp;</span><span class="value">0</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">i</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">i</span><span>&lt;</span><span class="word">N</span><span>;&nbsp;++</span><span class="word">i</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">j</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">j</span><span>&lt;</span><span class="word">N</span><span>;&nbsp;++</span><span class="word">j</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">p</span><span>&nbsp;+=&nbsp;α[</span><span class="word">t</span><span>][</span><span class="word">i</span><span>]&nbsp;*&nbsp;</span><span class="word">a</span><span>[</span><span class="word">i</span><span>][</span><span class="word">j</span><span>]&nbsp;*&nbsp;</span><span class="word">b</span><span>[</span><span class="word">j</span><span>][</span><span class="word">o</span><span>[</span><span class="word">t</span><span>+</span><span class="value">1</span><span>]]&nbsp;*&nbsp;β[</span><span class="word">t</span><span>+</span><span class="value">1</span><span>][</span><span class="word">j</span><span>];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">assert</span><span>(</span><span class="word">p</span><span>&nbsp;!=&nbsp;</span><span class="value">0</span><span>);</span></li><li>&nbsp;</li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">i</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">i</span><span>&lt;</span><span class="word">N</span><span>;&nbsp;++</span><span class="word">i</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">j</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">j</span><span>&lt;</span><span class="word">N</span><span>;&nbsp;++</span><span class="word">j</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ξ[</span><span class="word">t</span><span>][</span><span class="word">i</span><span>][</span><span class="word">j</span><span>]&nbsp;=&nbsp;α[</span><span class="word">t</span><span>][</span><span class="word">i</span><span>]&nbsp;*&nbsp;</span><span class="word">a</span><span>[</span><span class="word">i</span><span>][</span><span class="word">j</span><span>]&nbsp;*&nbsp;</span><span class="word">b</span><span>[</span><span class="word">j</span><span>][</span><span class="word">o</span><span>[</span><span class="word">t</span><span>+</span><span class="value">1</span><span>]]&nbsp;*&nbsp;β[</span><span class="word">t</span><span>+</span><span class="value">1</span><span>][</span><span class="word">j</span><span>]&nbsp;/&nbsp;</span><span class="word">p</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;}</span></li><li>&nbsp;</li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;更新Π</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">i</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">i</span><span>&lt;</span><span class="word">N</span><span>;&nbsp;++</span><span class="word">i</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;π[</span><span class="word">i</span><span>]&nbsp;=&nbsp;γ[</span><span class="value">0</span><span>][</span><span class="word">i</span><span>];</span></li><li>&nbsp;</li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;更新A</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">i</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">i</span><span>&lt;</span><span class="word">N</span><span>;&nbsp;++</span><span class="word">i</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">p2</span><span>&nbsp;=&nbsp;</span><span class="value">0</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">t</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">t</span><span>&lt;</span><span class="word">T</span><span>-</span><span class="value">1</span><span>;&nbsp;++</span><span class="word">t</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">p2</span><span>&nbsp;+=&nbsp;γ[</span><span class="word">t</span><span>][</span><span class="word">i</span><span>];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">assert</span><span>(</span><span class="word">p2</span><span>&nbsp;!=&nbsp;</span><span class="value">0</span><span>);</span></li><li>&nbsp;</li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">j</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">j</span><span>&lt;</span><span class="word">N</span><span>;&nbsp;++</span><span class="word">j</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">p1</span><span>&nbsp;=&nbsp;</span><span class="value">0</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">t</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">t</span><span>&lt;</span><span class="word">T</span><span>-</span><span class="value">1</span><span>;&nbsp;++</span><span class="word">t</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">p1</span><span>&nbsp;+=&nbsp;ξ[</span><span class="word">t</span><span>][</span><span class="word">i</span><span>][</span><span class="word">j</span><span>];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">a</span><span>[</span><span class="word">i</span><span>][</span><span class="word">j</span><span>]&nbsp;=&nbsp;</span><span class="word">p1</span><span>&nbsp;/&nbsp;</span><span class="word">p2</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;}</span></li><li>&nbsp;</li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;更新B</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">i</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">i</span><span>&lt;</span><span class="word">N</span><span>;&nbsp;++</span><span class="word">i</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">p</span><span>[</span><span class="word">M</span><span>]&nbsp;=&nbsp;{</span><span class="value">0</span><span>},&nbsp;</span><span class="word">p2</span><span>&nbsp;=&nbsp;</span><span class="value">0</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">t</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">t</span><span>&lt;</span><span class="word">T</span><span>;&nbsp;++</span><span class="word">t</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">p</span><span>[</span><span class="word">o</span><span>[</span><span class="word">t</span><span>]]&nbsp;+=&nbsp;γ[</span><span class="word">t</span><span>][</span><span class="word">i</span><span>];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">p2</span><span>&nbsp;+=&nbsp;γ[</span><span class="word">t</span><span>][</span><span class="word">i</span><span>];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">assert</span><span>(</span><span class="word">p2</span><span>&nbsp;!=&nbsp;</span><span class="value">0</span><span>);</span></li><li>&nbsp;</li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">k</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">k</span><span>&lt;</span><span class="word">M</span><span>;&nbsp;++</span><span class="word">k</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">b</span><span>[</span><span class="word">i</span><span>][</span><span class="word">k</span><span>]&nbsp;=&nbsp;</span><span class="word">p</span><span>[</span><span class="word">k</span><span>]&nbsp;/&nbsp;</span><span class="word">p2</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;}</span></li><li><span>}</span></li></ol></div><textarea style="display: none;">const int N = 3, M = 3, T = 15;
+double π[N], a[N][N], b[N][M];	// HMM
+double α[T][N], β[T][N];		// evaluation problem
+double δ[T][N]; int ψ[T][N];	// decoding problem
+double γ[T][N], ξ[T][N][N];		// learning problem
+
+void learn(int* o, int T)
+{
+	forward(o, T);
+	backward(o, T);
+
+	for (int t=0; t&lt;T; ++t)
+	{
+		double p = 0;
+		for (int i=0; i&lt;N; ++i)
+			p += α[t][i] * β[t][i];
+		assert(p != 0);
+
+		for (int i=0; i&lt;N; ++i)
+			γ[t][i] = α[t][i] * β[t][i] / p;
+	}
+
+	for (int t=0; t&lt;T-1; ++t)
+	{
+		double p = 0;
+		for (int i=0; i&lt;N; ++i)
+			for (int j=0; j&lt;N; ++j)
+				p += α[t][i] * a[i][j] * b[j][o[t+1]] * β[t+1][j];
+		assert(p != 0);
+
+		for (int i=0; i&lt;N; ++i)
+			for (int j=0; j&lt;N; ++j)
+				ξ[t][i][j] = α[t][i] * a[i][j] * b[j][o[t+1]] * β[t+1][j] / p;
+	}
+
+	// 更新Π
+	for (int i=0; i&lt;N; ++i)
+		π[i] = γ[0][i];
+
+	// 更新A
+	for (int i=0; i&lt;N; ++i)
+	{
+		double p2 = 0;
+		for (int t=0; t&lt;T-1; ++t)
+			p2 += γ[t][i];
+		assert(p2 != 0);
+
+		for (int j=0; j&lt;N; ++j)
+		{
+			double p1 = 0;
+			for (int t=0; t&lt;T-1; ++t)
+				p1 += ξ[t][i][j];
+			a[i][j] = p1 / p2;
+		}
+	}
+
+	// 更新B
+	for (int i=0; i&lt;N; ++i)
+	{
+		double p[M] = {0}, p2 = 0;
+		for (int t=0; t&lt;T; ++t)
+		{
+			p[o[t]] += γ[t][i];
+			p2 += γ[t][i];
+		}
+		assert(p2 != 0);
+
+		for (int k=0; k&lt;M; ++k)
+			b[i][k] = p[k] / p2;
+	}
+}
+</textarea>
+<p class="t">延伸閱讀：取 log</p>
+<p>寫程式時，機率都是小於一的數字，連乘之後數字越來越小。然而，計算機的浮點數，精確度是有極限的，當 T 很大時，連乘之後那就變成零了。所以實作時我們會取 log ，連乘也就變成了連加，避免連乘之後變成零的窘境。</p>
+<p>舉例來說，一條路徑的機率，取 log 之後，可以寫成： log( π <sub> q<sub>1</sub> </sub>  × a <sub> q<sub>1</sub> </sub><sub> q<sub>2</sub> </sub>  × b <sub> q<sub>1</sub> </sub> ( o <sub> 1 </sub>  ) × ...... ) = log( π <sub> q<sub>1</sub> </sub>  ) + log( a <sub> q<sub>1</sub> </sub><sub> q<sub>2</sub> </sub>  ) +  log( b <sub> q<sub>1</sub> </sub> ( o <sub> 1 </sub>  ) ) + ...... 。預先把 ABΠ 的每個數值取 log 即可。</p>
+<p>取 log 之後，處理 decoding problem 沒有什麼大問題，比較麻煩的是 evaluation problem 與 learning problem ，除了乘法運算還有加法運算。實數乘法化作了 log 加法，那麼實數加法怎麼辦呢？可以使用下列公式：</p>
+<pre>利用log(p)與log(q)，求出log(p+q)，一般讓底數等於10。b可以是任意數。
+
+if p ≥ q
+  log<sub>b </sub>(p + q)  = log p + log<sub>b </sub>(1 + b<sup>log<sub>b </sub>q - log<sub>b </sub>p</sup>)
+else
+  log<sub>b </sub>(p + q)  = log q + log<sub>b </sub>(1 + b<sup>log<sub>b </sub>p - log<sub>b </sub>q</sup>)
+</pre>
+<p>知名的隱藏馬可夫模型套件 HTK 是這麼實作的：</p>
+<div class="sh"><div class="bar">&nbsp;</div><ol><li><span class="macro">#define&nbsp;LZERO&nbsp;&nbsp;(-1.0E10)&nbsp;//&nbsp;log(0)</span></li><li><span class="macro">#define&nbsp;LSMALL&nbsp;(-0.5E10)&nbsp;//&nbsp;log&nbsp;values&nbsp;&lt;&nbsp;LSMALL&nbsp;are&nbsp;set&nbsp;to&nbsp;LZERO</span></li><li><span class="macro">#define&nbsp;minLogExp&nbsp;-log(-LZERO)&nbsp;//&nbsp;~=-23</span></li><li>&nbsp;</li><li><span class="type">double</span><span>&nbsp;</span><span class="word">LogAdd</span><span>(</span><span class="type">double</span><span>&nbsp;</span><span class="word">x</span><span>,&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">y</span><span>)</span></li><li><span>{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">temp</span><span>,&nbsp;</span><span class="word">diff</span><span>,&nbsp;</span><span class="word">z</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">if</span><span>&nbsp;(</span><span class="word">x</span><span>&nbsp;&lt;&nbsp;</span><span class="word">y</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">temp</span><span>&nbsp;=&nbsp;</span><span class="word">x</span><span>;&nbsp;</span><span class="word">x</span><span>&nbsp;=&nbsp;</span><span class="word">y</span><span>;&nbsp;</span><span class="word">y</span><span>&nbsp;=&nbsp;</span><span class="word">temp</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;}</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">diff</span><span>&nbsp;=&nbsp;</span><span class="word">y</span><span>-</span><span class="word">x</span><span>;&nbsp;</span><span class="comment">//&nbsp;notice&nbsp;that&nbsp;diff&nbsp;&lt;=&nbsp;0</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">if</span><span>&nbsp;(</span><span class="word">diff</span><span>&nbsp;&lt;&nbsp;</span><span class="word">minLogExp</span><span>)&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;if&nbsp;y'&nbsp;is&nbsp;far&nbsp;smaller&nbsp;than&nbsp;x'</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">return</span><span>&nbsp;(</span><span class="word">x</span><span>&nbsp;&lt;&nbsp;</span><span class="word">LSMALL</span><span>)&nbsp;?&nbsp;</span><span class="word">LZERO</span><span>&nbsp;:&nbsp;</span><span class="word">x</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">else</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">z</span><span>&nbsp;=&nbsp;</span><span class="word">exp</span><span>(</span><span class="word">diff</span><span>);</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">return</span><span>&nbsp;</span><span class="word">x</span><span>&nbsp;+&nbsp;</span><span class="word">log</span><span>(</span><span class="value">1.0</span><span>&nbsp;+&nbsp;</span><span class="word">z</span><span>);</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;}</span></li><li><span>}</span></li></ol></div><textarea style="display: none;">#define LZERO  (-1.0E10) // log(0)
+#define LSMALL (-0.5E10) // log values &lt; LSMALL are set to LZERO
+#define minLogExp -log(-LZERO) // ~=-23
+
+double LogAdd(double x, double y)
+{
+	double temp, diff, z;
+	if (x &lt; y)
+	{
+		temp = x; x = y; y = temp;
+	}
+	diff = y-x;	// notice that diff &lt;= 0
+	if (diff &lt; minLogExp)	// if y' is far smaller than x'
+		return (x &lt; LSMALL) ? LZERO : x;
+	else
+	{
+		z = exp(diff);
+		return x + log(1.0 + z);
+	}
+}
+</textarea>
+<p class="t">延伸閱讀： smoothing</p>
+<p>Learning Problem 針對沒出現的觀察值，更新之後機率是零。往後， Evaluation Problem 與 Decoding Problem 針對此觀察值，算得機率均是零。也就是說，一旦變成零，就無法恢復成非零了。</p>
+<p>更新為零，可以改成更新為一個很小但是不等於零的數字，記得維持機率總和等於一。</p>
+<p>只有離散版本 HMM 有此問題，稍後介紹的連續版本 HMM 就無此問題。</p>
+<p class="t">Pattern Recognition</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/HiddenMarkovModel13.png">
+<pre>   兩組調性不同的資料集
+   Data Set 1    Data Set 2
+1. ABBCABCAABC   BBBCCBC
+2. ABCABC        CCBABB
+3. ABCAABC       AACCBBB
+4. BBABCAB       BBABBAC
+5. BCAABCCAB     CCAABAB
+6. CACCABCA      BBBCCBAA
+7. CABCABCA      ABBBBABA
+8. CABCA         CCCCC
+9. CABCA         BBAAA
+</pre>
+<p>每一個資料集各自建立一個 HMM ，實施 Training Problem 訓練旗下所有資料，每筆資料輪流訓練一次，然後循環 L 次。如果不採輪流訓練，每筆資料都是連著訓練 L 次的話， HMM 熟記了後面幾個，反而淡忘了前面幾個。</p>
+<div class="sh"><div class="bar">&nbsp;</div><ol><li><span class="keyword">const</span><span>&nbsp;</span><span class="type">int</span><span>&nbsp;</span><span class="word">N</span><span>&nbsp;=&nbsp;</span><span class="value">3</span><span>,&nbsp;</span><span class="word">M</span><span>&nbsp;=&nbsp;</span><span class="value">3</span><span>,&nbsp;</span><span class="word">T</span><span>&nbsp;=&nbsp;</span><span class="value">15</span><span>,&nbsp;</span><span class="word">L</span><span>&nbsp;=&nbsp;</span><span class="value">20</span><span>;</span></li><li>&nbsp;</li><li><span class="keyword">struct</span><span>&nbsp;</span><span class="word">HMM</span></li><li><span>{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;π[</span><span class="word">N</span><span>],&nbsp;</span><span class="word">a</span><span>[</span><span class="word">N</span><span>][</span><span class="word">N</span><span>],&nbsp;</span><span class="word">b</span><span>[</span><span class="word">N</span><span>][</span><span class="word">M</span><span>];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">forward</span><span>(</span><span class="type">int</span><span>*&nbsp;</span><span class="word">o</span><span>,&nbsp;</span><span class="type">int</span><span>&nbsp;</span><span class="word">T</span><span>);</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">backward</span><span>(</span><span class="type">int</span><span>*&nbsp;</span><span class="word">o</span><span>,&nbsp;</span><span class="type">int</span><span>&nbsp;</span><span class="word">T</span><span>);</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">decode</span><span>(</span><span class="type">int</span><span>*&nbsp;</span><span class="word">o</span><span>,&nbsp;</span><span class="type">int</span><span>&nbsp;</span><span class="word">T</span><span>,&nbsp;</span><span class="type">int</span><span>*&nbsp;</span><span class="word">q</span><span>);</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">void</span><span>&nbsp;</span><span class="word">learn</span><span>(</span><span class="type">int</span><span>*&nbsp;</span><span class="word">o</span><span>,&nbsp;</span><span class="type">int</span><span>&nbsp;</span><span class="word">T</span><span>);</span></li><li><span>}&nbsp;</span><span class="word">hmm</span><span>[</span><span class="value">2</span><span>];</span></li><li>&nbsp;</li><li><span class="comment">//&nbsp;每個HMM可以共用的記憶體。</span></li><li><span class="type">double</span><span>&nbsp;α[</span><span class="value">2</span><span>][</span><span class="word">N</span><span>],&nbsp;β[</span><span class="value">2</span><span>][</span><span class="word">N</span><span>];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;evaluation&nbsp;problem</span></li><li><span class="type">double</span><span>&nbsp;δ[</span><span class="value">2</span><span>][</span><span class="word">N</span><span>];&nbsp;</span><span class="type">int</span><span>&nbsp;ψ[</span><span class="word">T</span><span>][</span><span class="word">N</span><span>];&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;decoding&nbsp;problem</span></li><li><span class="type">double</span><span>&nbsp;γ[</span><span class="word">T</span><span>][</span><span class="word">N</span><span>],&nbsp;ξ[</span><span class="word">T</span><span>][</span><span class="word">N</span><span>][</span><span class="word">N</span><span>];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;learning&nbsp;problem</span></li><li>&nbsp;</li><li><span class="keyword">void</span><span>&nbsp;</span><span class="word">train</span><span>(</span><span class="word">string</span><span>&nbsp;</span><span class="word">dataset</span><span>[</span><span class="value">2</span><span>][</span><span class="value">9</span><span>])</span></li><li><span>{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">i</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">i</span><span>&lt;</span><span class="value">2</span><span>;&nbsp;++</span><span class="word">i</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">l</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">l</span><span>&lt;</span><span class="word">L</span><span>;&nbsp;++</span><span class="word">l</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">j</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">j</span><span>&lt;</span><span class="value">9</span><span>;&nbsp;++</span><span class="word">j</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;把資料轉換成離散數值。最好可以預先轉換好。</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">int</span><span>&nbsp;</span><span class="word">o</span><span>[</span><span class="word">T</span><span>];</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">k</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">k</span><span>&lt;</span><span class="word">dataset</span><span>[</span><span class="word">i</span><span>][</span><span class="word">j</span><span>].</span><span class="word">size</span><span>();&nbsp;++</span><span class="word">k</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">o</span><span>[</span><span class="word">k</span><span>]&nbsp;=&nbsp;</span><span class="word">dataset</span><span>[</span><span class="word">i</span><span>][</span><span class="word">j</span><span>][</span><span class="word">k</span><span>]&nbsp;-&nbsp;</span><span class="char">'A'</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="word">hmm</span><span>[</span><span class="word">i</span><span>].</span><span class="word">learn</span><span>(</span><span class="word">o</span><span>,&nbsp;</span><span class="word">dataset</span><span>[</span><span class="word">i</span><span>][</span><span class="word">j</span><span>].</span><span class="word">size</span><span>());</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></li><li><span>}</span></li></ol></div><textarea style="display: none;">const int N = 3, M = 3, T = 15, L = 20;
+
+struct HMM
+{
+	double π[N], a[N][N], b[N][M];
+	double forward(int* o, int T);
+	double backward(int* o, int T);
+	double decode(int* o, int T, int* q);
+	void learn(int* o, int T);
+} hmm[2];
+
+// 每個HMM可以共用的記憶體。
+double α[2][N], β[2][N];		// evaluation problem
+double δ[2][N]; int ψ[T][N];	// decoding problem
+double γ[T][N], ξ[T][N][N];		// learning problem
+
+void train(string dataset[2][9])
+{
+	for (int i=0; i&lt;2; ++i)
+		for (int l=0; l&lt;L; ++l)
+			for (int j=0; j&lt;9; ++j)
+			{
+				// 把資料轉換成離散數值。最好可以預先轉換好。
+				int o[T];
+				for (int k=0; k&lt;dataset[i][j].size(); ++k)
+					o[k] = dataset[i][j][k] - 'A';
+				hmm[i].learn(o, dataset[i][j].size());
+			}
+}
+</textarea>
+<p>如果每筆資料是不定期收到的、訓練好的 HMM 隨時要用於辨識，就無法輪流訓練。解決方式是記住之前的 Training Problem 表格，以比重求得這次 Training Problem 的平均值。</p>
+<pre>          1 × γ<sub>1</sub>(i) + n × γ<sub>1</sub><sup>(n)</sup>(i)
+<u>π</u><sub>i</sub><sup>(n+1)</sup> = ——————————————————————————
+                   1 + n
+
+           1 × ∑<sub>t=1~T-1</sub> [ ξ<sub>t</sub>(i,j) ] + n × ∑<sub>t=1~T-1</sub> [ ξ<sub>t</sub><sup>(n)</sup>(i,j) ]
+<u>a</u><sub>ij</sub><sup>(n+1)</sup> = ——————————————————————————————————————————————————————
+               1 × ∑<sub>t=1~T</sub> [ γ<sub>t</sub>(i) ] + n × ∑<sub>t=1~T</sub> [ γ<sub>t</sub><sup>(n)</sup>(i) ]
+
+             1 × ∑<sub>t=1~T, o<sub>t</sub>=k</sub> [ γ<sub>t</sub>(i) ] + n × ∑<sub>t=1~T, o<sub>t</sub>=k</sub> [ γ<sub>t</sub><sup>(n)</sup>(i) ]
+<u>b</u><sub>j</sub><sup>(n+1)</sup>(k) = ———————————————————————————————————————————————————————
+                  1 × ∑<sub>t=1~T</sub> [ γ<sub>t</sub>(i) ] + n × ∑<sub>t=1~T</sub> [ γ<sub>t</sub><sup>(n)</sup>(i) ]
+</pre>
+<p class="t">Pattern Recognition</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/HiddenMarkovModel14.png">
+<p>訓練好的 HMM 馬上可用於辨識。要辨識一筆資料，就窮舉每一個 HMM ，看看該筆資料最符合哪個 HMM 。所謂最符合，就是實施 Evaluation Problem ，取機率最大者，作為辨識結果。</p>
+<p>為了加速，通常改用 Decoding Problem 。取 log 的情況下， Evaluation Problem 要處理對數相加，而 Decoding Problem 不必，因此 Decoding Problem 效率略勝一籌。</p>
+<p>經實驗觀察，採用 Evaluation Problem 與採用 Decoding Problem 的辨識結果幾乎相同。至於你信不信，我反正信了。</p>
+<div class="sh"><div class="bar">&nbsp;</div><ol><li><span class="type">int</span><span>&nbsp;</span><span class="word">recognize</span><span>(</span><span class="type">int</span><span>*&nbsp;</span><span class="word">o</span><span>,&nbsp;</span><span class="type">int</span><span>&nbsp;</span><span class="word">T</span><span>)</span></li><li><span>{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">int</span><span>&nbsp;</span><span class="word">ans</span><span>&nbsp;=&nbsp;-</span><span class="value">1</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">p</span><span>&nbsp;=&nbsp;-</span><span class="value">1e9</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">for</span><span>&nbsp;(</span><span class="type">int</span><span>&nbsp;</span><span class="word">i</span><span>=</span><span class="value">0</span><span>;&nbsp;</span><span class="word">i</span><span>&lt;</span><span class="value">2</span><span>;&nbsp;++</span><span class="word">i</span><span>)</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;{</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="type">double</span><span>&nbsp;</span><span class="word">pp</span><span>&nbsp;=&nbsp;</span><span class="word">hmm</span><span>[</span><span class="word">i</span><span>].</span><span class="word">decode</span><span>(</span><span class="word">o</span><span>,&nbsp;</span><span class="word">T</span><span>,&nbsp;</span><span class="word">q</span><span>);</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">if</span><span>&nbsp;(</span><span class="word">pp</span><span>&nbsp;&gt;&nbsp;</span><span class="word">p</span><span>)&nbsp;</span><span class="word">p</span><span>&nbsp;=&nbsp;</span><span class="word">pp</span><span>,&nbsp;</span><span class="word">ans</span><span>&nbsp;=&nbsp;</span><span class="word">i</span><span>;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;}</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="keyword">return</span><span>&nbsp;</span><span class="word">ans</span><span>;</span></li><li><span>}</span></li></ol></div><textarea style="display: none;">int recognize(int* o, int T)
+{
+	int ans = -1;
+	double p = -1e9;
+	for (int i=0; i&lt;2; ++i)
+	{
+		double pp = hmm[i].decode(o, T, q);
+		if (pp &gt; p) p = pp, ans = i;
+	}
+	return ans;
+}
+</textarea>
+<p class="e">ICPC <a href="http://livearchive.onlinejudge.org/external/61/6147.pdf">6147</a></p>
+
+</div></div><div class="a"><div class="h" id="3">
+<p class="b">Continuous Hidden Markov Model</p>
+<p class="r">程度★★　難度★★</p>
+</div><div class="c">
+<p class="t">Guassian Mixture Model</p>
+<p>之前說，每個狀態都會噴出 M 種固定的值。然而現實生活中，觀察值通常是實數，也通常有誤差，不見得恰好就是這 M 種值。</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/GaussianFunction1.png">
+<img src="./演算法筆記 - Hidden Markov Model_files/ContinuousHMM1.png">
+<p>一個直覺的解決方案是假設誤差呈常態分布：以常態分布的平均值 μ ，代表正確的噴出數值；以常態分布的變異數 σ <sup> 2 </sup>，控制誤差範圍。 M 個觀察值分別製作 M 個常態分布，標作 N( v , μ <sub> 1 </sub>  , σ <sub> 1 </sub><sup> 2 </sup>  ) 到 N( v , μ <sub> M </sub>  , σ <sub> M </sub><sup> 2 </sup>  ) 。</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/ContinuousHMM2.png">
+<p>狀態不再噴出 k 種值，而是有 k 種噴出管道。觀察值不再是固定的、離散的數值 v <sub> 1 </sub>到 v <sub> M </sub>，而是變動的、連續的數值 v 。</p>
+<p>使用第 k 個噴出管道的機率，仍標作 b <sub> i </sub> ( k ) 。在第 k 個噴出管道，噴出數值 v 的機率，是一個常態分布函數 N( v , μ <sub> k </sub>  , σ <sub> k </sub><sup> 2 </sup>  ) ； v 代入一個實際數值，就能計算其噴出機率。</p>
+<p>當各個常態分布的平均值很接近，或者變異數很大時，不同的噴出管道可能噴出相同數值。狀態 s <sub> i </sub>噴出數值 v 的機率， M 個噴出管道都必須累計，為 ∑ <sub> i=1~M </sub>  [ b <sub> i </sub> ( k ) × N( v , μ <sub> k </sub>  , σ <sub> k </sub><sup> 2 </sup>  ) ] 。</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/ContinuousHMM3.png">
+<p>綜觀整個過程，是把 M 個常態分布以不同比重疊加起來，合成一個分布──此概念稱作高斯混合模型，可以應用在許多地方，連續版本的 HMM 便是一例。另外，通常會將 b <sub> i </sub> ( k ) 重新標作 c <sub> ik </sub>，以呼應加權比重的概念。</p>
+<p>寫程式時，我們不會預先疊加起來，而是分別紀錄 M 個常態分布的平均值和變異數。</p>
+<p class="t">每個狀態噴出不同的觀察值</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/ContinuousHMM4.png">
+<p>套用高斯混合模型，觀察值從原先的離散數值變成了連續數值。換個角度想，套用高斯混合模型，就能製造任何一種我們想要的連續分布。</p>
+<p>每個狀態可以使用不同平均值、不同變異數的常態分布，甚至可以使用不同數量的常態分布。狀態 s <sub> i </sub>使用的常態分布，標作 N( v , μ <sub> ik </sub>  , σ <sub> ik </sub><sup> 2 </sup>  ) 。</p>
+<p class="t">觀察值推廣到高維度</p>
+<p>觀察值可以從一個值推廣為一個向量。其實也就是每個維度分開處理罷了。</p>
+<img src="./演算法筆記 - Hidden Markov Model_files/GaussianFunction2.png">
+<p>至於 Learning Problem ，則要額外更新常態分布的平均值、變異數、加權比重了：</p>
+<pre>　　　路徑第一步，穿過狀態s<sub>i</sub>。
+<u>π</u><sub>i</sub>  =  γ<sub>1</sub>(i)
+
+　　　分子是穿過邊a<sub>ij</sub>。分母是穿過狀態s<sub>i</sub>。
+       ∑<sub>t=1~T-1</sub> [ ξ<sub>t</sub>(i,j) ]
+<u>a</u><sub>ij</sub> = —————————————————————
+         ∑<sub>t=1~T</sub> [ γ<sub>t</sub>(i) ]
+
+　　　分子是穿過狀態s<sub>i</sub>、使用第k個噴出管道。分母是穿過狀態s<sub>i</sub>。
+          ∑<sub>t=1~T</sub> [ γ<sub>tk</sub>(i) ]
+<u>c</u><sub>ik</sub> = ————————————————————————
+       ∑<sub>t=1~T</sub> ∑<sub>k=1~M</sub> [ γ<sub>tk</sub>(i) ]
+
+　　　分子是穿過狀態s<sub>i</sub>、使用第k個噴出管道、噴出數值的平均值。
+       ∑<sub>t=1~T</sub> [ γ<sub>tk</sub>(i) ] * o<sub>t</sub>
+<u>μ</u><sub>ik</sub> = ————————————————————————
+          ∑<sub>t=1~T</sub> [ γ<sub>tk</sub>(i) ]
+
+　　　分子是穿過狀態s<sub>i</sub>、使用第k個噴出管道、噴出數值的共變異矩陣。
+       ∑<sub>t=1~T</sub> [ γ<sub>tk</sub>(i) ] * (o<sub>t</sub> - μ<sub>ik</sub>)(o<sub>t</sub> - μ<sub>ik</sub>)<sup>T</sup>
+<u>Σ</u><sub>ik</sub> = ——————————————————————————————————————————
+                  ∑<sub>t=1~T</sub> [ γ<sub>tk</sub>(i) ]
+</pre>
+<p>至此產生了連續版本的 HMM ，已經可以應付各種情況了！</p>
+</div></div><script src="./演算法筆記 - Hidden Markov Model_files/h.js"></script><div class="m"><div class="li"><a href="http://www.csie.ntnu.edu.tw/~u91029/index.html">演算法筆記</a></div><div class="li"><a href="http://www.csie.ntnu.edu.tw/~u91029/HiddenMarkovModel.html#1">Markov Model</a></div><div class="li"><a href="http://www.csie.ntnu.edu.tw/~u91029/HiddenMarkovModel.html#2">Hidden Markov Model</a></div><div class="li"><a href="http://www.csie.ntnu.edu.tw/~u91029/HiddenMarkovModel.html#3">Continuous Hidden Markov Model</a></div></div></body></html>
