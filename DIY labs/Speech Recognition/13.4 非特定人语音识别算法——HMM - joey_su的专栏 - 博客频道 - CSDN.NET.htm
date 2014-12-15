@@ -1,0 +1,1422 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0053)http://blog.csdn.net/joey_su/article/details/17270639 -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script src="http://recdm.csdn.net/getRecommendList.html?jsonp=jsonp1418205894275&userId=fake_userId&size=10&his=2%3A17270639&client=blog_cf_enhance&query=13.4+%E9%9D%9E%E7%89%B9%E5%AE%9A%E4%BA%BA%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB%E7%AE%97%E6%B3%95%E2%80%94%E2%80%94HMM%2C%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB%2C%E7%AE%97%E6%B3%95%2C%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%2C%E8%AE%A1%E7%AE%97%E6%9C%BA%2C%E5%BA%94%E7%94%A8&cid=-4342831886636069778_20141209"></script>    
+    <script type="text/javascript" async="" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/ga.js"></script><script type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/tracking.js" charset="utf-8"></script>  
+
+    <script type="text/javascript">
+        var protocol = window.location.protocol;
+        document.write('<script type="text/javascript" src="' + protocol + '//csdnimg.cn/pubfooter/js/repoAddr2.js?v=' + Math.random() + '"></' + 'script>');
+    </script><script type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/repoAddr2.js"></script>
+
+
+    <script id="allmobilize" charset="utf-8" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/allmobilize.min.js"></script><style type="text/css"></style>
+ <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="http://blog.csdn.net/joey_su/article/details/17270639#">
+
+    <title>13.4 非特定人语音识别算法——HMM - joey_su的专栏
+        - 博客频道 - CSDN.NET</title>
+    
+    <meta name="description" content="与DTW相比，HMM一方面用隐含的状态对应于声学层各相对稳定的发音单位，并通过状态转移和状态驻留来描述发音的变化；另一方面，它引入了概率统计模型，不再用动态时间对齐的方法求匹配距离，而是用概率密度函数计算语音参数对HMM模型的输出概率，通过搜索最佳状态序列，以最大后验概率为准则找到识别结果。HMM模型较为完整地表达了语音的声学模型，并且采用统计的训练方法将底层的声学模型和上层的语言模型融入统一的语">
+    <script src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/jquery.js" type="text/javascript"></script>
+    <script type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/ad.js"></script>
+        <!--new top-->
+       
+        <link rel="stylesheet" href="http://static.csdn.net/public/common/toolbar/css/index.css">
+        <!--new top-->
+
+    <link rel="Stylesheet" type="text/css" href="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/style.css">
+    <link id="RSSLink" title="RSS" type="application/rss+xml" rel="alternate" href="http://blog.csdn.net/joey_su/rss/list">
+    <link rel="shortcut icon" href="http://csdnimg.cn/public/favicon.ico">
+    <link type="text/css" rel="stylesheet" href="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/default.css">
+ 
+
+
+<script src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/share.js"></script><script type="text/javascript" charset="utf-8" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/main.js"></script><link href="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/bdsstyle.css" rel="stylesheet" type="text/css"><script charset="utf-8" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/sm.min.js" async=""></script><link rel="stylesheet" type="text/css" href="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/style(1).css"><link type="text/css" rel="stylesheet" href="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/style(2).css"><script src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/logger.js"></script><link rel="stylesheet" href="http://bdimg.share.baidu.com/static/api/css/share_style0_16.css?v=f4b44e79.css"></head>
+<body><iframe frameborder="0" style="display: none;"></iframe>
+    
+   
+      <!--new top-->
+    <script id="toolbar-tpl-scriptId" fixed="true" prod="blog" skin="black" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/html.js" type="text/javascript"></script><div class="csdn-toolbar csdn-toolbar-skin-black ">        <div class="container row center-block ">          <div class="col-md-3 pull-left logo clearfix"><a href="http://www.csdn.net/?ref=toolbar" title="CSDN首页" target="_blank" class="icon"></a><a title="频道首页" href="http://blog.csdn.net/?ref=toolbar_logo" target="_blank" class="img blog-icon"></a></div>          <div class="pull-right login-wrap unlogin">            <ul class="btns">              <li class="loginlink"><a href="https://passport.csdn.net/account/login?ref=toolbar" target="_top">登录&nbsp;</a>|<a target="_top" href="https://passport.csdn.net/account/register?ref=toolbar">&nbsp;注册</a></li>              <li class="search">                <div class="icon on-search-icon">                  <div class="wrap">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <form action="http://so.csdn.net/search" method="get" target="_blank">                      <input type="hidden" value="toolbar" name="ref" accesskey="2">                      <div class="border">                        <input placeholder="搜索" type="text" value="" name="q" accesskey="2"><span class="icon-enter-sm"></span>                      </div>                    </form>                  </div>                </div>              </li>              <li class="favor">                <div class="icon on-favor-icon">                  <div class="wrap">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <div style="display:none;" class="favor-success"><span class="msg">收藏成功</span>                      <div class="btns"><span class="btn btn-primary ok">确定</span></div>                    </div>                    <div style="display:none;" class="favor-failed"><span class="icon-danger-lg"></span><span class="msg">收藏失败，请重新收藏</span>                      <div class="btns"><span class="btn btn-primary ok">确定</span></div>                    </div>                    <form role="form" class="form-horizontal favor-form">                      <div class="form-group">                        <div class="clearfix">                          <label for="input-title" class="col-sm-2 control-label">标题</label>                          <div class="col-sm-10">                            <input id="inputTitle" type="text" placeholder="" class="title form-control">                          </div>                        </div>                        <div class="alert alert-danger"><strong></strong>标题不能为空</div>                      </div>                      <div class="form-group">                        <label for="input-url" class="col-sm-2 control-label">网址</label>                        <div class="col-sm-10">                          <input id="input-url" type="text" placeholder="" class="url form-control">                        </div>                      </div>                      <div class="form-group">                        <label for="input-tag" class="col-sm-2 tag control-label">标签</label>                        <div class="col-sm-10">                          <input id="input-tag" type="text" class="form-control tag">                        </div>                      </div>                      <div class="form-group">                        <label for="input-description" class="description col-sm-2 control-label">摘要</label>                        <div class="col-sm-10">                          <textarea id="input-description" class="form-control description"></textarea>                        </div>                      </div>                      <div class="form-group">                        <div class="col-sm-offset-2 col-sm-10 ft">                          <div class="col-sm-4 pull-left">                            <div class="checkbox">                              <label>                                <input type="checkbox" name="share" checked="checked" class="share">公开                              </label>                            </div>                          </div>                          <div class="col-sm-8 pull-right favor-btns">                            <button type="button" class="cancel btn btn-default">取消</button>                            <button type="submit" class="submit btn btn-primary">收藏</button>                          </div>                        </div>                      </div>                    </form>                  </div>                </div>              </li>              <li class="notify">                <div style="display:none" class="number"></div>                <div style="display:none" class="icon-hasnotes-sm"></div>                <div id="header_notice_num"></div>                <div class="icon on-notify-icon">                  <div class="wrap">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <div id="note1" class="csdn_note">                      <div class="box"></div>                    <iframe src="about:block" frameborder="0" allowtransparency="true" style="z-index:-1;position:absolute;top:0;left:0;width:100%;height:100%;background:transparent"></iframe></div>                  </div>                </div>              </li>              <li class="ugc">                <div class="icon on-ugc-icon">                  <div class="wrap clearfix">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <dl>                      <dt><a href="http://geek.csdn.net/news/expert?ref=toolbar" target="_blank" class="p-news clearfix"><em class="icon"></em><span>分享资讯</span></a></dt>                      <dt><a href="http://share.csdn.net/slides/new?ref=toolbar" target="_blank" class="p-doc clearfix"><em class="icon"></em><span>传PPT/文档</span></a></dt>                      <dt><a href="http://bbs.csdn.net/topics/new?ref=toolbar" target="_blank" class="p-ask clearfix"><em class="icon"></em><span>提问题</span></a></dt>                      <dt><a href="http://write.blog.csdn.net/postedit?ref=toolbar" target="_blank" class="p-blog clearfix"><em class="icon"></em><span>写博客</span></a></dt>                      <dt><a href="http://u.download.csdn.net/upload?ref=toolbar" target="_blank" class="p-src clearfix"><em class="icon"></em><span>传资源</span></a></dt>                      <dt><a href="https://code.csdn.net/projects/new?ref=toolbar" target="_blank" class="c-obj clearfix"><em class="icon"></em><span>创建项目</span></a></dt>                      <dt><a href="https://code.csdn.net/snippets/new?ref=toolbar" target="_blank" class="c-code clearfix"><em class="icon"></em><span>创建代码片</span></a></dt>                    </dl>                  </div>                </div>              </li>              <li class="profile">                <div class="icon on-profile-icon"><img src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/100x100.jpg" class="curr-icon-img">                  <div class="wrap clearfix">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <div class="bd">                      <dl class="clearfix">                        <dt class="pull-left img"><a target="_blank" href="http://my.csdn.net/?ref=toolbar" class="avatar"><img src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/100x100.jpg"></a></dt>                        <dd class="info"><a target="_blank" href="http://my.csdn.net/?ref=toolbar" class="nickname"></a><a class="set-nick" href="https://passport.csdn.net/account/profile">设置昵称<span class="write-icon"></span></a><span class="dec"><a class="fill-dec" href="http://my.csdn.net/" target="_blank">编辑自我介绍，让更多人了解你<span class="write-icon"></span></a></span></dd>                      </dl>                    </div>                    <div class="ft clearfix"><a target="_blank" href="http://my.csdn.net/my/account/changepwd?ref=toolbar" class="pull-left"><span class="icon-cog"></span>帐号设置</a><a href="https://passport.csdn.net/account/logout?ref=toolbar" target="_top" class="pull-left" style="margin-left:132px; width:18px; height:27px; white-space:nowrap; overflow:hidden;"><span class="icon-signout"></span><span class="out">退出</span></a></div>                  </div>                </div>              </li>              <li class="apps">                <div class="icon on-apps-icon">                  <div class="wrap clearfix">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                  <div class="detail">                    <dl>                      <dt>                        <h5>社区</h5>                      </dt>                      <dd> <a href="http://blog.csdn.net/?ref=toolbar" target="_blank">博客</a></dd>                      <dd> <a href="http://bbs.csdn.net/?ref=toolbar" target="_blank">论坛</a></dd>                      <dd> <a href="http://download.csdn.net/?ref=toolbar" target="_blank">下载</a></dd>                      <dd><a href="http://ask.csdn.net/?ref=toolbar" target="_blank">技术问答</a></dd>                      <dd><a href="http://geek.csdn.net/?ref=toolbar" target="_blank">极客头条</a></dd>                    </dl>                  </div>                  <div class="detail">                    <dl>                      <dt>                        <h5>服务</h5>                      </dt>                      <dd> <a href="https://code.csdn.net/?ref=toolbar" target="_blank">CODE</a></dd>                      <dd> <a href="http://hero.csdn.net/?ref=toolbar" target="_blank">英雄会</a></dd>                      <dd> <a href="http://huiyi.csdn.net/?ref=toolbar" target="_blank">活动</a></dd>                      <dd> <a href="http://www.csto.com/?ref=toolbar" target="_blank">CSTO</a></dd>                      <dd> <a href="http://mall.csdn.net/?ref=toolbar" target="_blank">C币兑换<img src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/new.gif" style="margin-top: -26px;"></a></dd>                    </dl>                  </div>                  <div class="detail last">                    <dl>                      <dt>                        <h5>俱乐部</h5>                      </dt>                      <dd> <a href="http://cto.csdn.net/?ref=toolbar" target="_blank">CTO俱乐部</a></dd>                      <dd> <a href="http://student.csdn.net/?ref=toolbar" target="_blank">高校俱乐部</a></dd>                    </dl>                  </div>                </div>              </div>            </li>            </ul>          </div>        </div>    </div>
+     <!--new top-->
+    <div id="container">
+        <div id="header">
+    <div class="header">
+        <div id="blog_title">
+            <h2>
+                <a href="http://blog.csdn.net/joey_su">joey_su的专栏</a></h2>
+            <h3></h3>
+            <div class="clear">
+            </div>
+        </div>
+        <div class="clear">
+        </div>
+    </div>
+</div>
+<div id="navigator">
+    <div class="navigator_bg">
+    </div>
+    <div class="navigator">
+        <ul>
+                <li id="btnContents"><a href="http://blog.csdn.net/joey_su?viewmode=contents"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_mulu&#39;])">
+                    <img src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/ico_list.gif">目录视图</span></a></li>
+                <li id="btnView"><a href="http://blog.csdn.net/joey_su?viewmode=list"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_zhaiyao&#39;])">
+                    <img src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/ico_summary.gif">摘要视图</span></a></li>
+                <li id="btnRss"><a href="http://blog.csdn.net/joey_su/rss/list"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_RSS&#39;])">
+                    <img src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/ico_rss.gif">订阅</span></a></li>                
+
+            </ul>
+    </div>
+</div>
+<script type="text/javascript">
+    var username = "joey_su";
+    var _blogger = username;
+    var blog_address = "http://blog.csdn.net/joey_su";
+    var static_host = "http://static.blog.csdn.net";
+    var currentUserName = "";  
+</script>
+
+        <div id="body">
+            <div id="main">
+                <div class="main">
+                        <div class="ad_class">
+<div class="notice tracking-ad" data-mod="popu_3"> 
+
+<a href="http://bbs.csdn.net/topics/390812950?page=5#post-398523062" target="_blank">
+<font color="blue">博客专家福利
+</font></a>
+&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/csdnproduct/article/details/41806091" target="_blank">
+<font color="red">C币兑换平台上线</font></a>
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/blogdevteam/article/details/41079173" target="_blank">
+<font color="blue">10月推荐文章汇总
+</font></a>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/blogdevteam/article/details/41842837" target="_blank">
+<font color="red">有奖征文--我亲历的京东发展史
+</font></a>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+
+</div>                        </div>
+                        
+
+  
+<link href="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/comment1.css" type="text/css" rel="stylesheet">
+<link href="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/style1.css" type="text/css" rel="stylesheet">
+<script language="JavaScript" type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/jquery.cookie.js"></script>
+<script type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/main(1).js"></script>
+  <script type="text/ecmascript">
+      window.quickReplyflag = true;
+    </script>
+<div id="article_details" class="details">
+    <div class="article_title">   
+         <span class="ico ico_type_Original"></span>
+
+
+    <h1>
+        <span class="link_title"><a href="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET.htm">
+        13.4 非特定人语音识别算法——HMM
+        </a></span>
+    </h1>
+</div>
+
+    <div class="article_manage">
+        <span class="link_categories">
+        分类：
+            <a href="http://blog.csdn.net/joey_su/article/category/1392949" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_fenlei&#39;]);">语音识别</a> 
+        </span>
+    <span class="link_postdate">2013-12-11 22:09</span>
+    <span class="link_view" title="阅读次数">694人阅读</span>
+    <span class="link_comments" title="评论次数"><a href="http://blog.csdn.net/joey_su/article/details/17270639#comments" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_pinglun&#39;])">评论</a>(1)</span>
+    <span class="link_collect"><a href="javascript:void(0);" onclick="javascript:_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_shoucang&#39;]);collectArticle(&#39;13.4 非特定人语音识别算法——HMM&#39;,&#39;17270639&#39;);return false;" title="收藏">收藏</a></span>
+    <span class="link_report"><a href="http://blog.csdn.net/joey_su/article/details/17270639#report" onclick="javascript:_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_jubao&#39;]);report(17270639,2);return false;" title="举报">举报</a></span>
+    
+</div>
+<div class="tag2box"><a href="http://www.csdn.net/tag/%e8%af%ad%e9%9f%b3%e8%af%86%e5%88%ab" target="_blank" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_tag&#39;]);">语音识别</a><a href="http://www.csdn.net/tag/matlab" target="_blank" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_tag&#39;]);">matlab</a><a href="http://www.csdn.net/tag/%e7%ae%97%e6%b3%95" target="_blank" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_tag&#39;]);">算法</a></div>
+
+  
+    
+<div id="article_content" class="article_content">
+
+<div>
+<ol style="font-family:Tahoma; orphans:2; widows:2; font-size:14px">
+<li>与DTW相比，HMM一方面用隐含的状态对应于声学层各相对稳定的发音单位，并通过状态转移和状态驻留来描述发音的变化；另一方面，它引入了概率统计模型，不再用动态时间对齐的方法求匹配距离，而是用概率密度函数计算语音参数对HMM模型的输出概率，通过搜索最佳状态序列，以最大后验概率为准则找到识别结果。</li><li>HMM模型较为完整地表达了语音的声学模型，并且采用统计的训练方法将底层的声学模型和上层的语言模型融入统一的语音识别搜索算法中，可以获得较好的效果。</li><li>由于HMM所涉及的内容较多，本章只针对孤立词识别，以连续高斯混合HMM模型为例，对HMM模型结构、模型参数的训练及识别算法进行介绍。</li><li>首先以一天的气温变化为例，简单介绍什么是HMM模型。
+<ol>
+<li>对于空气的温度，一人的感觉为标准，可以比较主观地划分为冷、凉爽、温暖、热、酷热等几类，这里称其为五个感觉状态，温度是可以用温度计定量地测定的，然而温度的数值与这五个状态却不是一一对应的因为人的感觉是不能准确地量化的，比如不能简单地将20℃强行称为凉爽或是温暖，但是20℃肯定不是冷或酷热。对于这种温度到感觉之间的对应关系，可以用模糊数学中的隶属度来描述。但是在概率模型中，则是用统计的方法，用概率密度函数来描述。比如，20℃对“凉爽”的输出概率可能为0.7，而对“温暖”的输出概率可能为0.3。</li><li>一天中的气温是在随时变化的，这一变化是随机的，但是也有一个基本的规律。比如一个晴天夏日为例，凌晨的温度比较低，到了上午达到20℃左右，而到了正午则可能高达35℃，傍晚温度又降到20℃左右，深夜则又降得更低。假设每隔10分钟测量一次温度，那么一天24小时将得到60/10*24=144个温度采样，把它们按时间排起来，就可以看到一天温度变化的规律。</li><li>温度的变化是随机的，它的数值随着时间的变化本身就是一个随机过程。温度给人的感觉所对应的五种状态随时间的变化则是另一个随机过程。可以注意到，温度的变化有时是稳定的，可以认为它驻留于某个状态中；也可能忽冷忽热，这时说它发生了从一个状态到另一个状态的转移。由于当前状态只与前面一时刻所处的状态有关，所以这一随机过程为马尔科夫过程。在温度变化的随机过程中，可以用温度计观测到温度的数值，而在状态变化的随机过程中，却无法准确地指出某一时刻到底是什么状态，也就是说，状态的变化是隐含的，这就是所谓“隐含”的来历。<br>
+</li><li>总之，HMM的精髓就在于：观察可测，状态隐含。这里观察就是温度，状态就是人的感觉。</li></ol>
+</li><li>在语音识别中，所谓的观察序列就是通过计算得到的一帧帧的语音参数，如MFCC参数。而状态则是在训练阶段事先规定好的不同语音单元。对于汉语普通话来说，语音单元可以是一个完整的音节，也可以是声母或韵母，还可以是更为精细的音素。</li><li><img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(6).png" alt="" style=""><br>
+一个HMM模型由若干个状态组成，随着时间的变化，各个状态之间可以发生转移，也可以在一个状态内驻留。每个观察向量对不同的状态都有相应的输出概率。如上图所示的HMM，包含有四个状态S1~S4，状态之间或状态自身的转移概率用aij表示，输入观察序列为o1，o2，...，oT。每个观察序列是一帧MFCC参数。在这个模型中，序列o1，o2，...，oT是可观测的输入序列，称为观察序列，而每一时刻所处的状态却是隐含的。</li><li>一个连续混合高斯HMM的基本元素组合：<br>
+N——模型的状态数；<br>
+A={aij}——状态转移概率矩阵；<br>
+<span style="font-family:MS UI Gothic">π={πi}</span>——各状态的起始概率分布<br>
+B={bj(o)}——输出概率密度函数<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(7).png" alt="" style=""></li><li>输出概率密度函数中参数描述如下表所示<br>
+<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(8).png" alt="" style=""><br>
+权系数满足下面条件：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(9).png" alt="" style=""><br>
+</li><li>这种连续混合高斯HMM通常简称为CHMM。对于每一个状态，都用若干个正态高斯概率密度函数（简称为pdf）的线性组合来表示，每个pdf有各自的均值矢量和协方差矩阵，这些都是通过对大量的MFCC参数进行统计得到的。</li><li>对于HMM模型，有三个基本问题需要解决：<br>
+1）输出概率的计算问题：给定观察序列O=(o1,o2,...,oT)和HMM模型λ=(Α,Β,<span style="font-family:&#39;MS UI Gothic&#39;">π</span>)，如果已知状态转移序列q=(q1,q2,...,qT)，则HMM模型λ以状态序列q输出观察序列O概率为：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(10).png" alt="" style=""><br>
+HMM模型λ输出序列q的概率为：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(11).png" alt="" style=""><br>
+而这里需要的是对所有可能的状态转移序列q，模型输出观察序列O的概率P(O|λ)。<br>
+由全概率公式可得：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(12).png" alt="" style=""><br>
+该式需要进行2TN^T次计算，这在实际中是无法承受的。为了降低计算复杂度，可以采用前向算法和后向算法。</li><li>首先定义HMM的前向概率为：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(13).png" alt="" style=""><br>
+表示给定HMM模型参数λ，部分观察序列{o1o2...ot}在t时刻处于状态i的概率。<br>
+前向概率αt(i)可以用下面的递推公式计算：<br>
+（1）初始化<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(14).png" alt="" style=""><br>
+（2）迭代计算<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(15).png" alt="" style=""><br>
+（3）终止计算<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(16).png" alt="" style=""><br>
+</li><li>与前向概率相对应，还有后向概率，定义后向概率为：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(17).png" alt="" style=""><br>
+表示给定HMM模型参数λ，观察序列在t时刻处于状态i，系统输出部分观察序列{ot+1ot+2...oT}的概率。<br>
+后向概率βt(i)也有类似的递推公式计算：<br>
+（1）初始化<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(18).png" alt="" style=""><br>
+（2）迭代计算<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(19).png" alt="" style=""><br>
+</li><li>前向概率和后向概率的递推关系可用下图说明：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(20).png" alt="" style=""><br>
+</li><li>利用前向概率和后向概率计算输出概率<br>
+前向概率公式和后向概率公式巧妙地将整个观察序列对HMM模型的输出概率分成两个部分观察序列的输出概率的乘积，而且它们各自都有相应的递推公式，可以大大简化计算。经过分析，可以得到下面的输出概率计算公式：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(21).png" alt="" style=""><br>
+实际上，这就是HMM三个基本问题中第一个问题的解答，它的另一种常用的形式是：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(22).png" alt="" style=""><br>
+实际计算中首先计算出对于每个t和每个状态i的前向概率和后向概率，然后套用上面的公式，计算出该观察序列对模型的输出概率。这两个公式也成为全概率公式。</li><li>Viterbi算法是一种广泛用于通信领域中的动态规划算法，该算法在语音识别中也得到了应用。利用全概率公式，可以计算出系统的输出概率，但是无法找到一条最佳的状态转移路径。而用Viterbi算法，不仅可以找到一条足够好的状态转移路径，还可以得到该路径所对应的输出概率。同时，用Viterbi算法计算输出概率所需要的计算量要比全概率公式的计算量小很多。应该注意，这里是说”足够好“，而不是说”最优“，因为动态规划算法得到的结果通常是满意的，但并不保证它是最优的。<br>
+</li><li>Viterbi算法也有递推的形式：<br>
+（1）初始化<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(23).png" alt="" style=""><br>
+（2）迭代计算<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(24).png" alt="" style=""><br>
+（3）终止计算<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(25).png" alt="" style=""><br>
+（4）回溯最佳路径<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(26).png" alt="" style=""><br>
+这里，δt(i)为t时刻第i状态的累计输出概率，ψt(i)为t时刻第i状态的前续状态号，<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(27).png" alt="" style="">为最优状态序列中t时刻所处的状态，<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(28).png" alt="" style="">为最终的输出概率。</li><li>实际上，对于最常使用的状态转移只能局限于自身和下一个状态的HMM模型来说，在第二步计算中每次可能的路径选择只有两个，与全概率算法相比并没有减少多少计算量。<span style="color:#FF0000">实际使用中，通常用对数形式的Viterbi算法，这样将避免进行大量的乘法计算，真正地减少了计算量，同时还可以保证有很高的动态范围，而不会由于过多的连乘而导致溢出问题。</span></li><li>对数形式的Viterbi算法如下：<br>
+（1）预处理<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(29).png" alt="" style=""><br>
+（2）初始化<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(30).png" alt="" style=""><br>
+（3）递推<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(31).png" alt="" style=""><br>
+（4）终止<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(32).png" alt="" style=""><br>
+（5）回溯最佳路径<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(33).png" alt="" style=""><br>
+在识别阶段，如果HMM模型为整词模型，就没有必要保存前续节点矩阵和状态转移路径，可以进一步减少计算量。</li><li>Baum-Welch算法实际上是极大似然（ML）准则的一个应用，它采用了一种多次迭代的优化算法。用Lagrange数乘法构造一个目标优化函数Q，其中包含了所有HMM参数作为变量，然后令Q对各变量的偏导数为0，推导出Q达到极点时新的HMM参数对应于旧的模型参数之间的关系，从而得到HMM各参数的估计。用新旧HMM模型参数之间的函数关系反复迭代运算，知道HMM模型参数不再发生明显的变化为止。</li><li>这里不再详细讨论具体的公式推导过程，只考虑具体实现中的一个具体问题，也就是在计算过程中经常遇到的溢出问题。还记得前向概率的定义：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(34).png" alt="" style=""><br>
+将其分解就可以看到，它包含很多项形如：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(35).png" alt="" style=""><br>
+的乘积项的和，其中每个乘积项都是小于1的。<span style="color:#FF0000">由于多项连乘，导致<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(36).png" alt="" style="">随着t的增加而越来越小，当t达到一定程度，的数值动态范围将超过计算机所能表示的范围，造成下溢。</span>类似的，后向概率<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(37).png" alt="" style="">也有这个问题。前面的迭代计算公式只是能够保证快速地计算出<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(38).png" alt="" style="">和，但是并不能保证计算结果不溢出。<span style="color:#FF0000">为了解决这个问题，在实际运算中通常都要采用动态标定的办法。</span><br>
+引入标定系数c用<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(39).png" alt="" style="">表示标定后的α，用作为一个中间变量，可以得到下面的标定过程。<br>
+（1）当t=1时，计算<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(40).png" alt="" style="">，令<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(41).png" alt="" style="">。然后计算<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(42).png" alt="" style="">。<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(43).png" alt="" style=""><br>
+（2）对于2&lt;=t&lt;=T，计算<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(44).png" alt="" style="">，以及标定后的前向概率：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(45).png" alt="" style=""><br>
+标定前后的前向概率之间的关系为：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(46).png" alt="" style=""><br>
+后向概率<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(47).png" alt="" style="">标定过程类似，所不同的是它采用了与前向概率相同的标定系数，引入两个心的参数<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(48).png" alt="" style="">，使得：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(49).png" alt="" style=""><br>
+也就是：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(50).png" alt="" style=""><br>
+在后面将看到，标定后的前向概率和后向概率巧妙地通过分式中分子和分母的约分，即保持了与未标定前计算公式结果的一致性，又能够避免计算过程中出现溢出问题。<br>
+</li><li><span style="color:#FF0000">经典的Baum-Welch算法中，参数重估公式是在假设只有一个观察序列的条件下推导出来的。而在实际应用中，都是有大量观察序列参与训练的，也就是对于每个HMM模型，都会收集大量的语音数据，分别计算出各自的MFCC参数序列，再用来对该HMM的参数进行重估。</span>例如，对数字”0“建立HMM模型，就要找很多人，每人录制多个”0“的wav文件，进行端点检测之后，计算出MFCC参数序列，也就是所谓的观察序列，就可以对模型的参数进行训练了。<br>
+设有K个观察序列构成的集合为：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(51).png" alt="" style=""><br>
+其中<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(52).png" alt="" style="">为第k个观察序列，其时间长度为Tk：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(53).png" alt="" style=""><br>
+定义过渡概率<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(54).png" alt="" style="">为观察序列在时刻t处于状态i，在时刻t+1处于状态j的概率，即：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(55).png" alt="" style=""><br>
+利用标定后的前向概率和后向概率，可以为每个观察序列分别计算过渡概率，而不会有溢出问题：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(56).png" alt="" style=""><br>
+利用这一公式，可以很快计算出HMM模型的转移概率：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(57).png" alt="" style=""><br>
+而对于常用的从左到右单向结构的HMM来说，起始概率应该有下面默认的数值：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(58).png" alt="" style=""><br>
+因此往往在实际计算中不对它进行重估。<br>
+再定义<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(59).png" alt="" style="">为某个观察序列在t时刻处于状态j的对于第l个混合高斯元输出概率，姑且成为混合输出概率，即：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(60).png" alt="" style=""><br>
+在但观察序列的情况下，由于上式的分母是恒定的，在后续的计算中，将在分式的分母和分子中被约去，可以省略。但是再多观察序列中，由于不同观察序列对应的分母是不同的，因此不能简单地略去。因此可以得到下面的高斯概率密度函数的重估公式：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(61).png" alt="" style=""><br>
+</li><li>HMM参数的存储格式：将HMM的所有参数都保存在一个结构中，如：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(62).png" alt="" style=""><br>
+这里hmm.N为状态数；hmm.M为一N*1数组，对应于每个状态所包含的高斯混合的个数；hmm.init为各状态的初始概率，一般来说，只有第一个状态的初始概率为1，其他为0：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(63).png" alt="" style=""><br>
+hmm.trans为转移概率矩阵，通常只有<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(64).png" alt="" style="">上的数据有效，如：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(65).png" alt="" style=""><br>
+最后，hmm.mix是一个结构，其中保存了各个HMM状态对应的高斯概率密度函数的均值和方差：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(66).png" alt="" style=""><br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(67).png" alt="" style=""><br>
+如，该HMM第一个状态为：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(68).png" alt="" style=""><br>
+表示该状态有3个混合高斯概率密度函数，均值mean为3*24的矩阵，每一行是一个pdf的均值。方差var也是一个3*24的矩阵，每一行是一个pdf的方差。注意，这里用的是对角阵形式，没有用协方差矩阵。权重weight包含了三个pdf的权系数，它们的和为1，如：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(69).png" alt="" style=""><br>
+有了以上这些信息，就足以描述一个HMM模型了。<br>
+</li><li>高斯混合的输出概率的计算<br>
+对于单个的高斯密度函数pdf，假设其协方差矩阵为对角阵，函数pdf.m计算给定观察向量对该pdf的输出概率：<br>
+*****************************************************************<br>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">function</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">p = pdf(m, v, x)</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%计算多元高斯密度函数</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%输入:</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%&nbsp; m -- 均值向量, SIZE*1</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%&nbsp; v -- 方差向量, SIZE*1</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%&nbsp; x -- 输入向量, SIZE*1</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%输出:</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%&nbsp; p -- 输出概率</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">p = (2 * pi * prod(v)) ^ -0.5 * exp(-0.5 * (x-m) ./ v * (x-m)');</span></span></div>
+*****************************************************************</li><li>而计算观察向量x对于某个HMM状态的输出概率，也就是x对该状态的若干高斯混合元的输出概率的线性组合，用下面的代码mixture.m来实现。<br>
+<div>***********************************************</div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">function</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">prob = mixture(mix, x)</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%计算输出概率</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%输入:</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%&nbsp; mix&nbsp; -- 混合高斯结构</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%&nbsp; x&nbsp;&nbsp;&nbsp; -- 输入向量, SIZE*1</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%输出:</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%&nbsp; prob -- 输出概率</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">prob = 0;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">j = 1:mix.M</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; m = mix.mean(j,:);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; v = mix.var (j,:);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; w = mix.weight(j);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; prob = prob + w * pdf(m, v, x);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% 加上realmin, 以防止viterbi.m中计算log(prob)时溢出</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">if</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">prob==0, prob=realmin;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+***********************************************</li><li>前向概率、后向概率及其他参数的计算<br>
+首先，给定了一个或多个观察序列，也就是语音参数的序列，要计算每个观察序列的前向概率、后向概率，以及各种中间参数。计算前向概率和后向概率要用标定后的公式。她们都是T*N的矩阵，分别保存在alpha和beta。另外还要保留计算过程中用到的标定系数数组c，这在Baum-Welch训练算法中会用到。<br>
+接下来计算过渡概率和混合输出概率，它们都是三维数组，分别保存在ksai和gama。<br>
+计算完毕，将c、alpha、beta、ksai和gama组装到结构param中，作为输出变量返回。下面就是计算各种参数的MATLAB程序getparam.m。<br>
+*********************************************************************<br>
+<div align="left"><span style="font-size:12px; color:#0000FF"><span style="font-size:10pt">function</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">param = getparam(hmm, O)</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%给定输出序列O, 计算前向概率alpha, 后向概率beta, 标定系数c, 及ksai,gama</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%输入:</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%&nbsp; hmm -- HMM模型参数</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%&nbsp; O&nbsp;&nbsp; -- n*d 观察序列</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%输出:</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%&nbsp; param -- 包含各种参数的结构</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">T = size(O,1);&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">%序列的长度</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">init&nbsp; = hmm.init;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">%初始概率</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">trans = hmm.trans;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">%转移概率</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">mix&nbsp;&nbsp; = hmm.mix;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">%高斯混合</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">N&nbsp;&nbsp;&nbsp;&nbsp; = hmm.N;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">%HMM状态数</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% 给定观察序列O, 计算前向概率alpha</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">alpha = zeros(T,N);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% t=1的前向概率</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">x = O(1,:);</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">i = 1:N</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; alpha(1,i) = init(i) * mixture(mix(i),x);&nbsp;&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% 标定t=1的前向概率</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">c&nbsp;&nbsp;&nbsp; = zeros(T,1);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">c(1) = 1/sum(alpha(1,:));&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">alpha(1,:) = c(1) * alpha(1,:);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% t=2:T的前向概率和标定</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">t = 2:T</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px"><span style="font-size:10pt">&nbsp;i
+ = 1:N</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; temp = 0;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">j
+ = 1:N</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; temp = temp + alpha(t-1,j) * trans(j,i);</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; alpha(t,i) = temp * mixture(mix(i),O(t,:));</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; c(t) = 1/sum(alpha(t,:));</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; alpha(t,:) = c(t)*alpha(t,:);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% 给定观察序列O, 计算后向概率beta</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">beta = zeros(T,N);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% t=T的后向概率及标定</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">l = 1:N</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; beta(T,l) = c(T);&nbsp;&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% t=T-1:1的后向概率和标定</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">t = T-1:-1:1</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; x = O(t+1,:);</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px"><span style="font-size:10pt">&nbsp;i
+ = 1:N</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px"><span style="font-size:10pt">&nbsp;j
+ = 1:N</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; beta(t,i) = beta(t,i) + beta(t+1,j) * mixture(mix(j),x) * trans(i,j);</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; beta(t,:) = c(t) * beta(t,:);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%过渡概率ksai</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">ksai = zeros(T-1,N,N);</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">t = 1:T-1</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; denom = sum(alpha(t,:).*beta(t,:));</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px"><span style="font-size:10pt">&nbsp;i
+ = 1:N-1</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px"><span style="font-size:10pt">&nbsp;j
+ = i:i+1</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nom = alpha(t,i) * trans(i,j) * mixture(mix(j),O(t+1,:)) * beta(t+1,j);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ksai(t,i,j) = c(t) * nom/denom;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%混合输出概率:gama</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">gama = zeros(T,N,max(hmm.M));</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">t = 1:T</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; pab = zeros(N,1);</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px"><span style="font-size:10pt">&nbsp;l
+ = 1:N</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pab(l) = alpha(t,l) * beta(t,l);</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; x = O(t,:);</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px"><span style="font-size:10pt">&nbsp;l
+ = 1:N</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; prob = zeros(mix(l).M,1);</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">j
+ = 1:mix(l).M</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m = mix(l).mean(j,:);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; v = mix(l).var (j,:);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; prob(j) = mix(l).weight(j) * pdf(m, v, x);</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tmp&nbsp; = pab(l)/sum(pab);</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">j
+ = 1:mix(l).M</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gama(t,l,j) = tmp * prob(j)/sum(prob);</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">param.c&nbsp;&nbsp;&nbsp;&nbsp; = c;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">param.alpha = alpha;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">param.beta&nbsp; = beta;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">param.ksai&nbsp; = ksai;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">param.gama&nbsp; = gama;</span></span></div>
+<div>*********************************************************************</div>
+</li><li>识别算法的实现<br>
+HMM的识别一般都是用Viterbi算法，这里用到了对数的形式。识别程序要求输入一个HMM模型的参数，以及一个测试用的语音观察序列，然后计算出它对该模型的输出概率，并给出最佳的状态路径。<br>
+在Viterbi算法中，对起始概率和转移概率有一个取对数的操作。为了防止出现对0取对数而造成下溢，程序中采用了下面的办法：<br>
+*******************************<br>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">ind1 = find(trans&gt;0);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">ind0 = find(trans&lt;=0);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">trans(ind0) = -inf;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">trans(ind1) = log(trans(ind1));</span></span></div>
+<div align="left">*******************************<br>
+这段代码用来计算转移概率的对数。首先find函数分别找到大于0和小于等于0的元素的下标，然后用下标分别给trans矩阵的不同元素赋值，这样就不会出现对0取对数的警告错误了。<br>
+完整的Viterbi算法代码如下：<br>
+*********************************************************************<br>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">function</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">[prob,q] = viterbi(hmm, O)</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%Viterbi算法</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%输入:</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%&nbsp; hmm -- hmm模型</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%&nbsp; O&nbsp;&nbsp; -- 输入观察序列, N*D, N为帧数,D为向量维数</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%输出:</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%&nbsp; prob -- 输出概率</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%&nbsp; q&nbsp;&nbsp;&nbsp; -- 状态序列</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">init&nbsp; = hmm.init;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">%初始概率</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">trans = hmm.trans;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">%转移概率</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">mix&nbsp;&nbsp; = hmm.mix;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">%高斯混合</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">N&nbsp;&nbsp;&nbsp;&nbsp; = hmm.N;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">%HMM状态数</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">T&nbsp;&nbsp;&nbsp;&nbsp; = size(O,1);&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">%语音帧数</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% 计算log(init);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">ind1&nbsp; = find(init&gt;0);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">ind0&nbsp; = find(init&lt;=0);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">init(ind0) = -inf;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">init(ind1) = log(init(ind1));</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% 计算log(trans);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">ind1 = find(trans&gt;0);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">ind0 = find(trans&lt;=0);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">trans(ind0) = -inf;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">trans(ind1) = log(trans(ind1));</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% 初始化</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">delta = zeros(T,N);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">fai&nbsp;&nbsp; = zeros(T,N);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">q&nbsp;&nbsp;&nbsp;&nbsp; = zeros(T,1);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% t=1</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">x = O(1,:);</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">i = 1:N</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; delta(1,i) = init(i) + log(mixture(mix(i),x));</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% t=2:T</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">t = 2:T</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">j = 1:N</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; [delta(t,j) fai(t,j)] = max(delta(t-1,:) + trans(:,j)');</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; x = O(t,:);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; delta(t,j) = delta(t,j) + log(mixture(mix(j),x));</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% 最终概率和最后节点</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">[prob q(T)] = max(delta(T,:));</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% 回溯最佳状态路径</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">t=T-1:-1:1</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; q(t) = fai(t+1,q(t+1));</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left">*********************************************************************<br>
+函数返回为两个输出变量，prob为输出概率，q为状态路径。</div>
+</div>
+</li><li>
+<div align="left">训练过程的Baum-Welch算法</div>
+<div align="left">利用Baum-Welch算法，按照公式计算转移概率，用公式计算各pdf的均值、方差和权系数。函数baum.m就是进行一次迭代的Baum-Welch算法的MATLAB实现，首先是调用getparam函数，为每个输入观察序列计算各种参数，然后再对HMM的各种参数进行重估，将新的参数作为输出变量返回。<br>
+<div>*********************************************************************</div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">function</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">hmm = baum(hmm, samples)</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">mix&nbsp; = hmm.mix;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">%高斯混合</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">N&nbsp;&nbsp;&nbsp; = length(mix);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">%HMM状态数</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">K&nbsp;&nbsp;&nbsp; = length(samples);&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">%语音样本数</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">SIZE = size(samples(1).data,2);&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">%参数阶数</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% 计算前向、后向概率矩阵，考虑多观察序列和下溢问题</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">disp(</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">'计算样本参数...'</span></span><span style="font-size:12px"><span style="font-size:10pt">);</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">k = 1:K</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; fprintf(</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">'%d '</span></span><span style="font-size:12px"><span style="font-size:10pt">,k)</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; param(k) = getparam(hmm, samples(k).data);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">fprintf(</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">'\n'</span></span><span style="font-size:12px"><span style="font-size:10pt">)</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% 重估转移概率矩阵A: trans</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">disp(</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">'重估转移概率矩阵A...'</span></span><span style="font-size:12px"><span style="font-size:10pt">)</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">i = 1:N-1</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; denom = 0;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px"><span style="font-size:10pt">&nbsp;k
+ = 1:K</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tmp&nbsp;&nbsp; = param(k).ksai(:,i,:);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; denom = denom + sum(tmp(:));</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px"><span style="font-size:10pt">&nbsp;j
+ = i:i+1</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nom = 0;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">k
+ = 1:K</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tmp = param(k).ksai(:,i,j);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nom = nom&nbsp;&nbsp; + sum(tmp(:));</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hmm.trans(i,j) = nom / denom;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% 重估混合高斯的参数</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">disp(</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">'</span></span></span><span style="color:rgb(26,173,224); font-size:13px">重估混合高斯的参数</span><span style="font-size:12px; color:rgb(26,173,224)"><span style="font-size:10pt">...'</span></span><span style="font-size:12px; color:rgb(26,173,224)"><span style="font-size:10pt">)</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">l = 1:N</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">j = 1:hmm.M(l)</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; fprintf(</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">'%d,%d '</span></span><span style="font-size:12px"><span style="font-size:10pt">,l,j)</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">% 计算各pdf的均值和方差</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; nommean = zeros(1,SIZE);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; nomvar&nbsp; = zeros(1,SIZE);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; denom&nbsp;&nbsp; = 0;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px"><span style="font-size:10pt">&nbsp;k
+ = 1:K</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; T = size(samples(k).data,1);</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">t
+ = 1:T</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; x&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = samples(k).data(t,:);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nommean = nommean + param(k).gama(t,l,j) * x;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nomvar&nbsp; = nomvar&nbsp; + param(k).gama(t,l,j) * (x-mix(l).mean(j,:)).^2;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; denom&nbsp;&nbsp; = denom&nbsp;&nbsp; + param(k).gama(t,l,j);</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; hmm.mix(l).mean(j,:) = nommean / denom;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; hmm.mix(l).var (j,:) = nomvar&nbsp; / denom;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">% 计算各pdf的权</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; nom&nbsp;&nbsp; = 0;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; denom = 0;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">for</span></span><span style="font-size:12px"><span style="font-size:10pt">&nbsp;k
+ = 1:K</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tmp = param(k).gama(:,l,j);&nbsp;&nbsp;&nbsp; nom&nbsp;&nbsp; = nom&nbsp;&nbsp; + sum(tmp(:));</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tmp = param(k).gama(:,l,:);&nbsp;&nbsp;&nbsp; denom = denom + sum(tmp(:));</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; hmm.mix(l).weight(j) = nom/denom;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">fprintf(</span></span><span style="font-size:12px">&nbsp;<span style="font-size:10pt">'\n'</span></span><span style="font-size:12px"><span style="font-size:10pt">)</span></span></span></div>
+<div align="left"><span style="font-size:12px"><span style="font-size:10pt"><span style="color:#1AADE0">end</span><br>
+</span></span>
+<div style="font-family:&#39;Courier New&#39;; color:rgb(0,0,255)"><span style="font-size:12px"><span style="font-size:10pt"><span style="color:rgb(0,0,0); font-family:Tahoma; font-size:14px">*********************************************************************</span></span></span></div>
+</div>
+</div>
+</li><li>HMM参数的初始化<br>
+在进行Baum-Welch迭代前，首先要对HMM的参数进行初始化。函数inithmm.m就是完成这一工作的。初始化的过程中，首先将初始概率hmm.init赋值为只有第一个元素为1，其他元素为0的数组，其长度为该HMM的状态数N。接着将转移概率赋值为如下形式的矩阵：<br>
+<img src="file:///C:/Users/Joey/AppData/Local/Temp/enhtmlclip/Image(70).png" alt="" style=""><br>
+最后是对各状态的混合高斯函数的均值、方差和权系数进行初始化。这里采用了按状态数对观察序列的参数平均分段，然后将所有观察序列中属于一个段的参数组成一个大的矩阵，调用voicebox工具箱中的聚类函数kmeans，由聚类结果，计算得到各pdf的均值、方差和权系数。<br>
+<div>*********************************************************************<br>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">function</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">hmm = inithmm(samples, M)</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">K = length(samples);&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">%语音样本数</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">N = length(M);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">%状态数</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">hmm.N = N;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">hmm.M = M;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% 初始概率矩阵</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">hmm.init&nbsp;&nbsp;&nbsp; = zeros(N,1);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">hmm.init(1) = 1;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% 转移概率矩阵</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">hmm.trans=zeros(N,N);</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">i=1:N-1</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; hmm.trans(i,i)&nbsp;&nbsp; = 0.5;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; hmm.trans(i,i+1) = 0.5;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">hmm.trans(N,N) = 1;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% 概率密度函数的初始聚类</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% 平均分段</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">k = 1:K</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; T = size(samples(k).data,1);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; samples(k).segment=floor([1:T/N:T T+1]);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%对属于每个状态的向量进行K均值聚类，得到连续混合正态分布</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">i = 1:N</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">%把相同聚类和相同状态的向量组合到一个向量中</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; vector = [];</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">for</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">k
+ = 1:K</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; seg1 = samples(k).segment(i);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; seg2 = samples(k).segment(i+1)-1;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; vector = [vector ; samples(k).data(seg1:seg2,:)];</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; mix(i) = getmix(vector, M(i));</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">hmm.mix = mix;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">function</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">mix = getmix(vector, M)</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">[mean esq nn] = kmeans(vector,M);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% 计算每个聚类的标准差，对角阵，只保存在对角线上的元素</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">j = 1:M</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; ind = find(j==nn);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; tmp = vector(ind,:);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; var(j,:) = std(tmp);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% 计算每个聚类的元素数，归一化为各pdf的权重</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">weight = zeros(M,1);</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">j = 1:M</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; weight(j) = sum(find(j==nn));</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">weight = weight/sum(weight);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% 保存结果</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">mix.M&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = M;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">mix.mean&nbsp;&nbsp; = mean;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">% M*SIZE</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">mix.var&nbsp;&nbsp;&nbsp; = var.^2;&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">% M*SIZE</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">mix.weight = weight;&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">% M*1<br>
+</span></span></span>
+<div><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt"><span style="color:rgb(0,0,0); font-size:14px">*********************************************************************</span></span></span></span></div>
+</div>
+</div>
+</li><li>训练主程序<br>
+上面的函数baum.m只是实现了一次迭代，实际应用中应该是多次迭代才能得到结果，同时还应该给出一个结束迭代的条件。本例中是计算所有观察序列的输出概率，对其进行累加，得到总和输出概率。当此概率的相对变化小到一定数值的时候，结束迭代。另外，设定最大迭代次数为常数，当迭代次数超过此常数时，也停止迭代。<br>
+下面是完整的训练程序train.m:<br>
+<div>*********************************************************************</div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">function</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">[hmm, pout] = train(samples, M)</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%输入:</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%&nbsp; samples -- 样本结构</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%&nbsp; M&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- 为每个状态指定pdf个数，如:[3 3 3 3]</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%输出:</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">%&nbsp; hmm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- 训练完成后的hmm</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">K&nbsp;&nbsp; = length(samples);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">% 计算语音参数</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">disp(</span></span><span style="font-size:12px"><span style="font-size:10pt">'正在计算语音参数'</span></span><span style="font-size:12px"><span style="font-size:10pt">);</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">k = 1:K</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">if</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">isfield(samples(k),</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">'data'</span></span><span style="font-size:12px"><span style="font-size:10pt">)
+ &amp; ~isempty(samples(k).data)</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">continue</span></span><span style="font-size:12px"><span style="font-size:10pt">;</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">else</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; samples(k).data = mfcc(samples(k).wave);</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">hmm = inithmm(samples, M);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">loop = 1:40</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; fprintf(</span></span><span style="font-size:12px"><span style="font-size:10pt">'\n第%d遍训练\n\n'</span></span><span style="font-size:12px"><span style="font-size:10pt">,loop)</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; hmm = baum(hmm, samples);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">%计算总输出概率</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; pout(loop)=0;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">for</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">k
+ = 1:K</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pout(loop) = pout(loop) + viterbi(hmm, samples(k).data);</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; fprintf(</span></span><span style="font-size:12px"><span style="font-size:10pt">'总和输出概率(log)=%d\n'</span></span><span style="font-size:12px"><span style="font-size:10pt">,
+ pout(loop))</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">%比较两个HMM的距离</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">if</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">loop&gt;1</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">if</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">abs((pout(loop)-pout(loop-1))/pout(loop))
+ &lt; 5e-6</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fprintf(</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">'收敛!\n'</span></span><span style="font-size:12px"><span style="font-size:10pt">);</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">return</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">disp(</span></span><span style="font-size:12px"><span style="font-size:10pt">'迭代40次仍不收敛, 退出'</span></span><span style="font-size:12px"><span style="font-size:10pt">);</span></span></span></div>
+<div align="left">*********************************************************************<br>
+程序中，输入参数有两个，结构数组samples内包含了观察序列的信息，每个samples(k)都包含两个成员samples(k).wave和samples(k).data，分别为该观察序列的原始语音和参数。其中成员data可以在调用之前计算，也可以由train程序内计算。数组M包含了个状态对应的高斯混合数。<br>
+</div>
+</li><li>
+<div align="left">
+<div align="left">训练程序<br>
+利用训练函数train.m和识别函数viterbi.m，就可以对观察序列进行训练和识别了。下面是一段选连程序的脚本文件mian.m，假设原始语音信号已经保存在cell数组samples中，其中，samples{i}{1:K}表示第i个词的K个原始语音信号。循环程序中，将它们导入结构数组samples数组中，再交由训练函数train进行训练。<br>
+下面是训练程序main.m的代码：<br>
+<div>*********************************************************************<br>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">for</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">i=1:length(samples)</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; sample=[];</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">for</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">k=1:length(samples{i})</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sample(k).wave=samples{i}{k};</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sample(k).data=[];</span></span></div>
+<div align="left"><span style="color:#1AADE0"><span style="font-size:12px"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;</span></span>&nbsp;<span style="font-size:12px"><span style="font-size:10pt">end</span></span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; hmm{i}=train(sample,[3 3 3 3]);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div>*********************************************************************<br>
+识别结果hmm为一个cell数组，每个元素为一个hmm结构。下面是一段识别程序，识别所用的数据是wav文件，首先用函数wavread将其读入，再用函数vad进行端点检测，计算出MFCC参数之后，交由识别函数viterbi.m计算得到其对数形式的输出概率，最后用max函数找到识别结果。<br>
+下面是识别程序recog.m的代码：<br>
+<div>*********************************************************************
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">for i=1:10</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; fname = sprintf('..\\..\\ch6\\%db.wav',i-1);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; %fname = sprintf('tiger2.wav',i-1);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; x = wavread(fname);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; [x1 x2] = vad(x);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; m = mfcc(x);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; m = m(x1-2:x2-2,:);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; for j=1:10</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pout(j) = viterbi(hmm{j}, m);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; end</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; [d,n] = max(pout);</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">&nbsp;&nbsp;&nbsp; fprintf('第%d个词, 识别为%d\n', i-1,n)</span></span></div>
+<div align="left"><span style="font-size:12px; color:#1AADE0"><span style="font-size:10pt">end</span></span></div>
+<div>*********************************************************************</div>
+</div>
+</div>
+</div>
+<div>利用录音工具，作者为汉语数码0~9录制了语音，每个数码录制了10个样本，保存在cell数组samples中，并保存为文件samples.mat，以备训练程序使用。</div>
+</div>
+</div>
+</li></ol>
+</div>
+
+</div>
+
+
+
+
+<!-- Baidu Button BEGIN -->
+
+<div class="bdsharebuttonbox bdshare-button-style0-16" style="float: right;" data-bd-bind="1418205905436">
+<a href="http://blog.csdn.net/joey_su/article/details/17270639#" class="bds_more" data-cmd="more" style="background-position:0 0 !important; background-image: url(http://bdimg.share.baidu.com/static/api/img/share/icons_0_16.png?v=d754dcc0.png) !important"></a>
+<a href="http://blog.csdn.net/joey_su/article/details/17270639#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间" style="background-position:0 -52px !important"></a>
+<a href="http://blog.csdn.net/joey_su/article/details/17270639#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博" style="background-position:0 -104px !important"></a>
+<a href="http://blog.csdn.net/joey_su/article/details/17270639#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博" style="background-position:0 -260px !important"></a>
+<a href="http://blog.csdn.net/joey_su/article/details/17270639#" class="bds_renren" data-cmd="renren" title="分享到人人网" style="background-position:0 -208px !important"></a>
+<a href="http://blog.csdn.net/joey_su/article/details/17270639#" class="bds_weixin" data-cmd="weixin" title="分享到微信" style="background-position:0 -1612px !important"></a>
+</div>
+<script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "16" }, "share": {} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+<!-- Baidu Button END -->
+
+<!--192.168.100.33-->
+<ul class="article_next_prev">
+            <li class="prev_article"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_shangyipian&#39;]);location.href=&#39;/joey_su/article/details/17270613&#39;;">上一篇</span><a href="http://blog.csdn.net/joey_su/article/details/17270613" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_shangyipian&#39;])">第13章 基于MATLAB的语音识别系统</a></li>
+            <li class="next_article"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_xiayipian&#39;]);location.href=&#39;/joey_su/article/details/17287559&#39;;">下一篇</span><a href="http://blog.csdn.net/joey_su/article/details/17287559" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_xiayipian&#39;])">Python 2.7和NLTK安装教程</a></li>
+</ul>
+
+<!-- Baidu Button BEGIN -->
+<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=1536434" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/bds_s_v2.js"></script>
+
+<script type="text/javascript">
+    document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+</script>
+<!-- Baidu Button END -->
+
+
+</div>
+      <dl class="blog-associat-tag">
+        <dt>主题推荐</dt>
+        <dd>
+                <a href="http://www.csdn.net/tag/%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB" target="_blank" class="blog-tage-red">语音识别</a> 
+                <a href="http://www.csdn.net/tag/%E7%AE%97%E6%B3%95" target="_blank" class="blog-tage-red">算法</a> 
+                <a href="http://www.csdn.net/tag/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92" target="_blank" class="blog-tage-red">动态规划</a> 
+                <a href="http://www.csdn.net/tag/%E8%AE%A1%E7%AE%97%E6%9C%BA" target="_blank" class="blog-tage-red">计算机</a> 
+                <a href="http://www.csdn.net/tag/%E5%BA%94%E7%94%A8" target="_blank" class="blog-tage-red">应用</a> 
+        </dd>
+    </dl> 
+
+
+<dl class="blog-ass-articl tracking-ad" data-mod="popu_36" id="res-relatived"> 
+     <dt><span>猜你在找</span></dt>    
+</dl>
+
+<script type="text/javascript">
+    var searchtitletags = '13.4 非特定人语音识别算法——HMM' + ',' + '语音识别,算法,动态规划,计算机,应用';
+    searchService({
+        index: 'blog',
+        query: searchtitletags,
+        from: 10,
+        size: 10,
+        appendTo: '#res-relatived',
+        url: 'recommend',
+        his: 2,
+        client: "blog_cf_enhance",
+        tmpl: '<dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="#{ url }" title="#{ title }" strategy="#{ strategy }">#{ title }</a></dd>'
+    });
+
+ </script>   
+
+
+    <div id="ad_cen">
+   
+          <script type="text/javascript">
+              new Ad(4, 'ad_cen');
+          </script>
+    <iframe id="ad_frm_0" frameborder="0" scrolling="no" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/ad(1).html" style="border-width: 0px; overflow: hidden; width: 746px; height: 90px;"></iframe></div>
+<div class="comment_class">
+    <div id="comment_title" class="panel_head">
+        <span class="see_comment">查看评论</span><a name="comments"></a></div>
+    <div id="comment_list"><dl class="comment_item comment_topic" id="comment_item_3373845"><dt class="comment_head" floor="1">1楼 <span class="user"><a class="username" href="http://blog.csdn.net/viomag" target="_blank">viomag</a> <span class="ptime">2014-01-05 12:22发表</span>  <a href="http://blog.csdn.net/joey_su/article/details/17270639#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="3373845" username="viomag"> <a href="http://blog.csdn.net/joey_su/article/details/17270639#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/joey_su/article/details/17270639#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/viomag" target="_blank"><img src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/3_viomag.jpg" width="40" height="40"></a></dd><dd class="comment_body">for i=1:10<br>    for j=1:10<br>    fname = sprintf('...\\test\\x%d%d.wav',i-1,j-1);<br>    samples{i}{j} = (wavread(fname))';<br>    end<br>end<br>save samples<br>这样产生的samples可以用吗、</dd></dl><div class="clear"></div></div>
+    <div id="comment_bar" style="display: none;">
+    </div>
+    <div id="comment_form"><div class="guest_link">您还没有登录,请<a href="javascript:void(0);" onclick="javascript:loginbox();">[登录]</a>或<a href="http://passport.csdn.net/account/register?from=http%3A%2F%2Fblog.csdn.net%2Fjoey_su%2Farticle%2Fdetails%2F17270639">[注册]</a></div></div>
+
+    <div class="announce">
+        * 以上用户言论只代表其个人观点，不代表CSDN网站的观点或立场<a name="reply"></a><a name="quote"></a></div>
+</div>
+
+<script type="text/javascript">
+    var fileName = '17270639';
+    var commentscount = 1;
+    var islock = false
+</script>
+<script type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/comment.js"></script>
+    <div id="ad_bot">
+    <iframe id="ad_frm_1" frameborder="0" scrolling="no" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/ad(2).html" style="border-width: 0px; overflow: hidden; width: 746px; height: 0px;"></iframe></div>
+    <script type="text/javascript">
+    new Ad(5, 'ad_bot');
+    </script>
+<div id="report_dialog">
+</div>
+
+<div id="d-top" style="bottom:60px;">
+        <a id="quick-reply" class="btn btn-top q-reply" title="快速回复" style="display:none;">
+            <img src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/blog-icon-reply.png" alt="快速回复">
+        </a>    
+
+    <a id="d-top-a" class="btn btn-top backtop" style="display: none;" title="返回顶部" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_huidaodingbu&#39;])">         
+         <img src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/top.png" alt="TOP">
+    </a>
+</div>
+<script type="text/javascript">
+    $(function ()
+    {
+        $("#ad_frm_0").height("90px");
+        
+        setTimeout(function(){
+            $("#ad_frm_2").height("200px");
+        },1000);
+        
+        /*
+        if($("#comment_content").length>0)
+        {
+            $("#quick-reply").show();
+
+            $("#quick-reply").click(function(){
+                setEditorFocus();
+            });
+        }       
+     
+        var d_top = $('#d-top-a');
+
+        document.onscroll = function ()
+        {
+            var scrTop = (document.body.scrollTop || document.documentElement.scrollTop);
+            if (scrTop > 500)
+            {
+                d_top.show();
+            } else
+            {
+                d_top.hide();
+            }
+        }
+        $('#d-top-a').click(function ()
+        {
+            scrollTo(0, 0);
+            this.blur();
+            return false;
+        });
+        */
+    });
+  
+</script>
+<style type="text/css">
+    .tag_list
+    {
+        background: none repeat scroll 0 0 #FFFFFF;
+        border: 1px solid #D7CBC1;
+        color: #000000;
+        font-size: 12px;
+        line-height: 20px;
+        list-style: none outside none;
+        margin: 10px 2% 0 1%;
+        padding: 1px;
+    }
+    .tag_list h5
+    {
+        background: none repeat scroll 0 0 #E0DBD3;
+        color: #47381C;
+        font-size: 12px;
+        height: 24px;
+        line-height: 24px;
+        padding: 0 5px;
+        margin: 0;
+    }
+    .tag_list h5 a
+    {
+        color: #47381C;
+    }
+    .classify
+    {
+        margin: 10px 0;
+        padding: 4px 12px 8px;
+    }
+    .classify a
+    {
+        margin-right: 20px;
+        white-space: nowrap;
+    }
+</style>
+<div class="tag_list">
+    <h5>
+        <a href="http://www.csdn.net/tag/" target="_blank">核心技术类目</a></h5>
+    <div class="classify">
+<a title="全部主题" href="http://www.csdn.net/tag" target="_blank" onclick="LogClickCount(this,336);">全部主题</a>
+<a title="Hadoop" href="http://g.csdn.net/5272865" target="_blank" onclick="LogClickCount(this,336);">Hadoop</a>
+<a title="AWS" href="http://g.csdn.net/5272866" target="_blank" onclick="LogClickCount(this,336);">AWS</a>
+<a title="移动游戏" href="http://g.csdn.net/5272870" target="_blank" onclick="LogClickCount(this,336);">移动游戏</a>
+<a title="Java" href="http://g.csdn.net/5272871" target="_blank" onclick="LogClickCount(this,336);">Java</a>
+<a title="Android" href="http://g.csdn.net/5272872" target="_blank" onclick="LogClickCount(this,336);">Android</a>
+<a title="iOS" href="http://g.csdn.net/5272873" target="_blank" onclick="LogClickCount(this,336);">iOS</a>
+<a title="Swift" href="http://g.csdn.net/5272868" target="_blank" onclick="LogClickCount(this,336);">Swift</a>
+<a title="智能硬件" href="http://g.csdn.net/5272869" target="_blank" onclick="LogClickCount(this,336);">智能硬件</a>
+<a title="Docker" href="http://g.csdn.net/5272867" target="_blank" onclick="LogClickCount(this,336);">Docker</a>
+<a title="OpenStack" href="http://g.csdn.net/5272925" target="_blank" onclick="LogClickCount(this,336);">OpenStack</a>
+<a title="VPN" href="http://www.csdn.net/tag/vpn" target="_blank" onclick="LogClickCount(this,336);">VPN</a>
+<a title="Spark" href="http://g.csdn.net/5272924" target="_blank" onclick="LogClickCount(this,336);">Spark</a>
+<a title="ERP" href="http://www.csdn.net/tag/erp" target="_blank" onclick="LogClickCount(this,336);">ERP</a>
+<a title="IE10" href="http://www.csdn.net/tag/ie10" target="_blank" onclick="LogClickCount(this,336);">IE10</a>
+<a title="Eclipse" href="http://www.csdn.net/tag/eclipse" target="_blank" onclick="LogClickCount(this,336);">Eclipse</a>
+<a title="CRM" href="http://www.csdn.net/tag/crm" target="_blank" onclick="LogClickCount(this,336);">CRM</a>
+<a title="JavaScript" href="http://www.csdn.net/tag/javascript" target="_blank" onclick="LogClickCount(this,336);">JavaScript</a>
+<a title="数据库" href="http://www.csdn.net/tag/%E6%95%B0%E6%8D%AE%E5%BA%93" target="_blank" onclick="LogClickCount(this,336);">数据库</a>
+<a title="Ubuntu" href="http://www.csdn.net/tag/ubuntu" target="_blank" onclick="LogClickCount(this,336);">Ubuntu</a>
+<a title="NFC" href="http://www.csdn.net/tag/nfc" target="_blank" onclick="LogClickCount(this,336);">NFC</a>
+<a title="WAP" href="http://www.csdn.net/tag/wap" target="_blank" onclick="LogClickCount(this,336);">WAP</a>
+<a title="jQuery" href="http://www.csdn.net/tag/jquery" target="_blank" onclick="LogClickCount(this,336);">jQuery</a>
+<a title="BI" href="http://www.csdn.net/tag/bi" target="_blank" onclick="LogClickCount(this,336);">BI</a>
+<a title="HTML5" href="http://www.csdn.net/tag/html5" target="_blank" onclick="LogClickCount(this,336);">HTML5</a>
+<a title="Spring" href="http://www.csdn.net/tag/spring" target="_blank" onclick="LogClickCount(this,336);">Spring</a>
+<a title="Apache" href="http://www.csdn.net/tag/apache" target="_blank" onclick="LogClickCount(this,336);">Apache</a>
+<a title=".NET" href="http://www.csdn.net/tag/.net" target="_blank" onclick="LogClickCount(this,336);">.NET</a>
+<a title="API" href="http://www.csdn.net/tag/api" target="_blank" onclick="LogClickCount(this,336);">API</a>
+<a title="HTML" href="http://www.csdn.net/tag/html" target="_blank" onclick="LogClickCount(this,336);">HTML</a>
+<a title="SDK" href="http://www.csdn.net/tag/sdk" target="_blank" onclick="LogClickCount(this,336);">SDK</a>
+<a title="IIS" href="http://www.csdn.net/tag/iis" target="_blank" onclick="LogClickCount(this,336);">IIS</a>
+<a title="Fedora" href="http://www.csdn.net/tag/fedora" target="_blank" onclick="LogClickCount(this,336);">Fedora</a>
+<a title="XML" href="http://www.csdn.net/tag/xml" target="_blank" onclick="LogClickCount(this,336);">XML</a>
+<a title="LBS" href="http://www.csdn.net/tag/lbs" target="_blank" onclick="LogClickCount(this,336);">LBS</a>
+<a title="Unity" href="http://www.csdn.net/tag/unity" target="_blank" onclick="LogClickCount(this,336);">Unity</a>
+<a title="Splashtop" href="http://www.csdn.net/tag/splashtop" target="_blank" onclick="LogClickCount(this,336);">Splashtop</a>
+<a title="UML" href="http://www.csdn.net/tag/uml" target="_blank" onclick="LogClickCount(this,336);">UML</a>
+<a title="components" href="http://www.csdn.net/tag/components" target="_blank" onclick="LogClickCount(this,336);">components</a>
+<a title="Windows Mobile" href="http://www.csdn.net/tag/windowsmobile" target="_blank" onclick="LogClickCount(this,336);">Windows Mobile</a>
+<a title="Rails" href="http://www.csdn.net/tag/rails" target="_blank" onclick="LogClickCount(this,336);">Rails</a>
+<a title="QEMU" href="http://www.csdn.net/tag/qemu" target="_blank" onclick="LogClickCount(this,336);">QEMU</a>
+<a title="KDE" href="http://www.csdn.net/tag/kde" target="_blank" onclick="LogClickCount(this,336);">KDE</a>
+<a title="Cassandra" href="http://www.csdn.net/tag/cassandra" target="_blank" onclick="LogClickCount(this,336);">Cassandra</a>
+<a title="CloudStack" href="http://www.csdn.net/tag/cloudstack" target="_blank" onclick="LogClickCount(this,336);">CloudStack</a>
+<a title="FTC" href="http://www.csdn.net/tag/ftc" target="_blank" onclick="LogClickCount(this,336);">FTC</a>
+<a title="coremail" href="http://www.csdn.net/tag/coremail" target="_blank" onclick="LogClickCount(this,336);">coremail</a>
+<a title="OPhone " href="http://www.csdn.net/tag/ophone" target="_blank" onclick="LogClickCount(this,336);">OPhone </a>
+<a title="CouchBase" href="http://www.csdn.net/tag/couchbase" target="_blank" onclick="LogClickCount(this,336);">CouchBase</a>
+<a title="云计算" href="http://www.csdn.net/tag/%E4%BA%91%E8%AE%A1%E7%AE%97" target="_blank" onclick="LogClickCount(this,336);">云计算</a>
+<a title="iOS6" href="http://www.csdn.net/tag/iOS6" target="_blank" onclick="LogClickCount(this,336);">iOS6</a>
+<a title="Rackspace " href="http://www.csdn.net/tag/rackspace" target="_blank" onclick="LogClickCount(this,336);">Rackspace </a>
+<a title="Web App" href="http://www.csdn.net/tag/webapp" target="_blank" onclick="LogClickCount(this,336);">Web App</a>
+<a title="SpringSide" href="http://www.csdn.net/tag/springside" target="_blank" onclick="LogClickCount(this,336);">SpringSide</a>
+<a title="Maemo" href="http://www.csdn.net/tag/maemo" target="_blank" onclick="LogClickCount(this,336);">Maemo</a>
+<a title="Compuware" href="http://www.csdn.net/tag/compuware" target="_blank" onclick="LogClickCount(this,336);">Compuware</a>
+<a title="大数据" href="http://www.csdn.net/tag/%E5%A4%A7%E6%95%B0%E6%8D%AE" target="_blank" onclick="LogClickCount(this,336);">大数据</a>
+<a title="aptech" href="http://www.csdn.net/tag/aptech" target="_blank" onclick="LogClickCount(this,336);">aptech</a>
+<a title="Perl" href="http://www.csdn.net/tag/perl" target="_blank" onclick="LogClickCount(this,336);">Perl</a>
+<a title="Tornado" href="http://www.csdn.net/tag/tornado" target="_blank" onclick="LogClickCount(this,336);">Tornado</a>
+<a title="Ruby" href="http://www.csdn.net/tag/ruby" target="_blank" onclick="LogClickCount(this,336);">Ruby</a>
+<a title="Hibernate" href="http://www.csdn.net/hibernate" target="_blank" onclick="LogClickCount(this,336);">Hibernate</a>
+<a title="ThinkPHP" href="http://www.csdn.net/tag/thinkphp" target="_blank" onclick="LogClickCount(this,336);">ThinkPHP</a>
+<a title="HBase" href="http://www.csdn.net/tag/hbase" target="_blank" onclick="LogClickCount(this,336);">HBase</a>
+<a title="Pure" href="http://www.csdn.net/tag/pure" target="_blank" onclick="LogClickCount(this,336);">Pure</a>
+<a title="Solr" href="http://www.csdn.net/tag/solr" target="_blank" onclick="LogClickCount(this,336);">Solr</a>
+<a title="Angular" href="http://www.csdn.net/tag/angular" target="_blank" onclick="LogClickCount(this,336);">Angular</a>
+<a title="Cloud Foundry" href="http://www.csdn.net/tag/cloudfoundry" target="_blank" onclick="LogClickCount(this,336);">Cloud Foundry</a>
+<a title="Redis" href="http://www.csdn.net/tag/redis" target="_blank" onclick="LogClickCount(this,336);">Redis</a>
+<a title="Scala" href="http://www.csdn.net/tag/scala" target="_blank" onclick="LogClickCount(this,336);">Scala</a>
+<a title="Django" href="http://www.csdn.net/tag/django" target="_blank" onclick="LogClickCount(this,336);">Django</a>
+<a title="Bootstrap" href="http://www.csdn.net/tag/bootstrap" target="_blank" onclick="LogClickCount(this,336);">Bootstrap</a>
+    </div>
+</div>
+
+<div id="pop_win" style="display:none ;position: absolute; z-index: 10000; border: 1px solid rgb(220, 220, 220); top: 222.5px; left: 630px; opacity: 1; background: none 0px 0px repeat scroll rgb(255, 255, 255);">
+    
+</div>
+<div id="popup_mask"></div>
+<style>
+    #popup_mask
+    {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        z-index: 9999;
+        left: 0px;
+        top: 0px;
+        opacity: 0.3;
+        filter: alpha(opacity=30);
+        display: none;
+    }
+
+</style>
+
+
+
+
+<script type="text/javascript">
+    $(function(){
+        setTimeout(function(){
+            $(".comment_body:contains('回复')").each(function(index,item){
+                var u=$(this).text().split('：')[0].toString().replace("回复","")
+                var thisComment=$(this);
+                if(u)
+                {
+                    $.getJSON("https://passport.csdn.net/get/nick?callback=?", {users: u}, function(a) {
+                        if(a!=null&&a.data!=null&&a.data.length>0)
+                        {
+                            nick=a.data[0].n; 
+                            if(u!=nick)
+                            {
+                                thisComment.text(thisComment.text().replace(u,nick));  
+                            }
+                        }       
+                    });  
+                }
+            });
+        },200);  
+        
+        setTimeout(function(){
+            $("a img[src='http://js.tongji.linezing.com/stats.gif']").parent().css({"position":"absolute","left":"50%"});
+        },300);
+    });
+
+    function loginbox(){
+        var $logpop=$("#pop_win");
+        $logpop.html('<iframe src="https://passport.csdn.net/account/loginbox?service=http://static.blog.csdn.net/callback.htm" frameborder="0" height="600" width="400" scrolling="no"></iframe>');
+
+        $('#popup_mask').css({
+            opacity: 0.5,
+            width: $( document ).width() + 'px',
+            height:  $( document ).height() + 'px'
+        });
+        $('#popup_mask').css("display","block");
+ 
+        $logpop.css( {
+            top: ($( window ).height() - $logpop.height())/ 2  + $( window 
+       ).scrollTop() + 'px',
+            left:($( window ).width() - $logpop.width())/ 2
+        } );
+ 
+        setTimeout( function () {
+            $logpop.show();
+            $logpop.css( {
+                opacity: 1
+            } );
+        }, 200 );
+ 
+        $('#popup_mask').unbind("click");
+        $('#popup_mask').bind("click", function(){
+            $('#popup_mask').hide();
+            var $clopop = $("#pop_win");
+            $("#common_ask_div_sc").css("display","none");
+            $clopop.css( {
+                opacity: 0
+            } );
+            setTimeout( function () {
+                $clopop.hide();
+            }, 350 );
+            return false;
+        });
+    }    
+
+</script>
+                        <div class="clear">
+                        </div>
+                    </div>                   
+                
+            </div>
+            <div id="side">
+    <div class="side">
+<div id="panel_Profile" class="panel">
+<ul class="panel_head"><span>个人资料</span></ul>
+<ul class="panel_body profile">
+<div id="blog_userface">
+    <a href="http://my.csdn.net/joey_su" target="_blank">
+    <img src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/1_joey_su.jpg" title="访问我的空间" style="max-width:90%">
+    </a>
+    <br>
+    <span><a href="http://my.csdn.net/joey_su" class="user_name" target="_blank">s5plus1</a></span>
+</div>
+<div class="interact">
+<a href="javascript:void(0);" class="attent" id="span_add_follow" title="[加关注]" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_guanzhu&#39;])"></a>
+
+ <a href="javascript:void(0);" class="letter" title="[发私信]" onclick="window.open(&#39;http://msg.csdn.net/letters/model?receiver=joey_su&#39;,&#39;_blank&#39;,&#39;height=350,width=700&#39;);_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_sixin&#39;])"></a>  
+</div>
+<div id="blog_medal">
+                <div id="bms_box">
+               </div>
+</div>
+<ul id="blog_rank">
+    <li>访问：<span>5803次</span></li>
+    <li>积分：<span>183</span> </li>    
+    <li>等级： <span style="position:relative;display:inline-block;z-index:1">
+            <img src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/blog2.png" alt="" style="vertical-align: middle;" id="leveImg">
+            <div id="smallTittle" style=" position: absolute;  left: -24px;  top: 25px;  text-align: center;  width: 101px;  height: 32px;  background-color: #fff;  line-height: 32px;  border: 2px #DDDDDD solid;  box-shadow: 0px 2px 2px rgba (0,0,0,0.1);  display: none;   z-index: 999;">
+            <div style="left: 42%;  top: -8px;  position: absolute;  width: 0;  height: 0;  border-left: 10px solid transparent;  border-right: 10px solid transparent;  border-bottom: 8px solid #EAEAEA;"></div>
+            积分：183 </div>
+        </span>  </li>
+    <li>排名：<span>千里之外</span></li>
+</ul>
+<ul id="blog_statistics">
+    <li>原创：<span>12篇</span></li>
+    <li>转载：<span>2篇</span></li>
+    <li>译文：<span>1篇</span></li>
+    <li>评论：<span>9条</span></li>
+</ul>
+</ul>
+</div>
+
+
+<div class="panel" id="panel_Search">
+    <ul class="panel_head"><span>文章搜索</span></ul>
+    <ul class="panel_body">
+        <form id="frmSearch" action="http://so.csdn.net/search" class="form_search" target="_blank">
+        <span><input id="inputSearch" type="text" class="blogsearch" title="请输入关键字"></span>
+        <input id="btnSubmit" type="button" value="搜索" title="search in blog">
+        <input type="hidden" name="q" id="inputQ">
+        <input type="hidden" name="t" value="blog">
+        <a id="btnSearchBlog" target="_blank"></a>
+        </form>
+    </ul>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#btnSubmit").click(function () {           
+            search();
+        });
+
+        $("#frmSearch").submit(function () {
+            search();
+            return false;
+        });
+
+        function search()
+        {
+            var url = "http://so.csdn.net/so/search/s.do?q=" + encodeURIComponent($("#inputSearch").val()) + "&u=" + username + "&t=blog";
+            window.location.href = url;
+        }   
+    });
+</script>
+<div id="panel_Category" class="panel">
+<ul class="panel_head"><span>文章分类</span></ul>
+<ul class="panel_body">
+             <li>
+                <a href="http://blog.csdn.net/joey_su/article/category/1800801" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">自然语言处理</a><span>(4)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/joey_su/article/category/1392948" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">计算机故障分析</a><span>(1)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/joey_su/article/category/1392949" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">语音识别</a><span>(6)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/joey_su/article/category/1400193" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">Linux</a><span>(1)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/joey_su/article/category/1820215" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">HTK</a><span>(2)</span>
+            </li>
+             <li>
+                <a href="http://blog.csdn.net/joey_su/article/category/2110131" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">DSP</a><span>(2)</span>
+            </li>
+</ul>
+</div><div id="panel_Archive" class="panel">
+<ul class="panel_head"><span>文章存档</span></ul>
+<ul class="panel_body">
+<div id="archive_list"><li><a href="http://blog.csdn.net/joey_su/article/month/2014/07">2014年07月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/joey_su/article/month/2014/06">2014年06月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/joey_su/article/month/2014/03">2014年03月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/joey_su/article/month/2013/12">2013年12月</a><span>(7)</span></li><li><a href="http://blog.csdn.net/joey_su/article/month/2013/07">2013年07月</a><span>(1)</span></li><span class="hidelist" style="display:none;"><li><a href="http://blog.csdn.net/joey_su/article/month/2013/04">2013年04月</a><span>(1)</span></li></span><div id="archive_list_button" class="list_closed">展开</div></div>
+</ul>
+</div>
+<div id="hotarticls" class="panel">
+<ul class="panel_head">
+    <span>       
+阅读排行    </span>
+</ul>
+
+<ul class="panel_body itemlist">
+<li>
+<a href="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET.htm" title="13.4 非特定人语音识别算法——HMM">13.4 非特定人语音识别算法——HMM</a><span>(693)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/joey_su/article/details/17270613" title="第13章 基于MATLAB的语音识别系统">第13章 基于MATLAB的语音识别系统</a><span>(679)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/joey_su/article/details/9620775" title="HTK-3.4.1在ubuntu 12.04下的安装及安装测试">HTK-3.4.1在ubuntu 12.04下的安装及安装测试</a><span>(677)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/joey_su/article/details/17287559" title="Python 2.7和NLTK安装教程">Python 2.7和NLTK安装教程</a><span>(426)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/joey_su/article/details/21192739" title="DSP/BIOS程序设计">DSP/BIOS程序设计</a><span>(389)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/joey_su/article/details/17270593" title="第12章 MATLAB录音工具">第12章 MATLAB录音工具</a><span>(339)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/joey_su/article/details/8798765" title="文件夹图标后缀名变成.ink的解决办法">文件夹图标后缀名变成.ink的解决办法</a><span>(332)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/joey_su/article/details/28146559" title="HTK-3.4.1在ubuntu 14.04下的安装及Demo测试">HTK-3.4.1在ubuntu 14.04下的安装及Demo测试</a><span>(288)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/joey_su/article/details/17289621" title="nltk.download()下载失败的解决办法">nltk.download()下载失败的解决办法</a><span>(272)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/joey_su/article/details/17510935" title="HTKBOOK翻译——第一章 隐马尔科夫模型工具箱的基础">HTKBOOK翻译——第一章 隐马尔科夫模型工具箱的基础</a><span>(254)</span>
+</li>
+</ul>
+</div>
+<div id="hotarticls2" class="panel">
+<ul class="panel_head"><span>评论排行</span></ul>
+<ul class="panel_body itemlist">
+<li>
+<a href="http://blog.csdn.net/joey_su/article/details/9620775" title="HTK-3.4.1在ubuntu 12.04下的安装及安装测试">HTK-3.4.1在ubuntu 12.04下的安装及安装测试</a><span>(3)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/joey_su/article/details/17270613" title="第13章 基于MATLAB的语音识别系统">第13章 基于MATLAB的语音识别系统</a><span>(3)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/joey_su/article/details/21184529" title="CCS v5.2+SEED-DEC6713+SEED-XDS560PLUS+DEC6713_CODEC Test">CCS v5.2+SEED-DEC6713+SEED-XDS560PLUS+DEC6713_CODEC Test</a><span>(2)</span>
+</li>
+<li>
+<a href="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET.htm" title="13.4 非特定人语音识别算法——HMM">13.4 非特定人语音识别算法——HMM</a><span>(1)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/joey_su/article/details/8798765" title="文件夹图标后缀名变成.ink的解决办法">文件夹图标后缀名变成.ink的解决办法</a><span>(0)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/joey_su/article/details/36214117" title="【自动语音识别课程】第一课 统计语音识别介绍">【自动语音识别课程】第一课 统计语音识别介绍</a><span>(0)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/joey_su/article/details/36191995" title="统计语言模型学习笔记">统计语言模型学习笔记</a><span>(0)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/joey_su/article/details/28146559" title="HTK-3.4.1在ubuntu 14.04下的安装及Demo测试">HTK-3.4.1在ubuntu 14.04下的安装及Demo测试</a><span>(0)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/joey_su/article/details/21192739" title="DSP/BIOS程序设计">DSP/BIOS程序设计</a><span>(0)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/joey_su/article/details/17510935" title="HTKBOOK翻译——第一章 隐马尔科夫模型工具箱的基础">HTKBOOK翻译——第一章 隐马尔科夫模型工具箱的基础</a><span>(0)</span>
+</li>
+</ul>
+</div>
+<div id="homepageArticles" class="panel tracking-ad" data-mod="popu_4">
+<ul class="panel_head"><span>推荐文章</span></ul>
+<ul class="panel_body" id="ad_commend"><iframe id="ad_frm_2" frameborder="0" scrolling="no" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/ad.html" style="border-width: 0px; overflow: hidden; width: 183px; height: 200px;"></iframe></ul>
+</div>
+<script type="text/javascript">
+ new Ad(12, 'ad_commend');
+</script><div id="newcomments" class="panel">
+<ul class="panel_head"><span>最新评论</span></ul>
+<ul class="panel_body itemlist">
+    <li>
+   
+         <a href="http://blog.csdn.net/joey_su/article/details/21184529#comments">CCS v5.2+SEED-DEC6713+SEED-XDS560PLUS+DEC6713_CODEC Test</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/joey_su" class="user_name">s5plus1</a>:
+@wanggen307307:谢谢:)网上的资料太少了，自己摸着石头总结总结，哈哈。
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/joey_su/article/details/21184529#comments">CCS v5.2+SEED-DEC6713+SEED-XDS560PLUS+DEC6713_CODEC Test</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/wanggen307307" class="user_name">wanggen307307</a>:
+楼主自己写的把，我支持支持
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/joey_su/article/details/17270639#comments">13.4 非特定人语音识别算法——HMM</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/viomag" class="user_name">viomag</a>:
+for i=1:10    for j=1:10    fname = sprintf('...\\...
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/joey_su/article/details/17270613#comments">第13章 基于MATLAB的语音识别系统</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/joey_su" class="user_name">s5plus1</a>:
+我是从Evernote中直接复制出来的，所以图片没传好，我的失误；我也刚学习不久，我们可以一起讨论。...
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/joey_su/article/details/17270613#comments">第13章 基于MATLAB的语音识别系统</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/lscct1991" class="user_name">lscct1991</a>:
+您好~最近我也在学习HMM和MFCC的语音识别系统。目前还只是在学习概念。也看了你的HMM学习文章。...
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/joey_su/article/details/17270613#comments">第13章 基于MATLAB的语音识别系统</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/lscct1991" class="user_name">lscct1991</a>:
+您好~最近我也在学习HMM和MFCC的语音识别系统。目前还只是在学习概念。也看了你的HMM学习文章。...
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/joey_su/article/details/9620775#comments">HTK-3.4.1在ubuntu 12.04下的安装及安装测试</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/ramboww" class="user_name">ramboww</a>:
+@joey_su:嗯，应该是软件源的问题，改了之后就可以了，3Q!
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/joey_su/article/details/9620775#comments">HTK-3.4.1在ubuntu 12.04下的安装及安装测试</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/joey_su" class="user_name">s5plus1</a>:
+@ramboww:你好，我安装的时候倒是没有遇到这个问题，直接成功了。
+    </p>
+    </li>
+    <li>
+   
+         <a href="http://blog.csdn.net/joey_su/article/details/9620775#comments">HTK-3.4.1在ubuntu 12.04下的安装及安装测试</a>
+    <p style="margin:0px;"><a href="http://blog.csdn.net/ramboww" class="user_name">ramboww</a>:
+请教下，你安装libx11-dev，没有遇到这个问题吗：“现在没有可用的软件包 libx11-dev...
+    </p>
+    </li>
+</ul>
+</div>
+    </div>
+    <div class="clear">
+    </div>
+</div>
+
+            <div class="clear">
+            </div>
+        </div>
+        
+
+<script type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/cnick.js"></script>
+<script type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/newblog.min.js"></script>
+
+
+<script type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/showblogmedal.ashx"></script>
+<script type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/JavaScript1.js"></script><link rel="stylesheet" type="text/css" href="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/pub_footer_2014.css"><div class="pub_fo"><div id="pub_footerall" class="pub_footer_new"><dl><dt></dt> <dd class="foot_sub_menu"><a href="http://www.csdn.net/company/about.html" target="_blank">公司简介</a><span>|</span><a href="http://www.csdn.net/company/recruit.html" target="_blank">招贤纳士</a><span>|</span><a href="http://www.csdn.net/company/marketing.html" target="_blank">广告服务</a><span>|</span><a href="http://www.csdn.net/company/account.html" target="_blank">银行汇款帐号</a><span>|</span><a href="http://www.csdn.net/company/contact.html" target="_blank">联系方式</a><span>|</span><a href="http://www.csdn.net/company/statement.html" target="_blank">版权声明</a><span>|</span><a href="http://www.csdn.net/company/layer.html" target="_blank">法律顾问</a><span>|</span><a href="mailto:webmaster@csdn.net">问题报告</a><span>|</span><a target="_blank" href="http://www.csdn.net/friendlink.html">合作伙伴</a><span>|</span><a href="http://bbs.csdn.net/forums/Service" target="_blank">论坛反馈</a></dd><dd class="foot_contact"><a href="http://wpa.qq.com/msgrd?v=3&uin=2355263776&site=qq&menu=yes" target="_blank" class="qq">网站客服</a><a href="http://wpa.qq.com/msgrd?v=3&uin=2251809102&site=qq&menu=yes" target="_blank" class="qq">杂志客服</a><a href="http://e.weibo.com/csdnsupport/profile" target="_blank" class="weibo">微博客服</a><a href="mailto:webmaster@csdn.net" class="email" title="联系邮箱">webmaster@csdn.net</a><span class="phone" title="服务热线">400-600-2320</span><span class="interval">|</span><span>北京创新乐知信息技术有限公司 版权所有</span><span class="interval">|</span><span>江苏乐知网络技术有限公司 提供商务支持</span></dd><dd class="foot_copyright"><span>京&nbsp;ICP&nbsp;证&nbsp;070598&nbsp;号</span><span class="interval">|</span><span>Copyright © 1999-2014, CSDN.NET, All Rights Reserved&nbsp;</span><a href="http://www.hd315.gov.cn/beian/view.asp?bianhao=010202001032100010" target="_blank"><img src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/gongshang_logos.gif" alt="GongshangLogo" title=""></a></dd></dl></div></div><div id="note1" class="csdn_note" style="display:none; position:absolute; z-index:9999; width:440px">  <span class="notice_top_arrow"><span class="inner"></span></span>  <div class="box"></div></div><div class="csdn_notice_tip" style="display: none; position: absolute; z-index: 9990; width: 170px;">  <iframe src="about:blank" frameborder="0" scrolling="no" style="z-index:-1;position:absolute;top:0;left:0;width:100%;height:100%;background:transparent"></iframe>  <div class="tip_text">您有<strong>0</strong>条新通知</div>  <a href="javascript:void 0" class="close2"></a></div><script id="noticeScript" type="text/javascript" btnid="header_notice_num" wrapid="note1" count="5" subcount="5" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/notify.js"></script>
+
+    <script type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/login.js"></script>
+<script type="text/javascript">document.write("<img src=http://counter.csdn.net/pv.aspx?id=24 border=0 width=0 height=0>");</script><img src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/pv.aspx" border="0" width="0" height="0">
+<script type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/counter.js"></script><script type="text/javascript" charset="UTF-8" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/msg.popup.js"></script>
+<script type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/ad-blog.js"></script><script type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/ad-ms1113_2.js"></script>
+<script type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/ad-ms1116_3.js"></script>
+
+<script type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/count.js"></script><iframe src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/logs.php" frameborder="0" width="0" height="0"></iframe>
+<script type="text/javascript">
+    $(function () {
+        function __get_code_toolbar(snippet_id) {
+            return $("<a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "' target='_blank' title='在CODE上查看代码片' style='text-indent:0;'><img src='https://code.csdn.net/assets/CODE_ico.png' width=12 height=12 alt='在CODE上查看代码片' style='position:relative;top:1px;left:2px;'/></a>"
+                    + "<a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "/fork' target='_blank' title='派生到我的代码片'  style='text-indent:0;'><img src='https://code.csdn.net/assets/ico_fork.svg' width=12 height=12 alt='派生到我的代码片' style='position:relative;top:2px;left:2px;'/></a>");
+        }
+        
+        $("[code_snippet_id]").each(function () {
+            __s_id = $(this).attr("code_snippet_id");
+            if (__s_id != null && __s_id != "" && __s_id != 0 && parseInt(__s_id) > 70020) {
+                __code_tool = __get_code_toolbar(__s_id);
+                $(this).prev().find(".tools").append(__code_tool);
+            }
+        });
+    });
+</script>
+
+    </div><input type="hidden" id="aa_g_data_ids">
+      <!--new top-->
+    
+    <script id="csdn-toolbar-id" btnid="header_notice_num" wrapid="note1" count="5" subcount="5" type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/toolbar.js"></script>
+     <!--new top-->
+   
+    <link href="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/ask_float_block.css" type="text/css" rel="stylesheet">
+    <script language="JavaScript" type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/wmd.js"></script>
+    <script language="JavaScript" type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/showdown.js"></script>
+    <script language="JavaScript" type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/prettify.js"></script>
+    <script language="JavaScript" type="text/javascript" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/ask_float_block.js"></script>
+
+
+
+<div id="tag-suggest-pop">
+  <div class="relative">
+    <div class="close"></div>
+    <div class="content"></div>
+  </div>
+</div><link rel="stylesheet" type="text/css" media="screen" href="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/ask_float_fonts_css-6b30a53970eb5c3a2a045e3df585b475.css"><div data-mod="popu_64" class="tracking-ad" chg-blk="0"><a id="com-ask-float-block" title="提问按钮" style="top:281px"></a><a id="com-quick-reply" title="快速回复" style="top:322px"></a><a id="com-d-top-a" style="top: 363px; display: block;" title="返回顶部" onclick=""></a> </div><div class="pop_edit ask_second comm_ask_second"><h3>提问</h3><span class="ask_float_span">您的问题将会被发布在“<a class="ask_float_channel" href="http://ask.csdn.net/" target="_blank" style="cursor:pointer">技术问答</a>”频道</span><a href="http://blog.csdn.net/joey_su/article/details/17270639#" nodetype="close" class="close">×</a><div class="context"><div class="err_div"><span class="err_ico"></span><span class="err_txt">该问题已存在，请勿重复提问</span></div><div class="input_div"><input id="askInputSecond" type="text" style="font-size:14px;" placeholder="问题标题"></div><div class="cm_box"><div class="cm_dialog"></div> <div class="pop_cm cm_add_link"><input type="text" placeholder="链接内容" id="af_cm_link_txt"><input type="text" placeholder="链接地址" id="af_cm_link_url"><input type="text" placeholder="链接提示" id="af_cm_link_tit"><div class="text-right"><span class="btn btn-default btn-sm" id="add_link_btn">插入链接</span> </div> </div><div class="pop_cm cm_add_img"><input type="text" placeholder="图片地址" id="af_cm_img_url"><input type="text" placeholder="图片说明" id="af_cm_img_alt"><div class="text-right"><span class="btn btn-default btn-sm" id="add_img_btn">插入图片</span> </div> </div></div> <textarea id="editor110" rows="8" style="display: none;"></textarea><div class="editor-toolbar"><i class="separator">|</i><a class="icon-headline" title="标题一（Ctrl+Alt+1）"></a><a class="icon-heading" title="标题二（Ctrl+Alt+2）"></a><a class="icon-bold" title="粗体（Ctrl+B）"></a><a class="icon-italic" title="斜体（Ctrl+I）"></a><i class="separator">|</i><a class="icon-quote-left" title="引用（Ctrl+’）"></a><a class="icon-code" title="插入代码片（Ctrl+,）"></a><a class="icon-list-ul" title="无序列表（Ctrl+L）"></a><a class="icon-list-ol" title="有序列表（Ctrl+Alt+L）"></a><i class="separator">|</i><a class="icon-link" title="添加链接（Ctrl+K）"></a><a class="icon-picture" title="添加图片（Ctrl+Alt+I）"></a><i class="separator">|</i><a class="icon-reply" title="撤退（Ctrl+Z）"></a><a class="icon-share-alt" title="前进（Ctrl+Shift+Z）"></a><i class="separator">|</i><a class="icon-info" href="http://ask.csdn.net/pages/markdown" target="_blank" title="markdown语法参考"></a><a class="icon-preview" title="预览"></a><i class="separator">|</i></div><div class="CodeMirror cm-s-paper CodeMirror-focused"><div style="overflow: hidden; position: relative; width: 3px; height: 0px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none; font-size: 4px;"></textarea></div><div class="CodeMirror-hscrollbar"><div style="height: 1px;"></div></div><div class="CodeMirror-vscrollbar"><div style="width: 1px;"></div></div><div class="CodeMirror-scrollbar-filler"></div><div class="CodeMirror-gutter-filler"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="min-width: 33px;"><div style="position: relative;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre>&nbsp;<span style="display: inline-block; width: 1px; margin-right: -1px;">&nbsp;</span></pre></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code"></div><div class="CodeMirror-cursor" style="visibility: hidden;">&nbsp;</div><div class="CodeMirror-cursor CodeMirror-secondarycursor" style="visibility: hidden;">&nbsp;</div></div></div></div></div><div style="position: absolute; height: 30px; width: 1px;"></div><div class="CodeMirror-gutters" style="display: none;"></div></div></div><div class="editor-statusbar"><span class="lines">0</span><span class="words">0</span><span class="cursor">0:0</span></div><div class="div_tags clearfix"><div id="divSearchTags" class="tags_con"><input type="text"></div><input type="hidden" name="txtSearchTags"></div><div id="ask2_tagRecomm_div" class="drt_tagRecomm"><span class="drt_tit">推荐标签：</span></div></div><div class="success"><div class="left_area"><input id="chk_cb" type="checkbox"><span class="wyxs">我要悬赏</span><input id="cb_num" class="cb_num" readonly="true"><span class="phib_rii"><span> 币</span></span></div><a href="http://blog.csdn.net/joey_su/article/details/17270639#" nodetype="cancel" class="cancel">取消</a><a href="http://blog.csdn.net/joey_su/article/details/17270639#" nodetype="ok" class="ok">发布</a></div></div><div id="common_ask_div_sc" class="searchContainer"><div class="sTitle">可能存在类似的问题：</div><div class="sFooter"><a class="sFirstNewAsk">我想提一个新问题</a></div></div><iframe src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/langchao-dec-server-daohangtiaoxia-banner-960-90-30k.swf" style="width: 1px; height: 1px; position: absolute; visibility: hidden;"></iframe><iframe src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/shuguang-dec-download-ziyuanye-xiafang-banner-728-90-30k.swf" style="width: 1px; height: 1px; position: absolute; visibility: hidden;"></iframe><link href="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/message_pop.css" rel="stylesheet" type="text/css"><div id="_popup_msg_container" style="display: block;">
+
+<div wistate="max" id="im_popupWindow_miniMsg" class="im_popupWindow" style="display: none; height: 0px;">
+	<h6 class="wi_draggable"><span>
+</span><a onclick="_message_tips_pop(&#39;down&#39;);return false;"><img alt="close" class="founctionpic3" src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/pic_close.gif"></a></h6>
+    <div id="im_popupWindow_miniMsgContent" class="wi_content">
+		<div class="kuai">
+			<div style="width:280px;"><a href="http://reg.powerlinux.csdn.net/" target="_blank"><img src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/280-188--2.jpg" alt="" border="0" style="border:0;" title=""></a></div>
+		</div>
+	</div>
+<div class="content_qq"><span onclick="window.open(&#39;&#39;)" target="_blank"><font color="red">
+</font></span>
+ </div>
+ 
+ 
+</div>
+</div><img src="./13.4 非特定人语音识别算法——HMM - joey_su的专栏 - 博客频道 - CSDN.NET_files/count_new.php" style="display: none;"></body></html>
