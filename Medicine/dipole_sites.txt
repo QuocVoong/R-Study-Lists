@@ -1,0 +1,1 @@
+selChName=['FP1'; 'FP2'; 'F7 '; 'F3 '; 'FZ '; 'F4 '; 'F8 '; 'FT7'; 'FC3'; 'FCZ'; 'FC4'; 'FT8'; 'T7 '; 'C3 '; 'CZ '; 'T8 '; 'TP7'; 'CP3'; 'CPZ'; 'CP4'; 'TP8'; 'P7 '; 'P3 '; 'PZ '; 'P4 '; 'P8 '; 'O1 '; 'OZ '; 'O2 '];selChNo=length(selChName(:,1))+4;selChName=[selChName; 'EMG1'; 'VEOG'; 'EMG2'; 'EMG3']; 
