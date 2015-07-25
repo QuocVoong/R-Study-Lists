@@ -30,7 +30,7 @@ class Matrix{
 				delete [] matrixData[i];
 			delete [] matrixData;
 		}
-		int* const operator[](const int i)  {  
+		int* const operator[](const int i){  
 			return matrixData[i];  
-		}  
+		}
 };
