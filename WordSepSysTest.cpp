@@ -75,6 +75,34 @@ class PlusSeperation{
 		}		
 };
 
+//Extract plus parameters from parameter string into queue
+class MultSeperation{
+	private:
+		//Store the parameter strings
+		queue<string> paramQueue;
+	public:
+		//Extract the parameter strings
+		void extractParams(string _params){
+			
+			if(!_params.empty()){
+				
+				size_t pos = _params.find('*', 0);
+				size_t temp = 0;
+				paramQueue.push(_params.substr(0,pos-temp));
+				while(pos != string::npos){
+					temp = pos+1;
+					pos = _params.find('*',pos+1);
+					paramQueue.push(_params.substr(temp,pos-temp));
+				}
+				
+			}
+			
+		}
+		queue<string> getQueue(){
+			return paramQueue;
+		}		
+};
+
 //Seperate the string describing about function
 class FuncSeperation{
 	private:
@@ -206,10 +234,6 @@ class ForWordSepSys{
 					varMap.insert(newCounter);
 				}
 			}
-			cout<<"For variables: "<<endl;
-			for(map<string,VariableInfo>::iterator seeVarMI=varMap.begin();seeVarMI!=varMap.end();seeVarMI++){
-				cout<<"	"<<(*seeVarMI).first<<" "<<(*seeVarMI).second.type<<" "<<(*seeVarMI).second.value<<endl;
-			}
 		}
 		//Extract the I/O variable names(pair<queue<string>,queue<string> >) and command types(string)
 		pair<string,pair<queue<string>,queue<string> > > popAndExtractOrderInfo(string _order){
@@ -303,9 +327,11 @@ class ForWordSepSys{
 				size_t stringPos = inputs.front().find('"');
 				//Find the float
 				size_t floatPos = inputs.front().find('.');
+				//Find the multifying sign
+				size_t multPos = inputs.front().find('*');
 				if(mi == varMap.end()){
 					//Find the type and add together
-					if(inputs.front()[0] - '0'<49 && inputs.front()[0] - '0'>0 && floatPos == string::npos){
+					if(inputs.front()[0] - '0'<49 && inputs.front()[0] - '0'>0 && floatPos == string::npos && multPos == string::npos){
 						outputVal = int2str(str2int(outputVal)+str2int(inputs.front()));
 						pair<string,VariableInfo> output;
 						output.first = _outputVars.front();
@@ -319,7 +345,7 @@ class ForWordSepSys{
 							varMap.erase(_outputVars.front());
 							varMap.insert(output);
 						}
-					} else if(floatPos != string::npos){
+					} else if(multPos == string::npos && floatPos != string::npos){
 						outputVal = float2str(str2float(outputVal)+str2float(inputs.front()));
 						pair<string,VariableInfo> output;
 						output.first = _outputVars.front();
@@ -347,9 +373,66 @@ class ForWordSepSys{
 							varMap.erase(_outputVars.front());
 							varMap.insert(output);
 						}
+					} else if(multPos != string::npos && floatPos == string::npos){
+						MultSeperation multParams;
+						multParams.extractParams(inputs.front());
+						queue<string> multValQueue = multParams.getQueue();
+						string multVal = "1";
+						while(!multValQueue.empty()){
+							//Check if it is variable
+							if(multValQueue.front()[0] - '0'<49){
+								multVal = int2str(str2int(multVal) * str2int(multValQueue.front()));
+							} else{
+								mi = varMap.find(multValQueue.front());
+								multVal = int2str(str2int(multVal) * str2int((*mi).second.value));
+							}
+							multValQueue.pop();
+						}
+						outputVal = int2str(str2int(outputVal) + str2int(multVal));
+						pair<string,VariableInfo> output;
+						output.first = _outputVars.front();
+						output.second.type = "int";
+						output.second.value = outputVal;
+						//Check if output variable existed before
+						map<string,VariableInfo>::iterator repeatMI = varMap.find(_outputVars.front());
+						if(repeatMI == varMap.end()){
+							varMap.insert(output);
+						} else{
+							varMap.erase(_outputVars.front());
+							varMap.insert(output);
+						}
+					} else if(multPos != string::npos && floatPos != string::npos){
+						MultSeperation multParams;
+						multParams.extractParams(inputs.front());
+						queue<string> multValQueue = multParams.getQueue();
+						string multVal = "1.0";
+						while(!multValQueue.empty()){
+							//Check if it is variable
+							if(multValQueue.front()[0] - '0'<49){
+								multVal = float2str(str2float(multVal) * str2float(multValQueue.front()));
+							} else{
+								mi = varMap.find(multValQueue.front());
+								multVal = float2str(str2float(multVal) * str2float((*mi).second.value));
+							}
+							multValQueue.pop();
+						}
+						outputVal = float2str(str2float(outputVal) + str2float(multVal));
+						pair<string,VariableInfo> output;
+						output.first = _outputVars.front();
+						output.second.type = "float";
+						output.second.value = outputVal;
+						//Check if output variable existed before
+						map<string,VariableInfo>::iterator repeatMI = varMap.find(_outputVars.front());
+						if(repeatMI == varMap.end()){
+							varMap.insert(output);
+						} else{
+							varMap.erase(_outputVars.front());
+							varMap.insert(output);
+						}
 					}
 				} else{
 					map<string,VariableInfo>::iterator plusMI = varMap.find(inputs.front());
+					map<string,VariableInfo>::iterator multMI;
 					if((*plusMI).second.type == "int"){
 						outputVal = int2str(str2int(outputVal)+str2int((*plusMI).second.value));
 						pair<string,VariableInfo> output;
@@ -392,10 +475,69 @@ class ForWordSepSys{
 							varMap.erase(_outputVars.front());
 							varMap.insert(output);
 						}
+					} else if(plusMI == varMap.end() && multPos != string::npos){
+						MultSeperation multParams;
+						multParams.extractParams(inputs.front());
+						queue<string> multValQueue = multParams.getQueue();
+						multMI = varMap.find(multValQueue.front());
+						string multVal = (*multMI).second.value;
+						if((*multMI).second.type == "int"){
+							multVal = "1";
+							while(!multValQueue.empty()){
+								multVal = int2str(str2int(multVal) * str2int((*multMI).second.value));
+								multValQueue.pop();
+							}
+							outputVal = int2str(str2int(outputVal) + str2int(multVal));
+							pair<string,VariableInfo> output;
+							output.first = _outputVars.front();
+							output.second.type = "int";
+							output.second.value = outputVal;
+							//Check if output variable existed before
+							map<string,VariableInfo>::iterator repeatMI = varMap.find(_outputVars.front());
+							if(repeatMI == varMap.end()){
+								varMap.insert(output);
+							} else{
+								varMap.erase(_outputVars.front());
+								varMap.insert(output);
+							}
+						} else if((*multMI).second.type == "float"){
+							multVal = "1.0";
+							while(!multValQueue.empty()){
+								multVal = float2str(str2float(multVal) * str2float((*multMI).second.value));
+								multValQueue.pop();
+							}
+							outputVal = float2str(str2float(outputVal) + str2float(multVal));
+							pair<string,VariableInfo> output;
+							output.first = _outputVars.front();
+							output.second.type = "float";
+							output.second.value = outputVal;
+							//Check if output variable existed before
+							map<string,VariableInfo>::iterator repeatMI = varMap.find(_outputVars.front());
+							if(repeatMI == varMap.end()){
+								varMap.insert(output);
+							} else{
+								varMap.erase(_outputVars.front());
+								varMap.insert(output);
+							}
+						}
 					}
+						
 				}
 				inputs.pop();
 			}
+		}
+		//Return the modified global variables
+		map<string,VariableInfo> getModifiedGlobalVars(){
+			string varName;
+			pair<string,VariableInfo> tempVar;
+			for(map<string,VariableInfo>::iterator varNameMI=modifiedGlobalVars.begin();varNameMI!=modifiedGlobalVars.end();varNameMI++){
+				varName = (*varNameMI).first;
+				modifiedGlobalVars.erase(varName);
+				mi = varMap.find(varName);
+				tempVar = (*mi);
+				modifiedGlobalVars.insert(tempVar);
+			}
+			return modifiedGlobalVars;
 		}
 };
 
@@ -532,6 +674,16 @@ class WordSepSys{
 						}
 						//Let for-object process the loop
 						loop1.startLoop();
+						//Insert the modified variable values
+						map<string,VariableInfo> tempVars = loop1.getModifiedGlobalVars();
+						string varName;
+						pair<string,VariableInfo> tempVar;
+						for(map<string,VariableInfo>::iterator varNameMI=tempVars.begin();varNameMI!=tempVars.end();varNameMI++){
+							varName = (*varNameMI).first;
+							varMap.erase(varName);
+							tempVar = (*varNameMI);
+							varMap.insert(tempVar);
+						}
 						
 						break;
 					}
