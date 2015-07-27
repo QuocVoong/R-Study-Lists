@@ -310,22 +310,71 @@ class ForWordSepSys{
 			//Store result variable information
 			pair<string,VariableInfo> output;
 			output.first = _outputVars.front();
-			output.second.value = _inputVars.front();
 			size_t multPos = _inputVars.front().find('*');
 			size_t floatPos = _inputVars.front().find('.');
 			size_t stringPos = _inputVars.front().find('"');
 			if(multPos == string::npos && floatPos == string::npos && stringPos == string::npos){
 				output.second.type = "int";
+				output.second.value = _inputVars.front();
 			} else if(multPos == string::npos && floatPos != string::npos && stringPos == string::npos){
 				output.second.type = "float";
+				output.second.value = _inputVars.front();
 			} else if(multPos == string::npos && floatPos == string::npos && stringPos != string::npos){
 				output.second.type = "string";
-			} else if(multPos != string::npos && floatPos == string::npos && stringPos == string::npos && _inputVars.front()[0]<49 && _inputVars.front()[0]>0){
+				output.second.value = _inputVars.front();
+			} else if(multPos != string::npos && floatPos == string::npos && stringPos == string::npos && _inputVars.front()[0] - '0'<49 && _inputVars.front()[0] - '0'>=0){
 				output.second.type = "int";
-			} else if(multPos != string::npos && floatPos != string::npos && stringPos == string::npos && _inputVars.front()[0]<49 && _inputVars.front()[0]>0){
+				MultSeperation params;
+				params.extractParams(_inputVars.front());
+				queue<string> multInt = params.getQueue();
+				string outputVal = "1";
+				while(!multInt.empty()){
+					//Check if input is variable
+					if(multInt.front()[0] - '0'>=49){
+						mi = varMap.find(multInt.front());
+						outputVal = int2str(str2int(outputVal) * str2int((*mi).second.value));
+					} else{
+						outputVal = int2str(str2int(outputVal) * str2int(multInt.front()));
+					}
+					multInt.pop();
+				}
+				output.second.value = outputVal;
+			} else if(multPos != string::npos && floatPos != string::npos && stringPos == string::npos && _inputVars.front()[0] - '0'<49 && _inputVars.front()[0] - '0'>0){
 				output.second.type = "float";
-			} else if(multPos != string::npos && floatPos == string::npos && stringPos == string::npos && _inputVars.front()[0]>49){
-				
+				MultSeperation params;
+				params.extractParams(_inputVars.front());
+				queue<string> multFloat = params.getQueue();
+				string outputVal = "1";
+				while(!multFloat.empty()){
+					if(multFloat.front()[0] - '0'>=49){
+						mi = varMap.find(multFloat.front());
+						outputVal = float2str(str2float(outputVal) * str2float((*mi).second.value));
+					} else{
+						outputVal = float2str(str2float(outputVal) * str2float(multFloat.front()));
+					}
+					multFloat.pop();
+				}
+				output.second.value = outputVal;
+			} else if(multPos != string::npos && floatPos == string::npos && stringPos == string::npos && _inputVars.front()[0] - '0'>=49){
+				MultSeperation params;
+				params.extractParams(_inputVars.front());
+				queue<string> multVars = params.getQueue();
+				string outputVal = "1";
+				if((*mi).second.type == "int"){
+					output.second.type = "int";
+					while(!multVars.empty()){
+						mi = varMap.find(multVars.front());
+						outputVal = int2str(str2int(outputVal) * str2int((*mi).second.value));
+						multVars.pop();
+					}
+				} else if((*mi).second.type == "float"){
+					output.second.type = "float";
+					while(!multVars.empty()){
+						mi = varMap.find(multVars.front());
+						outputVal = float2str(str2float(outputVal) * str2float((*mi).second.value));
+						multVars.pop();
+					}
+				}
 			}
 			//Check if output variable existed before
 			map<string,VariableInfo>::iterator repeatMI = varMap.find(_outputVars.front());
@@ -770,151 +819,367 @@ class WordSepSys{
 		void givenValue(string _givenOrder){
 			//Find the equal site
 			size_t equalPos = _givenOrder.find('=');
+			//Find the multiply site
+			size_t multPos = _givenOrder.find('*');
 			//Find if the variable is a float
 			size_t floatPos = _givenOrder.find('.');
 			//Find if the variable is a string
 			size_t strPos = _givenOrder.find('"');
 			//According to data type store the data
-			if(floatPos != string::npos){
+			if(floatPos != string::npos && multPos == string::npos){
 				//Store the float-type variable
 				string name = _givenOrder.substr(0,equalPos-0);
 				VariableInfo info;
 				info.type = "float";
 				info.value = _givenOrder.substr(equalPos+1);
-				varMap.insert(pair<string,VariableInfo>(name,info));
-			} else if(strPos != string::npos){
+				//Check if existed before
+				mi = varMap.find(name);
+				if(mi == varMap.end()){
+					varMap.insert(pair<string,VariableInfo>(name,info));
+				} else{
+					varMap.erase(name);
+					varMap.insert(pair<string,VariableInfo>(name,info));
+				}
+			} else if(strPos != string::npos && multPos == string::npos){
 				//Store the string-type variable
 				string name = _givenOrder.substr(0,equalPos-0);
 				VariableInfo info;
 				info.type = "string";
 				info.value = _givenOrder.substr(equalPos+1);
-				varMap.insert(pair<string,VariableInfo>(name,info));
-			} else{
+				//Check if existed before
+				mi = varMap.find(name);
+				if(mi == varMap.end()){
+					varMap.insert(pair<string,VariableInfo>(name,info));
+				} else{
+					varMap.erase(name);
+					varMap.insert(pair<string,VariableInfo>(name,info));
+				}
+			} else if(floatPos == string::npos && strPos == string::npos && multPos == string::npos){
 				//Store the int-type variable
 				string name = _givenOrder.substr(0,equalPos-0);
 				VariableInfo info;
 				info.type = "int";
 				info.value = _givenOrder.substr(equalPos+1);
-				varMap.insert(pair<string,VariableInfo>(name,info));
+				//Check if existed before
+				mi = varMap.find(name);
+				if(mi == varMap.end()){
+					varMap.insert(pair<string,VariableInfo>(name,info));
+				} else{
+					varMap.erase(name);
+					varMap.insert(pair<string,VariableInfo>(name,info));
+				}
+			} else if(floatPos != string::npos && multPos != string::npos){
+				MultSeperation multParams;
+				multParams.extractParams(_givenOrder.substr(equalPos+1));
+				queue<string> floatQueue = multParams.getQueue();
+				string outputVal = "1";
+				while(!floatQueue.empty()){
+					if(floatQueue.front()[0] - '0'<49 && floatQueue.front()[0] - '0'>0){
+						outputVal = float2str(str2float(outputVal) * str2float(floatQueue.front()));
+					} else if(floatQueue.front()[0] - '0'>=49){
+						mi = varMap.find(floatQueue.front());
+						outputVal = float2str(str2float(outputVal) * str2float((*mi).second.value));
+					}
+					floatQueue.pop();
+				}
+				//Store the float-type variable
+				string name = _givenOrder.substr(0,equalPos-0);
+				VariableInfo info;
+				info.type = "float";
+				info.value = outputVal;
+				//Check if existed before
+				mi = varMap.find(name);
+				if(mi == varMap.end()){
+					varMap.insert(pair<string,VariableInfo>(name,info));
+				} else{
+					varMap.erase(name);
+					varMap.insert(pair<string,VariableInfo>(name,info));
+				}
+			} else if(floatPos == string::npos && strPos == string::npos && multPos != string::npos && _givenOrder.substr(equalPos+1)[0] - '0'<49 && _givenOrder.substr(equalPos+1)[0] - '0'>=0){
+				MultSeperation multParams;
+				multParams.extractParams(_givenOrder.substr(equalPos+1));
+				queue<string> intQueue = multParams.getQueue();
+				string outputVal = "1.0";
+				while(!intQueue.empty()){
+					if(intQueue.front()[0] - '0'<49 && intQueue.front()[0] - '0'>0){
+						outputVal = int2str(str2int(outputVal) * str2int(intQueue.front()));
+					} else if(intQueue.front()[0] - '0'>=49){
+						mi = varMap.find(intQueue.front());
+						outputVal = int2str(str2int(outputVal) * str2int((*mi).second.value));
+					}
+					intQueue.pop();
+				}
+				//Store the float-type variable
+				string name = _givenOrder.substr(0,equalPos-0);
+				VariableInfo info;
+				info.type = "int";
+				info.value = outputVal;
+				//Check if existed before
+				mi = varMap.find(name);
+				if(mi == varMap.end()){
+					varMap.insert(pair<string,VariableInfo>(name,info));
+				} else{
+					varMap.erase(name);
+					varMap.insert(pair<string,VariableInfo>(name,info));
+				}
+			} else if(floatPos == string::npos && strPos == string::npos && multPos != string::npos && _givenOrder.substr(equalPos+1)[0] - '0'>=49){
+				MultSeperation multParams;
+				multParams.extractParams(_givenOrder.substr(equalPos+1));
+				queue<string> varQueue = multParams.getQueue();
+				string outputVal = "1";
+				VariableInfo info;
+				while(!varQueue.empty()){
+					mi = varMap.find(varQueue.front());
+					if((*mi).second.type == "int"){
+						outputVal = int2str(str2int(outputVal) * str2int((*mi).second.value));
+						info.type = "int";
+					} else if((*mi).second.type == "float"){
+						outputVal = float2str(str2float(outputVal) * str2float((*mi).second.value));
+						info.type = "float";
+					}
+					varQueue.pop();
+				}
+				//Store the variable
+				string name = _givenOrder.substr(0,equalPos-0);
+				info.value = outputVal;
+				//Check if existed before
+				mi = varMap.find(name);
+				if(mi == varMap.end()){
+					varMap.insert(pair<string,VariableInfo>(name,info));
+				} else{
+					varMap.erase(name);
+					varMap.insert(pair<string,VariableInfo>(name,info));
+				}
 			}
 		}
 		//Handle the plus order
 		void plusValue(string _plusOrder){
-			//Find the equal site
+			//Extract input and output
 			size_t equalPos = _plusOrder.find('=');
-			//Extract variables into PlusSeperation object
-			string resultName = _plusOrder.substr(0,equalPos-0);
-			PlusSeperation params;
-			params.extractParams(_plusOrder.substr(equalPos+1));					
-			//Check if they are 0:variables, 1:numbers, 2:floats, or 3:strings,
-			queue<int> paramTypes = checkVarTypes(params);
-			//Copy the params queue
-			queue<string> paramsStr = params.getQueue();
-			//Store the result value
-			string resultValStr = "";
-			//Declare a result value variable
-			int resultInt = 0;
-			float resultFloat = 0.0;
-			//Record the result type
-			int resultType = 0;
-			string resultTypeStr = "string";
-			//Sum the variables
-			while(!paramTypes.empty()){
-				if(paramTypes.front() == 0){
-					//Find the variable type
-					mi = varMap.find(paramsStr.front());
-					string varType = (*mi).second.type; 
-					//Convert to the type
-					if(varType == "int"){
-						resultInt = resultInt + str2int((*mi).second.value);
-						resultType = 1;
-					} else if(varType == "float"){
-						resultFloat = resultFloat + str2float((*mi).second.value);
-						resultType = 2;
-					} else if(varType == "string"){
-						resultValStr = resultValStr + (*mi).second.value;
-						resultType = 3;
+			PlusSeperation plusParams;
+			plusParams.extractParams(_plusOrder.substr(equalPos+1));
+			queue<string> inputs = plusParams.getQueue();
+			string outputName = _plusOrder.substr(0,equalPos - 0);
+			string outputVal = "0";
+			//Add all inputs
+			while(!inputs.empty()){
+				//Check if it exist in variable list, if not, find its type
+				mi = varMap.find(inputs.front());
+				//Find the string
+				size_t stringPos = inputs.front().find('"');
+				//Find the float
+				size_t floatPos = inputs.front().find('.');
+				//Find the multifying sign
+				size_t multPos = inputs.front().find('*');
+				//If input name is not variable name, note: 'a'-'0' = 49, 'z'-'0' = 75, '"'-'0' = -14
+				if(mi == varMap.end() && inputs.front()[0] - '0'<49){
+					//Find the type and add together
+					if(inputs.front()[0] - '0'<49 && inputs.front()[0] - '0'>=0 && floatPos == string::npos && multPos == string::npos){
+						//Add integer together
+						outputVal = int2str(str2int(outputVal)+str2int(inputs.front()));
+						//Made input pair and insert into varMap
+						pair<string,VariableInfo> output;
+						output.first = outputName;
+						output.second.type = "int";
+						output.second.value = outputVal;
+						//Check if output variable existed before
+						map<string,VariableInfo>::iterator repeatMI = varMap.find(outputName);
+						if(repeatMI == varMap.end()){
+							varMap.insert(output);
+						} else{
+							varMap.erase(outputName);
+							varMap.insert(output);
+						}
+					} else if(inputs.front()[0] - '0'<49 && inputs.front()[0] - '0'>=0 && multPos == string::npos && floatPos != string::npos){
+						//Add float together
+						outputVal = float2str(str2float(outputVal)+str2float(inputs.front()));
+						//Made output and add into varMap
+						pair<string,VariableInfo> output;
+						output.first = outputName;
+						output.second.type = "float";
+						output.second.value = outputVal;
+						//Check if output variable existed before
+						map<string,VariableInfo>::iterator repeatMI = varMap.find(outputName);
+						if(repeatMI == varMap.end()){
+							varMap.insert(output);
+						} else{
+							varMap.erase(outputName);
+							varMap.insert(output);
+						}
+					} else if(stringPos != string::npos){
+						//Add strings togeter
+						outputVal = outputVal + inputs.front();
+						//Made output and insert into varMap
+						pair<string,VariableInfo> output;
+						output.first = outputName;
+						output.second.type = "string";
+						output.second.value = outputVal;
+						//Check if output variable existed before
+						map<string,VariableInfo>::iterator repeatMI = varMap.find(outputName);
+						if(repeatMI == varMap.end()){
+							varMap.insert(output);
+						} else{
+							varMap.erase(outputName);
+							varMap.insert(output);
+						}
+					} else if(inputs.front()[0] - '0'<49 && inputs.front()[0] - '0'>=0 && multPos != string::npos && floatPos == string::npos){
+						MultSeperation multParams;
+						multParams.extractParams(inputs.front());
+						queue<string> multValQueue = multParams.getQueue();
+						string multVal = "1";
+						while(!multValQueue.empty()){
+							//Check if it is variable
+							if(multValQueue.front()[0] - '0'<49){
+								multVal = int2str(str2int(multVal) * str2int(multValQueue.front()));
+							} else{
+								mi = varMap.find(multValQueue.front());
+								multVal = int2str(str2int(multVal) * str2int((*mi).second.value));
+							}
+							multValQueue.pop();
+						}
+						outputVal = int2str(str2int(outputVal) + str2int(multVal));
+						pair<string,VariableInfo> output;
+						output.first = outputName;
+						output.second.type = "int";
+						output.second.value = outputVal;
+						//Check if output variable existed before
+						map<string,VariableInfo>::iterator repeatMI = varMap.find(outputName);
+						if(repeatMI == varMap.end()){
+							varMap.insert(output);
+						} else{
+							varMap.erase(outputName);
+							varMap.insert(output);
+						}
+					} else if(inputs.front()[0] - '0'<49 && inputs.front()[0] - '0'>=0 && multPos != string::npos && floatPos != string::npos){
+						MultSeperation multParams;
+						multParams.extractParams(inputs.front());
+						queue<string> multValQueue = multParams.getQueue();
+						string multVal = "1.0";
+						while(!multValQueue.empty()){
+							//Check if it is variable
+							if(multValQueue.front()[0] - '0'<49){
+								multVal = float2str(str2float(multVal) * str2float(multValQueue.front()));
+							} else{
+								mi = varMap.find(multValQueue.front());
+								multVal = float2str(str2float(multVal) * str2float((*mi).second.value));
+							}
+							multValQueue.pop();
+						}
+						outputVal = float2str(str2float(outputVal) + str2float(multVal));
+						pair<string,VariableInfo> output;
+						output.first = outputName;
+						output.second.type = "float";
+						output.second.value = outputVal;
+						//Check if output variable existed before
+						map<string,VariableInfo>::iterator repeatMI = varMap.find(outputName);
+						if(repeatMI == varMap.end()){
+							varMap.insert(output);
+						} else{
+							varMap.erase(outputName);
+							varMap.insert(output);
+						}
+					}
+				} else if(mi != varMap.end() && inputs.front()[0] - '0'>=49){
+					//Store the plus inputs
+					map<string,VariableInfo>::iterator plusMI;
+					plusMI = varMap.find(inputs.front());
+					if((*plusMI).second.type == "int"){
+						outputVal = int2str(str2int(outputVal)+str2int((*plusMI).second.value));
+						pair<string,VariableInfo> output;
+						output.first = outputName;
+						output.second.type = "int";
+						output.second.value = outputVal;
+						//Check if output variable existed before
+						map<string,VariableInfo>::iterator repeatMI = varMap.find(outputName);
+						if(repeatMI == varMap.end()){
+							varMap.insert(output);
+						} else{
+							varMap.erase(outputName);
+							varMap.insert(output);
+						}
+					} else if((*plusMI).second.type == "float"){
+						outputVal = float2str(str2float(outputVal)+str2float((*plusMI).second.value));
+						pair<string,VariableInfo> output;
+						output.first = outputName;
+						output.second.type = "float";
+						output.second.value = outputVal;
+						//Check if output variable existed before
+						map<string,VariableInfo>::iterator repeatMI = varMap.find(outputName);
+						if(repeatMI == varMap.end()){
+							varMap.insert(output);
+						} else{
+							varMap.erase(outputName);
+							varMap.insert(output);
+						}
+					} else if((*plusMI).second.type == "string"){
+						outputVal = outputVal + (*plusMI).second.value;
+						pair<string,VariableInfo> output;
+						output.first = outputName;
+						output.second.type = "string";
+						output.second.value = outputVal;
+						//Check if output variable existed before
+						map<string,VariableInfo>::iterator repeatMI = varMap.find(outputName);
+						if(repeatMI == varMap.end()){
+							varMap.insert(output);
+						} else{
+							varMap.erase(outputName);
+							varMap.insert(output);
+						}
+					}	
+				} else if(mi == varMap.end() && inputs.front()[0] - '0'>=49){
+					//Decode Var*Var to multiply inputs;
+					MultSeperation multParams;
+					multParams.extractParams(inputs.front());
+					queue<string> multValQueue = multParams.getQueue();
+					map<string,VariableInfo>::iterator multMI = varMap.find(multValQueue.front());
+					if((*multMI).second.type == "int"){
+						string multVal = "1";
+						while(!multValQueue.empty()){
+							//Store the next multiply element
+							multMI = varMap.find(multValQueue.front());
+							multVal = int2str(str2int(multVal) * str2int((*multMI).second.value));
+							multValQueue.pop();
+						}
+						outputVal = int2str(str2int(outputVal) + str2int(multVal));
+						pair<string,VariableInfo> output;
+						output.first = outputName;
+						output.second.type = "int";
+						output.second.value = outputVal;
+						//Check if output variable existed before
+						map<string,VariableInfo>::iterator repeatMI = varMap.find(outputName);
+						if(repeatMI == varMap.end()){
+							varMap.insert(output);
+						} else{
+							varMap.erase(outputName);
+							varMap.insert(output);
+						}
+					} else if((*multMI).second.type == "float"){
+						string multVal = "1.0";
+						while(!multValQueue.empty()){
+							//Store the next multiply element
+							multMI = varMap.find(multValQueue.front());
+							multVal = float2str(str2float(multVal) * str2float((*multMI).second.value));
+							multValQueue.pop();
+						}
+						outputVal = float2str(str2float(outputVal) + str2float(multVal));
+						pair<string,VariableInfo> output;
+						output.first = outputName;
+						output.second.type = "float";
+						output.second.value = outputVal;
+						//Check if output variable existed before
+						map<string,VariableInfo>::iterator repeatMI = varMap.find(outputName);
+						if(repeatMI == varMap.end()){
+							varMap.insert(output);
+						} else{
+							varMap.erase(outputName);
+							varMap.insert(output);
+						}
 					}
 				} else{
-					switch(paramTypes.front()){
-						case 1:{
-							resultInt = resultInt + str2int(paramsStr.front());
-							resultType = 1;
-							break;
-						}
-						case 2:{
-							resultFloat = resultFloat + str2float(paramsStr.front());
-							resultType = 2;
-							break;
-						}
-						case 3:{
-							resultValStr = resultValStr + paramsStr.front();
-							resultType = 3;
-							break;
-						}
-						default:
-							cout<<"Unsupported type!"<<endl;
-					}
+					printf("Nothing\n");
 				}
-				paramsStr.pop();
-				paramTypes.pop();
+				inputs.pop();
 			}
-			//convert to string
-			switch(resultType){
-				case 1:{
-					resultValStr = int2str(resultInt);
-					resultTypeStr = "int";
-					break;
-				}
-				case 2:{
-					resultValStr = float2str(resultFloat);
-					resultTypeStr = "float";
-					break;
-				}
-			}
-			//Store into variable table
-			VariableInfo resultInfo;
-			resultInfo.type = resultTypeStr;
-			resultInfo.value = resultValStr;
-			map<string,VariableInfo>::iterator varMI = varMap.find(resultName);
-			if(varMI == varMap.end()){
-				varMap.insert(pair<string,VariableInfo>(resultName,resultInfo));
-			} else{
-				varMap.erase(resultName);
-				varMap.insert(pair<string,VariableInfo>(resultName,resultInfo));
-			}
-		}
-		//Check plus parameters' types
-		queue<int> checkVarTypes(PlusSeperation _params){
-			
-			//Copy the queue
-			queue<string> temp = _params.getQueue();
-			//Store types into queue
-			queue<int> types;
-			//Check each variable type
-			while(!temp.empty()){
-				
-				//Take the first character
-				char word = temp.front()[0];
-				//Find if the variable is a float
-				size_t floatPos = temp.front().find('.');
-				//Find if the variable is a string
-				size_t strPos = temp.front().find('"');
-				//Determine the type of the variable
-				if(word - '0' >= 49 && word - '0' < 75){
-					types.push(0);
-				} else if(word - '0' >= 0 && word - '0' < 10 && floatPos == string::npos){
-					types.push(1);
-				} else if(floatPos != string::npos){
-					types.push(2);
-				} else if(strPos != string::npos){
-					types.push(3);
-				} else{}
-				
-				temp.pop();
-			}
-			
-			return types;
 		}
 		FuncSeperation getFunc(){
 			return func1;
@@ -977,8 +1242,8 @@ void seeQueue(queue<T> _q){
 }
 
 int main(){
-	string functionAddr = "C:/Users/user/Desktop/test.txt";
-	//string functionAddr = "C:/Users/Administrator/Desktop/test.txt"; 
+	//string functionAddr = "C:/Users/user/Desktop/test.txt";
+	string functionAddr = "C:/Users/Administrator/Desktop/test.txt"; 
 	WordSepSys sepSys(functionAddr); //Build WordSepSys and convert into program
 	
 	cout<<"Function name: "<<sepSys.getFunc().getFuncName()<<endl;
