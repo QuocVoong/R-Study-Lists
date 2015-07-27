@@ -8,6 +8,7 @@
 #include<stdio.h>
 #include<string>
 #include<algorithm>
+#include<stack>
 
 #define SIZE 100
 
@@ -631,8 +632,8 @@ class WordSepSys{
 		queue<string> strQueue;
 		//Store the functions
 		FuncSeperation func1;
-		//For object to process the loop
-		ForWordSepSys loop1;
+		//For-object stack to process the loop
+		stack<ForWordSepSys> loopStack;
 	public:
 		//Store the variables information for searching, name(string), type and value(VariableInfo)
 		map<string,VariableInfo> varMap;
@@ -697,6 +698,8 @@ class WordSepSys{
 					case 1:{
 						printf("for ");
 						
+						//When encouter "for" or "end", and we should break the loop
+						bool isContinue = 1;
 						size_t equalPos = _stringQueue.front().find('=');
 						size_t colonPos = _stringQueue.front().find(':');
 						//Restore counter name
@@ -705,9 +708,8 @@ class WordSepSys{
 						string forStartVal = _stringQueue.front().substr(equalPos+1,colonPos-equalPos-1);
 						string forEndVal = _stringQueue.front().substr(colonPos+1);
 						_stringQueue.pop();
-						//When encouter "for" or "end", and we should break the loop
-						bool isContinue = 1;
 						//Input the loop information
+						ForWordSepSys loop1;
 						loop1.storeLoopInfo(forCounterName,forStartVal,forEndVal);
 						//Decode and pop the next range of orders and related variables' names into for-object
 						while(isContinue){
@@ -781,6 +783,7 @@ class WordSepSys{
 							tempVar = (*varNameMI);
 							varMap.insert(tempVar);
 						}
+						loopStack.push(loop1);
 						
 						break;
 					}
