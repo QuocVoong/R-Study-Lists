@@ -6,6 +6,7 @@
 #include<vector>
 #include<utility>
 #include<stdio.h>
+#include<stdlib.h>
 #include<string>
 #include<algorithm>
 #include<stack>
@@ -187,7 +188,20 @@ class ForWordSepSys{
 			cout<<number<<" from "<<lastNum<<", counter "<<counterName<<", start value "<<startVal<<", end value "<<endVal<<endl;
 		}
 		//Start loop processing
-		void startLoop(){
+		map<int,ForWordSepSys> startLoop(map<int,ForWordSepSys> _forObjectMap){
+			
+			cout<<"Loop "<<number<<" start."<<endl;
+			//Copy the for-object map
+			map<int,ForWordSepSys> forObjectMap = _forObjectMap;
+			
+			cout<<"Loop "<<number<<"'s orders:"<<endl;
+			map<int,ForWordSepSys>::iterator orderMI = forObjectMap.find(number);
+			queue<pair<string,pair<queue<string>,queue<string> > > > _orderQueue = (*orderMI).second.getOrderStrQueue();
+			while(!_orderQueue.empty()){
+				cout<<"order is "<<_orderQueue.front().first<<endl;
+				_orderQueue.pop();
+			}
+			system("pause");
 			
 			//Store start and end value
 			pair<string,VariableInfo> startValVar;
@@ -230,7 +244,7 @@ class ForWordSepSys{
 			for(int i=str2int(startValVar.second.value);i<=str2int(endValVar.second.value);i++){
 				cout<<"\nloop "<<i<<":"<<endl;
 				//Decode and process the order
-				orderDecode();
+				forObjectMap = orderDecode(forObjectMap);
 				//Update counter value
 				mi = varMap.find(counterName);
 				//Loop if not violating the conditions
@@ -246,6 +260,13 @@ class ForWordSepSys{
 					cout<<(*f_mi).first<<" "<<(*f_mi).second.type<<" "<<(*f_mi).second.value<<endl;
 				}
 			}
+			//Push self(*this) to the map
+			pair<int,ForWordSepSys> selfForObject;
+			selfForObject.first = number;
+			selfForObject.second = *this;
+			forObjectMap.erase(number);
+			forObjectMap.insert(selfForObject);
+			return forObjectMap;
 		}
 		//Extract the I/O variable names(pair<queue<string>,queue<string> >) and command types(string)
 		void popAndExtractOrderInfo(string _order){
@@ -285,11 +306,13 @@ class ForWordSepSys{
 			orderStrQueue.push(resultPair);
 		}
 		//Called to mark the value-changed site
-		void pushTakeValueFromLast(){
+		void pushTakeValueFromLast(int _nextNum){
 			//Store the variable names(I/O)
 			pair<queue<string>,queue<string> > varNames;
 			//To extract the take-value orders, ex: takeValFrom 1
 			string command = "takeValFromLast";
+			varNames.first.push(int2str(_nextNum));
+			varNames.second.push("None");
 			pair<string,pair<queue<string>,queue<string> > > resultPair(command,varNames);
 			//Store order information into order queue
 			orderStrQueue.push(resultPair);
@@ -307,19 +330,98 @@ class ForWordSepSys{
 			}
 		}
 		//Decode and process the order
-		void orderDecode(){
+		map<int,ForWordSepSys> orderDecode(map<int,ForWordSepSys> _forObjectMap){
+			map<int,ForWordSepSys> forObjectMap = _forObjectMap;
 			queue<pair<string,pair<queue<string>,queue<string> > > > orders = orderStrQueue;
-			//Check if it is plus order
-			size_t equalPos = orders.front().first.find('=');
+			cout<<"Loop "<<number<<"'s orders are decoding..."<<endl;
 			while(!orders.empty()){
+				cout<<"Order is "<<orders.front().first<<endl;
+				//Check if it is plus order
+				size_t equalPos = orders.front().first.find('=');
 				size_t plusPos = orders.front().first.find('+');
 				if(plusPos != string::npos){
 					plusValue(orders.front().second.first,orders.front().second.second);
 				} else if(plusPos == string::npos && equalPos != string::npos){
 					givenValue(orders.front().second.first,orders.front().second.second);
+				} else if(orders.front().first == "takeValFromLast" && equalPos == string::npos){
+				
+					//forMI points to the next for loop
+					map<int,ForWordSepSys>::iterator forMI = forObjectMap.find(str2int(orders.front().second.first.front()));
+					cout<<"Loop "<<number<<" will take value from loop"<<orders.front().second.first.front()<<endl;
+					//Store the next loop's orders
+					cout<<"Storing loop "<<number<<"'s global values into loop "<<orders.front().second.first.front()<<endl;
+					queue<pair<string,pair<queue<string>,queue<string> > > > forInfoQueue = (*forMI).second.getOrderStrQueue();
+					pair<string,pair<queue<string>,queue<string> > > forInfoPair;
+					//Look for all next loop's orders to find the inputs, and than sends this loop's values back
+					while(!forInfoQueue.empty()){
+						forInfoPair = forInfoQueue.front();
+					
+						//Temporary vector to store variables
+						vector<string> forVarVector;
+						vector<string>::iterator vi;
+						//Check the input variable
+						queue<string> inputVarNames = forInfoPair.second.first;
+						size_t multPos;
+						//If the variable is existed before, find and insert it into globalInputs
+						while(!inputVarNames.empty()){
+							multPos = inputVarNames.front().find('*');
+							mi = varMap.find(inputVarNames.front());
+							if(mi != varMap.end() && multPos == string::npos){
+								forVarVector.push_back(inputVarNames.front());
+							} else if(mi != varMap.end() && multPos != string::npos){
+								//Decode if there are multiply
+								MultSeperation multParams;
+								multParams.extractParams(inputVarNames.front());
+								queue<string> multVarsQueue = multParams.getQueue();
+								while(!multVarsQueue.empty()){
+									mi = varMap.find(multVarsQueue.front());
+									if(mi != varMap.end()){
+										forVarVector.push_back(multVarsQueue.front());
+									}
+									multVarsQueue.pop();
+								}
+							}
+							inputVarNames.pop();
+						}
+						
+						//Store the global variables into for-object
+						map<string,VariableInfo> globalVars;
+						for(vi = forVarVector.begin();vi != forVarVector.end();vi++){
+							cout<<(*vi)<<" is inserted into loop "<<orders.front().second.first.front()<<endl;
+							mi = varMap.find((*vi));
+							globalVars.insert((*mi));
+						}
+						//Store the information of the next loop
+						pair<int,ForWordSepSys> tempForObject;
+						forMI = forObjectMap.find(str2int(orders.front().second.first.front()));
+						tempForObject.second = (*forMI).second;
+						tempForObject.first = str2int(orders.front().second.first.front());
+						forObjectMap.erase(str2int(orders.front().second.first.front()));
+						//Input this loop's global variables
+						tempForObject.second.loadGlobalValues(globalVars);
+						forObjectMap.insert(tempForObject);
+						
+						forInfoQueue.pop();
+					}
+					system("pause");
+					//Start the next loop
+					forObjectMap = (*forMI).second.startLoop(forObjectMap);
+					//Update the varMap
+					map<string,VariableInfo> tempVars = (*forMI).second.getModifiedGlobalVars();
+					string varName;
+					pair<string,VariableInfo> tempVar;
+					for(map<string,VariableInfo>::iterator varNameMI=tempVars.begin();varNameMI!=tempVars.end();varNameMI++){
+						varName = (*varNameMI).first;
+						varMap.erase(varName);
+						tempVar = (*varNameMI);
+						varMap.insert(tempVar);
+					}
+				} else{
+					printf("Unsupported command.\n");
 				}
 				orders.pop();
 			}
+			return forObjectMap;
 		}
 		//Given value
 		void givenValue(queue<string> _inputVars,queue<string> _outputVars){
@@ -754,7 +856,7 @@ class WordSepSys{
 								isContinue = 0;
 								break;
 							} else if(inForCommand == "for"){
-								otherLoop.pushTakeValueFromLast();
+								otherLoop.pushTakeValueFromLast(number);
 								forStack.push(otherLoop);
 								//To determine whether to make new for-object
 								keepMakingFor = 1;
@@ -801,7 +903,7 @@ class WordSepSys{
 											}
 											_stringQueue.pop();
 										} else if(inForCommand == "for"){
-											otherLoop.pushTakeValueFromLast();
+											otherLoop.pushTakeValueFromLast(number+1);
 											forStack.push(otherLoop);
 											keepMakingFor = 1;
 											popOrderToFor = popOrderToFor + 1;
@@ -834,7 +936,8 @@ class WordSepSys{
 						
 						while(!forInfoQueue.empty()){
 							forInfoPair = forInfoQueue.front();
-						
+							if(forInfoPair.first == "takeValFromLast")
+								break;
 							//Temporary vector to store variables
 							vector<string> forVarVector;
 							vector<string>::iterator vi;
@@ -869,7 +972,6 @@ class WordSepSys{
 								mi = varMap.find((*vi));
 								globalVars.insert((*mi));
 							}
-						
 							forMI = forObjectMap.find(1);
 							tempForObject.second = (*forMI).second;
 							tempForObject.first = 1;
@@ -879,6 +981,20 @@ class WordSepSys{
 							
 							forInfoQueue.pop();
 						}
+						//Start the loop
+						forMI = forObjectMap.find(1);
+						forObjectMap = (*forMI).second.startLoop(forObjectMap);
+						//Update the varMap
+						map<string,VariableInfo> tempVars = (*forMI).second.getModifiedGlobalVars();
+						string varName;
+						pair<string,VariableInfo> tempVar;
+						for(map<string,VariableInfo>::iterator varNameMI=tempVars.begin();varNameMI!=tempVars.end();varNameMI++){
+							varName = (*varNameMI).first;
+							varMap.erase(varName);
+							tempVar = (*varNameMI);
+							varMap.insert(tempVar);
+						}
+												
 						break;
 					}
 					//Do if command
@@ -1343,8 +1459,8 @@ void seeQueue(queue<T> _q){
 }
 
 int main(){
-	string functionAddr = "C:/Users/user/Desktop/test.txt";
-	//string functionAddr = "C:/Users/Administrator/Desktop/test.txt"; 
+	//string functionAddr = "C:/Users/user/Desktop/test.txt";
+	string functionAddr = "C:/Users/Administrator/Desktop/test.txt"; 
 	WordSepSys sepSys(functionAddr); //Build WordSepSys and convert into program
 	
 	cout<<"Function name: "<<sepSys.getFunc().getFuncName()<<endl;
