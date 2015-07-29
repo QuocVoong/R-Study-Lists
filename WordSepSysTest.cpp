@@ -107,7 +107,7 @@ class MultSeperation{
 		}		
 };
 
-//Seperate the string describing about function
+//Separate the string describing about function
 class FuncSeperation{
 	private:
 		//Variable name
@@ -140,6 +140,21 @@ class FuncSeperation{
 			return params;
 		}
 
+};
+
+//A class to judge the condition
+class ConditionJudge{
+	private:
+		//Represents the condition is true or false
+		bool TorF;
+		string conditionStr;
+		map<string,VariableInfo> varMap;
+	public:
+		ConditionJudge(string _conditionStr,map<string,VariableInfo> _varMap){
+			conditionStr = _conditionStr;
+			varMap = _varMap;
+			//Judge the condition here, using varMap
+		}
 };
 
 //Let WordSepSys and seeVariables know each other
@@ -859,6 +874,12 @@ class WordSepSys{
 			file.close();
 									
 		}
+		//Constructor used when just give the order queue
+		WordSepSys(queue<string> _orderQueue){
+			strQueue = _orderQueue;
+			queue<string> tempStrQueue = strQueue;
+			orderDecode(tempStrQueue);
+		}
 		//Main console: Looping and convert every order into program
 		void mainConsole(queue<string> _strQueue){
 			
@@ -1080,7 +1101,28 @@ class WordSepSys{
 					}
 					//Do if command
 					case 2:{
-						printf("if\n");
+						
+						//Determine whether to continue decode the if statement
+						bool toContinue = 1;
+						//Store the condition statement
+						string conditionStr = _stringQueue.front().substr(0,pos);
+						_stringQueue.pop();
+						while(toContinue){
+							pos = _stringQueue.front().find_first_of(' ');
+							conditionStr = _stringQueue.front().substr(0,pos);
+							if(conditionStr == "elseif"){
+								
+							} else if(conditionStr == "else"){
+								
+							} else if(conditionStr == "end"){
+								toContinue = 0;
+								break;
+							} else{
+								
+							}
+							_stringQueue.pop();
+						}
+						
 						break;
 					}
 					//Skip end command
