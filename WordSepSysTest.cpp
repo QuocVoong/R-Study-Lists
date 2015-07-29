@@ -153,7 +153,14 @@ class ConditionJudge{
 		ConditionJudge(string _conditionStr,map<string,VariableInfo> _varMap){
 			conditionStr = _conditionStr;
 			varMap = _varMap;
+			TorF = 0;
 			//Judge the condition here, using varMap
+		}
+		bool getTorF(){
+			return TorF;
+		}
+		void setTorF(){
+			TorF = 1;
 		}
 };
 
@@ -855,6 +862,9 @@ class WordSepSys{
 		map<string,VariableInfo> varMap;
 		map<string,VariableInfo>::iterator mi;
 		//Constructor
+		WordSepSys(){
+			
+		}
 		WordSepSys(string addr){
 			
 			//Open txt file
@@ -878,7 +888,6 @@ class WordSepSys{
 		WordSepSys(queue<string> _orderQueue){
 			strQueue = _orderQueue;
 			queue<string> tempStrQueue = strQueue;
-			orderDecode(tempStrQueue);
 		}
 		//Main console: Looping and convert every order into program
 		void mainConsole(queue<string> _strQueue){
@@ -1106,21 +1115,94 @@ class WordSepSys{
 						bool toContinue = 1;
 						//Store the condition statement
 						string conditionStr = _stringQueue.front().substr(0,pos);
+						string conditionStatement = _stringQueue.front().substr(pos+1);
 						_stringQueue.pop();
+						//Store the conditions and the WordSepSys objects, if->elseif->else, pair<name,pair<condition,WordSepSys> >
+						queue<pair<string,pair<ConditionJudge,WordSepSys> > > ifElseQueue;
+						//If-else state: 0:no, 1:if, 2:elseif, 3:else, 4:end
+						int ifState = 1;
+						//Classify the orders' queue
 						while(toContinue){
+							queue<string> tempIfStr;
 							pos = _stringQueue.front().find_first_of(' ');
 							conditionStr = _stringQueue.front().substr(0,pos);
+							conditionStatement = _stringQueue.front().substr(pos+1);
 							if(conditionStr == "elseif"){
-								
+								if(ifState == 1){
+									//Construct the if WordSepSys object
+									WordSepSys ifWordSepSys(tempIfStr);
+									//Construct the ConditionJudge object for determining whether to use it
+									ConditionJudge grandCondition(conditionStatement,varMap);
+									ifElseQueue.push(make_pair("if",make_pair(grandCondition,ifWordSepSys)));
+									queue<string> newIfStr;
+									//Clear the string queue
+									tempIfStr = newIfStr;
+									ifState = 2;
+								} else if(ifState == 2){
+									//Construct the if WordSepSys object
+									WordSepSys ifWordSepSys(tempIfStr);
+									//Construct the ConditionJudge object for determining whether to use it
+									ConditionJudge grandCondition(conditionStatement,varMap);
+									ifElseQueue.push(make_pair("elseif",make_pair(grandCondition,ifWordSepSys)));
+									queue<string> newIfStr;
+									//Clear the string queue
+									tempIfStr = newIfStr;
+								}
 							} else if(conditionStr == "else"){
-								
+								if(ifState == 2){
+									//Construct the if WordSepSys object
+									WordSepSys ifWordSepSys(tempIfStr);
+									//Construct the ConditionJudge object for determining whether to use it
+									ConditionJudge grandCondition(conditionStatement,varMap);
+									ifElseQueue.push(make_pair("elseif",make_pair(grandCondition,ifWordSepSys)));
+									queue<string> newIfStr;
+									//Clear the string queue
+									tempIfStr = newIfStr;
+								} else if(ifState == 1){
+									//Construct the if WordSepSys object
+									WordSepSys ifWordSepSys(tempIfStr);
+									//Construct the ConditionJudge object for determining whether to use it
+									ConditionJudge grandCondition(conditionStatement,varMap);
+									ifElseQueue.push(make_pair("if",make_pair(grandCondition,ifWordSepSys)));
+									queue<string> newIfStr;
+									//Clear the string queue
+									tempIfStr = newIfStr;
+								}
+								ifState = 3;
 							} else if(conditionStr == "end"){
+								//Construct the if WordSepSys object
+								WordSepSys ifWordSepSys(tempIfStr);
+								//Construct the ConditionJudge object for determining whether to use it
+								ConditionJudge grandCondition(conditionStatement,varMap);
+								//Set else's condition to 1
+								grandCondition.setTorF();
+								ifElseQueue.push(make_pair("else",make_pair(grandCondition,ifWordSepSys)));
 								toContinue = 0;
 								break;
 							} else{
-								
+								tempIfStr.push(_stringQueue.front());
 							}
 							_stringQueue.pop();
+						}
+						//Look up conditions' judges one by one to decide which WordSepSys to decode orders
+						WordSepSys rightConditionToPerform;
+						while(!ifElseQueue.empty()){
+							if(ifElseQueue.front().second.first.getTorF() == 1){
+								rightConditionToPerform = ifElseQueue.front().second.second;
+							}
+							ifElseQueue.pop();
+						}
+						//Let the right program progress
+						rightConditionToPerform.orderDecode(rightConditionToPerform.getOrderQueue());
+						//Update the varMap
+						map<string,VariableInfo> tempVars = rightConditionToPerform.varMap;
+						string varName;
+						pair<string,VariableInfo> tempVar;
+						for(map<string,VariableInfo>::iterator varNameMI=tempVars.begin();varNameMI!=tempVars.end();varNameMI++){
+							varName = (*varNameMI).first;
+							varMap.erase(varName);
+							tempVar = (*varNameMI);
+							varMap.insert(tempVar);
 						}
 						
 						break;
