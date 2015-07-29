@@ -1664,8 +1664,8 @@ void seeQueue(queue<T> _q){
 }
 
 int main(){
-	string functionAddr = "C:/Users/user/Desktop/test.txt";
-	//string functionAddr = "C:/Users/Administrator/Desktop/test.txt"; 
+	//string functionAddr = "C:/Users/user/Desktop/test.txt";
+	string functionAddr = "C:/Users/Administrator/Desktop/test.txt"; 
 	WordSepSys sepSys(functionAddr); //Build WordSepSys and convert into program
 	
 	cout<<"Function name: "<<sepSys.getFunc().getFuncName()<<endl;
