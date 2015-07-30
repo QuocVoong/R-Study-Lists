@@ -904,20 +904,12 @@ class ForWordSepSys{
 //Word separation system - Read the file and call other functions to convert orders into program
 class WordSepSys{
 	private:
-		//if-else number
-		int ifElseNum;
-		//Last if-else number
-		int lastIfElseNum;
 		//Store the orders
 		queue<string> strQueue;
 		//Store the functions
 		FuncSeperation func1;
 		//Store all for-objects
 		map<int,ForWordSepSys> forObjectMap;
-		//Store all wordSepSys-objects from if-else statement
-		map<int,WordSepSys> WordSepSysObjectMap;
-		//Store the conditions and the WordSepSys objects, if->elseif->else, pair<name,pair<condition,WordSepSys> >
-		queue<pair<string,pair<ConditionJudge,WordSepSys> > > ifElseQueue;
 	public:
 		map<int,ForWordSepSys>::iterator forMI;
 		//Store the variables information for searching, name(string), type and value(VariableInfo)
@@ -940,8 +932,6 @@ class WordSepSys{
 					strQueue.push(curLine);
 				}  
 			}
-			//Use when encounter if-else
-			lastIfElseNum = 0;
 			//Enter into main console to convert the string queue into programs line by line
 			mainConsole(strQueue);
 			//Close the file
@@ -952,29 +942,6 @@ class WordSepSys{
 		WordSepSys(queue<string> _orderQueue){
 			strQueue = _orderQueue;
 			queue<string> tempStrQueue = strQueue;
-			//Use when encounter if-else
-			lastIfElseNum = 0;
-		}
-		//Clear all information from the last WordSepSys object
-		void clearAndInitInfo(int _ifElseNum,int _lastIfElseNum){
-			ifElseNum = _ifElseNum;
-			lastIfElseNum = _lastIfElseNum;
-			//Clear orderQueue
-			while(!strQueue.empty()){
-				strQueue.pop();
-			}
-			//Clear the varMap
-			map<string,VariableInfo>::iterator v_mi = varMap.begin();
-			while(!varMap.empty()){
-				varMap.erase((*v_mi).first);
-				v_mi = varMap.begin();
-			}
-			//Clear the WordSepSys map
-			map<int,WordSepSys>::iterator w_mi = WordSepSysObjectMap.begin();
-			while(!WordSepSysObjectMap.empty()){
-				WordSepSysObjectMap.erase((*w_mi).first);
-				w_mi = WordSepSysObjectMap.begin();
-			}
 		}
 		//Main console: Looping and convert every order into program
 		void mainConsole(queue<string> _strQueue){
@@ -1001,14 +968,13 @@ class WordSepSys{
 			//Decode the order line-by-line
 			while(!_stringQueue.empty()){
 				
-				//Extract the command type, 1:for, 2:if, 3:end, 4:takeValFromIfElse
+				//Extract the command type, 1:for, 2:if, 3:end
 				size_t pos = _stringQueue.front().find_first_of(' ');
 				string command = _stringQueue.front().substr(0,pos-0);
 				int commandType = 0;
 				if(command == "for") commandType = 1;
 				else if(command == "if") commandType = 2;
 				else if(command == "end") commandType = 3;
-				else if(command == "takeValFromIfElse") commandType = 4;
 				else{
 					commandType = 0;
 				}
@@ -1199,19 +1165,8 @@ class WordSepSys{
 					//Do if command
 					case 2:{
 						
-						printf("First if statement encountered.\n");
-						
-						//Input the current global variables
-						if(lastIfElseNum != 0){
-							cout<<"Update the varMap from if-else object "<<lastIfElseNum<<endl;;
-							map<int,WordSepSys>::iterator w_varMI = WordSepSysObjectMap.find(lastIfElseNum);
-							//Update self varMap from last one
-							varMap = (*w_varMI).second.varMap;
-						}
 						//Determine whether to continue decode the if statement
 						bool toContinue = 1;
-						//To store which if-else object is currently made
-						int curMakingIfElse = 2;
 						//Store the condition statement
 						string conditionStr = _stringQueue.front().substr(0,pos);
 						string conditionStatement = _stringQueue.front().substr(pos+1);
@@ -1314,79 +1269,17 @@ class WordSepSys{
 								ifElseQueue.push(make_pair("else",make_pair(grandCondition,ifWordSepSys)));
 								toContinue = 0;
 								break;
-							} else if(conditionStr == "if"){
-								stack<WordSepSys> tempWordSepSysStack;
-								tempIfStr.push("takeValFromIfElse 2");
-								cout<<"If-else object 1 will "<<"takeValFromIfElse 2"<<endl;
-								tempWordSepSysStack.push((*this));
-								//Generate the next if-else
-								WordSepSys innerIfElse;
-								bool keepMakingIfElse = 1;
-								int popOrderToIfElse = 2;
-								while(keepMakingIfElse){
-									//New WordSepSys object and push the if statement inside
-									innerIfElse.clearAndInitInfo(curMakingIfElse,innerIfElse.getIfElseNum());
-									innerIfElse.setOrderQueue(_stringQueue.front());
-									cout<<"if-else "<<innerIfElse.getIfElseNum()<<" get order: "<<_stringQueue.front()<<endl;
-									_stringQueue.pop();
-									//To store space site
-									size_t spacePos;
-									while(popOrderToIfElse>1){
-										spacePos = _stringQueue.front().find(' ');
-										conditionStr = _stringQueue.front().substr(0,spacePos-0);
-										if(conditionStr == "if"){
-											innerIfElse.setOrderQueue("takeValFromIfElse "+int2str(curMakingIfElse+1));
-											cout<<"if-else object "<<innerIfElse.getIfElseNum()<<" will "<<"takeValFromIfElse "<<curMakingIfElse+1<<endl;
-											tempWordSepSysStack.push(innerIfElse);
-											popOrderToIfElse = popOrderToIfElse + 1;
-											break;
-										} else if(conditionStr == "end"){
-											innerIfElse.setOrderQueue(_stringQueue.front());
-											cout<<"if-else "<<innerIfElse.getIfElseNum()<<" get order: "<<_stringQueue.front()<<endl;
-											WordSepSysObjectMap.insert(make_pair(innerIfElse.getIfElseNum(),innerIfElse));
-											cout<<"WordSepSys object "<<innerIfElse.getIfElseNum()<<" insert!"<<endl;
-											popOrderToIfElse = popOrderToIfElse - 1;
-											if(popOrderToIfElse == 1){
-												keepMakingIfElse = 0;
-												break;
-											}
-											innerIfElse = tempWordSepSysStack.top();
-											tempWordSepSysStack.pop();
-										} else{
-											innerIfElse.setOrderQueue(_stringQueue.front());
-											cout<<"if-else "<<innerIfElse.getIfElseNum()<<" get order: "<<_stringQueue.front()<<endl;
-										}
-										_stringQueue.pop();
-									}
-									curMakingIfElse = curMakingIfElse + 1;
-								}
 							} else{
 								tempIfStr.push(_stringQueue.front());
-								cout<<"if-else 1 get order: "<<_stringQueue.front()<<endl;
 							}
 							_stringQueue.pop();
 						}
-						//Update the WordSepSysObjectMap
-						WordSepSysObjectMap.insert(make_pair(1,(*this)));
-						
-						printf("\nCheck for the map:\n");
-						for(map<int,WordSepSys>::iterator w_mi = WordSepSysObjectMap.begin();w_mi!=WordSepSysObjectMap.end();w_mi++){
-							cout<<"\nif-else number: "<<(*w_mi).first<<", order: "<<endl;
-							queue<string> tmp = (*w_mi).second.getOrderQueue();
-							while(!tmp.empty()){
-								cout<<tmp.front()<<endl;
-								tmp.pop();
-							}
-						}
-						
-						system("pause");
-						
 						//Look up conditions' judges one by one to decide which WordSepSys to decode orders
 						WordSepSys rightConditionToPerform;
 						while(!ifElseQueue.empty()){
 							if(ifElseQueue.front().second.first.getTorF() == 1){
 								rightConditionToPerform = ifElseQueue.front().second.second;
-								cout<<endl<<ifElseQueue.front().first<<" is the right condition to perform, ";
+								cout<<ifElseQueue.front().first<<" is the right condition to perform, ";
 								break;
 							}
 							ifElseQueue.pop();
@@ -1397,16 +1290,10 @@ class WordSepSys{
 							cout<<tempOrderQueue.front()<<endl;
 							tempOrderQueue.pop();
 						}
-						
-						system("pause");
-						
-						//Let the right program progress
-						rightConditionToPerform.WordSepSysObjectMap = WordSepSysObjectMap;
+						//Input the current global variables
 						rightConditionToPerform.varMap = varMap;
+						//Let the right program progress
 						rightConditionToPerform.orderDecode(rightConditionToPerform.getOrderQueue());
-						
-						system("pause");
-						
 						//Update the varMap
 						map<string,VariableInfo> tempVars = rightConditionToPerform.varMap;
 						string varName;
@@ -1417,79 +1304,12 @@ class WordSepSys{
 							tempVar = (*varNameMI);
 							varMap.insert(tempVar);
 						}
-						//Insert self to map
-						WordSepSysObjectMap.erase(ifElseNum);
-						WordSepSysObjectMap.insert(make_pair(ifElseNum,(*this)));
-						
-						printf("\nCheck for the map after insert itself:\n");
-						for(map<int,WordSepSys>::iterator w_mi = WordSepSysObjectMap.begin();w_mi!=WordSepSysObjectMap.end();w_mi++){
-							cout<<"\nif-else number: "<<(*w_mi).first<<", order: "<<endl;
-							queue<string> tmp = (*w_mi).second.getOrderQueue();
-							while(!tmp.empty()){
-								cout<<tmp.front()<<endl;
-								tmp.pop();
-							}
-						}
 						
 						break;
 					}
 					//Skip end command
 					case 3:{
 						printf("end\n");
-						break;
-					}
-					//Just modified the varMap
-					case 4:{
-						
-						printf("\nCheck for the map before taken value:\n");
-						for(map<int,WordSepSys>::iterator w_mi = WordSepSysObjectMap.begin();w_mi!=WordSepSysObjectMap.end();w_mi++){
-							cout<<"\nif-else number: "<<(*w_mi).first<<", order: "<<endl;
-							queue<string> tmp = (*w_mi).second.getOrderQueue();
-							while(!tmp.empty()){
-								cout<<tmp.front()<<endl;
-								tmp.pop();
-							}
-						}
-						
-						cout<<"Take value from if-else object "<<_stringQueue.front().substr(pos+1)<<endl;
-						//Make it decode order
-						map<int,WordSepSys>::iterator w_takeMI = WordSepSysObjectMap.find(str2int(_stringQueue.front().substr(pos+1)));
-						WordSepSys tempWordSepSys;
-						tempWordSepSys = (*w_takeMI).second;
-						
-						printf("Variables in varMap: \n");
-						for(map<string,VariableInfo>::iterator v_mi = varMap.begin();v_mi!=varMap.end();v_mi++){
-							cout<<(*v_mi).first<<" "<<(*v_mi).second.type<<" "<<(*v_mi).second.value<<endl;
-						}
-						
-						system("pause");
-						
-						printf("Check the order strings before decode second if: \n");
-						queue<string> tempIfElseStrQueue = (*w_takeMI).second.strQueue;
-						while(!tempIfElseStrQueue.empty()){
-							cout<<tempIfElseStrQueue.front()<<endl;
-							tempIfElseStrQueue.pop();
-						}
-						
-						system("pause");
-						
-						//TROUBLE!!!!!!!!!!
-						tempWordSepSys.orderDecode((*w_takeMI).second.strQueue);
-						
-						system("pause");
-						
-						map<string,VariableInfo> varMapFromIfElse = tempWordSepSys.varMap;
-						//update the varMap
-						map<string,VariableInfo> tempVars = varMapFromIfElse;
-						string varName;
-						pair<string,VariableInfo> tempVar;
-						for(map<string,VariableInfo>::iterator varNameMI=tempVars.begin();varNameMI!=tempVars.end();varNameMI++){
-							varName = (*varNameMI).first;
-							varMap.erase(varName);
-							tempVar = (*varNameMI);
-							varMap.insert(tempVar);
-						}
-						
 						break;
 					}
 					//Do other command
@@ -1889,15 +1709,6 @@ class WordSepSys{
 		}
 		queue<string> getOrderQueue(){
 			return strQueue;
-		}
-		void setOrderQueue(string _order){
-			strQueue.push(_order);
-		}
-		queue<pair<string,pair<ConditionJudge,WordSepSys> > > getIfElseQueue(){
-			return ifElseQueue;
-		}
-		int getIfElseNum(){
-			return ifElseNum;
 		}
 		
 };
